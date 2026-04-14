@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+
+{% block title %}My Papers — Academic Summarizer{% endblock %}
+
+{% block content %}
+<div class="container">
+
+  <!-- Header -->
+  <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+    <div>
+      <h1 class="fw-bold mb-1 fs-2">My Papers</h1>
+      <p class="text-muted mb-0">{{ page_obj.paginator.count }} paper{{ page_obj.paginator.count|pluralize }} total</p>
+    </div>
+    <a href="{% url 'papers:upload' %}" class="btn btn-primary">
+      <i class="bi bi-cloud-upload me-2"></i>Upload Paper
+    </a>
+  </div>
+
+  <!-- Search -->
+  <form method="get" class="mb-4">
+    <div class="input-group">
+      {{ search_form.query }}
+      <button type="submit" class="btn btn-outline-secondary">
+        <i class="bi bi-search"></i>
+      </button>
+      {% if query %}
+        <a href="{% url 'papers:list' %}" class="btn btn-outline-danger">
+          <i class="bi bi-x-lg"></i>
+        </a>
+      {% endif %}
+    </div>
+  </form>
+
+  {% if query %}
+    <p class="text-muted mb-3">Showing results for "<strong>{{ query }}</strong>"</p>
+  {% endif %}
+
+  <!-- Paper Grid -->
+  {% if papers %}
+    <div class="row g-4">
+      {% for paper in papers %}
+        <div class="col-md-6 col-lg-4">
+          <div class="card h-100 border-0 shadow-sm rounded-4 paper-card">
+            <div class="card-body p-4">
+              <div class="d-flex align-items-start justify-content-between mb-3">
+                <div class="paper-icon-wrap">
+                  <i class="bi bi-file-earmark-pdf-fill text-danger fs-3"></i>
+                </div>
+                {% if paper.processed %}
+                  <span class="badge bg-success-subtle text-success">
+                    <i class="bi bi-check-circle me-1"></i>Summarized
+                  </span>
+                {% else %}
+                  <span class="badge bg-secondary-subtle text-secondary">
+                    <i class="bi bi-clock me-1"></i>Pending
+                  </span>
+                {% endif %}
+              </div>
+
+              <h5 class="fw-semibold mb-1 paper-title">
+                <a href="{% url 'papers:detail' paper.pk %}" class="stretched-link text-decoration-none text-body">
+                  {{ paper.title }}
+                </a>
+              </h5>
+
+              {% if paper.author %}
+                <p class="text-muted small mb-2">
+                  <i class="bi bi-person me-1"></i>{{ paper.author }}
+                </p>
+              {% endif %}
+
+              <div class="d-flex align-items-center gap-2 mt-auto pt-2 border-top">
+                <small class="text-muted">
+                  <i class="bi bi-calendar3 me-1"></i>{{ paper.uploaded_at|date:"M d, Y" }}
+                </small>
+                <small class="text-muted ms-auto">{{ paper.file_size_display }}</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+      <nav class="mt-5 d-flex justify-content-center">
+        <ul class="pagination">
+          {% if page_obj.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if query %}&query={{ query }}{% endif %}">
+                <i class="bi bi-chevron-left"></i>
+              </a>
+            </li>
+          {% endif %}
+          {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+              <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ num }}{% if query %}&query={{ query }}{% endif %}">{{ num }}</a>
+              </li>
+            {% endif %}
+          {% endfor %}
+          {% if page_obj.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if query %}&query={{ query }}{% endif %}">
+                <i class="bi bi-chevron-right"></i>
+              </a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
+    {% endif %}
+
+  {% else %}
+    <!-- Empty state -->
+    <div class="text-center py-5">
+      <i class="bi bi-journal-x fs-1 text-muted mb-3 d-block"></i>
+      <h4 class="text-muted fw-semibold">
+        {% if query %}No papers match "{{ query }}"{% else %}No papers yet{% endif %}
+      </h4>
+      <p class="text-muted mb-4">
+        {% if query %}
+          Try a different search term.
+        {% else %}
+          Upload your first academic paper to get started.
+        {% endif %}
+      </p>
+      {% if not query %}
+        <a href="{% url 'papers:upload' %}" class="btn btn-primary">
+          <i class="bi bi-cloud-upload me-2"></i>Upload Your First Paper
+        </a>
+      {% endif %}
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}

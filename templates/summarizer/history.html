@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block title %}Summary History — Academic Summarizer{% endblock %}
+
+{% block content %}
+<div class="container">
+
+  <div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+      <h1 class="fw-bold mb-1 fs-2">Summary History</h1>
+      <p class="text-muted mb-0">{{ page_obj.paginator.count }} summar{{ page_obj.paginator.count|pluralize:"y,ies" }} total</p>
+    </div>
+    <a href="{% url 'papers:upload' %}" class="btn btn-primary">
+      <i class="bi bi-plus-lg me-2"></i>New Paper
+    </a>
+  </div>
+
+  {% if summaries %}
+    <div class="table-responsive">
+      <table class="table table-hover align-middle rounded-4 overflow-hidden shadow-sm">
+        <thead class="table-dark">
+          <tr>
+            <th>Paper</th>
+            <th>Author</th>
+            <th>Summarized</th>
+            <th class="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for summary in summaries %}
+          <tr>
+            <td>
+              <a href="{% url 'summarizer:detail' summary.pk %}" class="fw-medium text-decoration-none">
+                {{ summary.paper.title|truncatechars:60 }}
+              </a>
+            </td>
+            <td class="text-muted small">{{ summary.paper.author|default:"—" }}</td>
+            <td class="text-muted small">{{ summary.created_at|date:"M d, Y" }}</td>
+            <td class="text-end">
+              <div class="btn-group btn-group-sm">
+                <a href="{% url 'summarizer:detail' summary.pk %}" class="btn btn-outline-primary" title="View">
+                  <i class="bi bi-eye"></i>
+                </a>
+                <a href="{% url 'summarizer:export_pdf' summary.pk %}" class="btn btn-outline-danger" title="PDF">
+                  <i class="bi bi-filetype-pdf"></i>
+                </a>
+                <a href="{% url 'summarizer:export_word' summary.pk %}" class="btn btn-outline-secondary" title="Word">
+                  <i class="bi bi-filetype-docx"></i>
+                </a>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+      <nav class="mt-4 d-flex justify-content-center">
+        <ul class="pagination">
+          {% if page_obj.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+                <i class="bi bi-chevron-left"></i>
+              </a>
+            </li>
+          {% endif %}
+          {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+              <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+              </li>
+            {% endif %}
+          {% endfor %}
+          {% if page_obj.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                <i class="bi bi-chevron-right"></i>
+              </a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
+    {% endif %}
+
+  {% else %}
+    <div class="text-center py-5">
+      <i class="bi bi-clock-history fs-1 text-muted mb-3 d-block"></i>
+      <h4 class="text-muted fw-semibold">No summaries yet</h4>
+      <p class="text-muted mb-4">Upload and summarize your first paper to see it here.</p>
+      <a href="{% url 'papers:upload' %}" class="btn btn-primary">
+        <i class="bi bi-cloud-upload me-2"></i>Upload a Paper
+      </a>
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}

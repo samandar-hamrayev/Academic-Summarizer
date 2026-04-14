@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+
+{% block title %}Academic Summarizer — AI-Powered Paper Analysis{% endblock %}
+
+{% block content %}
+<!-- Hero -->
+<section class="hero-section py-5">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6">
+        <h1 class="display-4 fw-bold mb-4">
+          Summarize Academic Papers with <span class="text-gradient">AI Precision</span>
+        </h1>
+        <p class="lead text-muted mb-4">
+          Upload any PDF and get a structured summary in seconds — abstract,
+          key points, methodology, results, and conclusions — all powered by Claude AI.
+        </p>
+        {% if user.is_authenticated %}
+          <a href="{% url 'papers:upload' %}" class="btn btn-primary btn-lg me-3">
+            <i class="bi bi-cloud-upload me-2"></i>Upload a Paper
+          </a>
+          <a href="{% url 'papers:list' %}" class="btn btn-outline-secondary btn-lg">
+            <i class="bi bi-files me-2"></i>My Papers
+          </a>
+        {% else %}
+          <a href="{% url 'register' %}" class="btn btn-primary btn-lg me-3">
+            <i class="bi bi-person-plus me-2"></i>Get Started Free
+          </a>
+          <a href="{% url 'login' %}" class="btn btn-outline-secondary btn-lg">
+            Sign In
+          </a>
+        {% endif %}
+      </div>
+      <div class="col-lg-6">
+        <div class="feature-card p-4 rounded-4 shadow-lg">
+          <div class="d-flex align-items-center mb-3">
+            <div class="feature-icon me-3"><i class="bi bi-file-earmark-pdf-fill fs-3"></i></div>
+            <div>
+              <div class="fw-semibold">Neural Plasticity in Adult Brains.pdf</div>
+              <small class="text-muted">Processing complete</small>
+            </div>
+            <span class="badge bg-success ms-auto">Done</span>
+          </div>
+          <div class="section-preview mb-2">
+            <span class="badge bg-primary-subtle text-primary me-1">Abstract</span>
+            <span class="badge bg-success-subtle text-success me-1">Key Points</span>
+            <span class="badge bg-warning-subtle text-warning me-1">Methodology</span>
+            <span class="badge bg-info-subtle text-info me-1">Results</span>
+            <span class="badge bg-secondary-subtle text-secondary">Conclusion</span>
+          </div>
+          <div class="text-muted small">
+            "This study demonstrates that adult neurogenesis in the hippocampus
+            plays a critical role in pattern separation, with a 47% improvement
+            in memory consolidation observed in experimental groups..."
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="py-5 bg-body-secondary">
+  <div class="container">
+    <h2 class="text-center fw-bold mb-5">Everything you need to understand research faster</h2>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm p-2">
+          <div class="card-body text-center">
+            <div class="feature-icon-lg mb-3"><i class="bi bi-cloud-upload fs-1"></i></div>
+            <h5 class="fw-semibold">Drag & Drop Upload</h5>
+            <p class="text-muted">Upload any PDF with a simple drag and drop. We support papers up to 50 MB.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm p-2">
+          <div class="card-body text-center">
+            <div class="feature-icon-lg mb-3"><i class="bi bi-robot fs-1"></i></div>
+            <h5 class="fw-semibold">AI-Powered Analysis</h5>
+            <p class="text-muted">Claude AI extracts and structures the most important information from any paper.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm p-2">
+          <div class="card-body text-center">
+            <div class="feature-icon-lg mb-3"><i class="bi bi-download fs-1"></i></div>
+            <h5 class="fw-semibold">Export Anywhere</h5>
+            <p class="text-muted">Download your summary as a polished PDF or Word document with one click.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Summary Sections Preview -->
+<section class="py-5">
+  <div class="container">
+    <h2 class="text-center fw-bold mb-2">Five-section structured summary</h2>
+    <p class="text-center text-muted mb-5">Every summary covers the complete research narrative</p>
+    <div class="row g-3">
+      {% for icon, label, desc in sections_preview %}
+      <div class="col-sm-6 col-lg">
+        <div class="card border-0 bg-body-secondary h-100 p-3">
+          <i class="bi bi-{{ icon }} fs-3 text-primary mb-2"></i>
+          <h6 class="fw-semibold mb-1">{{ label }}</h6>
+          <p class="small text-muted mb-0">{{ desc }}</p>
+        </div>
+      </div>
+      {% empty %}
+      {% with sections="abstract,Abstract,The paper's core contribution in plain language|bullseye,Key Points,5–8 essential takeaways|gear,Methodology,How the research was designed and conducted|graph-up,Results,Key quantitative and qualitative findings|flag,Conclusion,Main implications and future directions" %}
+      <div class="col-sm-6 col-lg">
+        <div class="card border-0 bg-body-secondary h-100 p-3">
+          <i class="bi bi-file-text fs-3 text-primary mb-2"></i>
+          <h6 class="fw-semibold mb-1">Abstract</h6>
+          <p class="small text-muted mb-0">The paper's core contribution in plain language</p>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg">
+        <div class="card border-0 bg-body-secondary h-100 p-3">
+          <i class="bi bi-bullseye fs-3 text-success mb-2"></i>
+          <h6 class="fw-semibold mb-1">Key Points</h6>
+          <p class="small text-muted mb-0">5–8 essential takeaways from the paper</p>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg">
+        <div class="card border-0 bg-body-secondary h-100 p-3">
+          <i class="bi bi-gear fs-3 text-warning mb-2"></i>
+          <h6 class="fw-semibold mb-1">Methodology</h6>
+          <p class="small text-muted mb-0">How the research was designed and conducted</p>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg">
+        <div class="card border-0 bg-body-secondary h-100 p-3">
+          <i class="bi bi-graph-up fs-3 text-info mb-2"></i>
+          <h6 class="fw-semibold mb-1">Results</h6>
+          <p class="small text-muted mb-0">Key quantitative and qualitative findings</p>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg">
+        <div class="card border-0 bg-body-secondary h-100 p-3">
+          <i class="bi bi-flag fs-3 text-danger mb-2"></i>
+          <h6 class="fw-semibold mb-1">Conclusion</h6>
+          <p class="small text-muted mb-0">Main implications and future directions</p>
+        </div>
+      </div>
+      {% endwith %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% if not user.is_authenticated %}
+<section class="py-5 bg-primary text-white">
+  <div class="container text-center">
+    <h2 class="fw-bold mb-3">Ready to read smarter?</h2>
+    <p class="lead mb-4 opacity-75">Create a free account and summarize your first paper in under 60 seconds.</p>
+    <a href="{% url 'register' %}" class="btn btn-light btn-lg px-5">
+      <i class="bi bi-person-plus me-2"></i>Create Free Account
+    </a>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

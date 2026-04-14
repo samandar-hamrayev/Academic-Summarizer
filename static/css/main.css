@@ -1,0 +1,172 @@
+/* =============================================
+   Academic Summarizer — Custom Styles
+   ============================================= */
+
+:root {
+  --primary: #4361ee;
+  --primary-dark: #3a0ca3;
+  --accent: #7209b7;
+  --surface: #f8f9fc;
+  --card-shadow: 0 2px 16px rgba(67, 97, 238, 0.08);
+  --radius: 1rem;
+}
+
+/* Base */
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--surface);
+  color: #1a1a2e;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main { flex: 1; }
+
+/* Navbar */
+#main-nav {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
+  box-shadow: 0 2px 20px rgba(0,0,0,0.15);
+  padding: 0.75rem 0;
+}
+
+#main-nav .navbar-brand {
+  font-size: 1.2rem;
+  letter-spacing: -0.3px;
+}
+
+#main-nav .nav-link {
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.5rem;
+  transition: background 0.15s, color 0.15s;
+}
+
+#main-nav .nav-link:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+/* Footer */
+.footer {
+  background: #16213e;
+  color: #adb5bd;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+/* Hero */
+.hero-section {
+  padding: 5rem 0;
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Feature preview card on home */
+.feature-card {
+  background: linear-gradient(135deg, #f0f4ff 0%, #faf5ff 100%);
+  border: 1px solid rgba(67, 97, 238, 0.15);
+}
+
+.feature-icon {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.feature-icon-lg {
+  color: var(--primary);
+  line-height: 1;
+}
+
+/* Cards */
+.card {
+  background: #ffffff;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.paper-card:hover {
+  box-shadow: 0 8px 24px rgba(67, 97, 238, 0.15) !important;
+  transform: translateY(-2px);
+}
+
+.paper-title {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Drop zone */
+.drop-zone {
+  border: 2px dashed #c5d0e6;
+  background: #f7f9ff;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.drop-zone:hover,
+.drop-zone.drag-over {
+  border-color: var(--primary);
+  background: #eef2ff;
+}
+
+.drop-zone.drag-over {
+  transform: scale(1.01);
+}
+
+/* Section badge (summary detail) */
+.section-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  vertical-align: middle;
+}
+
+/* Table */
+.table thead th {
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Buttons */
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), #7c3aed);
+  border: none;
+  font-weight: 500;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #3354d4, #6d28d9);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+}
+
+/* Alerts */
+.alert-error { --bs-alert-color: #842029; --bs-alert-bg: #f8d7da; --bs-alert-border-color: #f5c2c7; }
+
+/* Utilities */
+.rounded-4 { border-radius: var(--radius) !important; }
+.shadow-sm  { box-shadow: var(--card-shadow) !important; }
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .hero-section { padding: 3rem 0; }
+  .display-4    { font-size: 2rem; }
+}

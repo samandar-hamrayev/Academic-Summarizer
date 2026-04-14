@@ -1,0 +1,27 @@
+# Development override — mounts source code for hot reload, exposes Django
+# directly without Nginx, uses SQLite so no DB container needed.
+#
+# Usage:
+#   docker compose -f docker-compose.dev.yml up --build
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: academic_web_dev
+    command: >
+      sh -c "python manage.py migrate --noinput &&
+             python manage.py collectstatic --noinput &&
+             python manage.py runserver 0.0.0.0:8000"
+    env_file: .env.dev
+    ports:
+      - "8000:8000"
+    volumes:
+      # Mount source for live reload
+      - .:/app
+      - /app/staticfiles   # exclude staticfiles dir from the bind mount
+      - /app/media         # exclude media dir from the bind mount
+    environment:
+      DEBUG: "True"
+      DATABASE_URL: "sqlite:////app/db.sqlite3"

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Paper — Academic Summarizer{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card border-0 shadow-sm rounded-4 p-4 mt-4 text-center">
+        <i class="bi bi-exclamation-triangle-fill text-danger fs-1 mb-3"></i>
+        <h3 class="fw-bold mb-2">Delete Paper?</h3>
+        <p class="text-muted mb-4">
+          Are you sure you want to delete "<strong>{{ object.title }}</strong>"?
+          This will also delete any associated summary and cannot be undone.
+        </p>
+        <form method="post" class="d-flex justify-content-center gap-3">
+          {% csrf_token %}
+          <a href="{% url 'papers:detail' object.pk %}" class="btn btn-outline-secondary">
+            Cancel
+          </a>
+          <button type="submit" class="btn btn-danger">
+            <i class="bi bi-trash me-2"></i>Yes, Delete
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

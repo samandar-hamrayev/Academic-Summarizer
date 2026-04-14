@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ paper.title }} — Academic Summarizer{% endblock %}
+
+{% block content %}
+<div class="container">
+
+  <!-- Breadcrumb -->
+  <nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'papers:list' %}">My Papers</a></li>
+      <li class="breadcrumb-item active">{{ paper.title|truncatechars:50 }}</li>
+    </ol>
+  </nav>
+
+  <div class="row g-4">
+
+    <!-- Left: Paper Info + Actions -->
+    <div class="col-lg-4">
+      <div class="card border-0 shadow-sm rounded-4 p-4 sticky-top" style="top:80px;">
+        <div class="text-center mb-4">
+          <i class="bi bi-file-earmark-pdf-fill text-danger" style="font-size:3rem;"></i>
+          {% if paper.processed %}
+            <span class="badge bg-success d-block mt-2">
+              <i class="bi bi-check-circle me-1"></i>Summarized
+            </span>
+          {% else %}
+            <span class="badge bg-secondary d-block mt-2">
+              <i class="bi bi-clock me-1"></i>Not summarized
+            </span>
+          {% endif %}
+        </div>
+
+        <h5 class="fw-bold mb-1">{{ paper.title }}</h5>
+        {% if paper.author %}
+          <p class="text-muted small mb-3">
+            <i class="bi bi-person me-1"></i>{{ paper.author }}
+          </p>
+        {% endif %}
+
+        <ul class="list-unstyled small text-muted mb-4">
+          <li class="mb-1"><i class="bi bi-calendar3 me-2"></i>{{ paper.uploaded_at|date:"F d, Y" }}</li>
+          <li class="mb-1"><i class="bi bi-hdd me-2"></i>{{ paper.file_size_display }}</li>
+          <li><i class="bi bi-file-earmark me-2"></i>{{ paper.filename }}</li>
+        </ul>
+
+        <div class="d-grid gap-2">
+          {% if paper.has_summary %}
+            <a href="{% url 'summarizer:detail' paper.summary.pk %}" class="btn btn-primary">
+              <i class="bi bi-eye me-2"></i>View Summary
+            </a>
+            <a href="{% url 'summarizer:export_pdf' paper.summary.pk %}" class="btn btn-outline-secondary">
+              <i class="bi bi-filetype-pdf me-2"></i>Export PDF
+            </a>
+            <a href="{% url 'summarizer:export_word' paper.summary.pk %}" class="btn btn-outline-secondary">
+              <i class="bi bi-filetype-docx me-2"></i>Export Word
+            </a>
+          {% endif %}
+
+          <a href="{% url 'papers:summarize' paper.pk %}" class="btn btn-{% if paper.has_summary %}outline-{% endif %}warning">
+            <i class="bi bi-magic me-2"></i>
+            {% if paper.has_summary %}Re-summarize{% else %}Summarize Now{% endif %}
+          </a>
+
+          <a href="{{ paper.file.url }}" class="btn btn-outline-primary" target="_blank">
+            <i class="bi bi-download me-2"></i>Download PDF
+          </a>
+
+          <a href="{% url 'papers:delete' paper.pk %}"
+             class="btn btn-outline-danger"
+             onclick="return confirm('Delete this paper and its summary?')">
+            <i class="bi bi-trash me-2"></i>Delete
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Summary Preview -->
+    <div class="col-lg-8">
+      {% if paper.has_summary %}
+        {% with s=paper.summary %}
+        <h2 class="fw-bold mb-4 fs-3">Summary</h2>
+
+        {% if s.abstract %}
+          <div class="card border-0 shadow-sm rounded-4 p-4 mb-3">
+            <h5 class="fw-semibold mb-3">
+              <i class="bi bi-file-text text-primary me-2"></i>Abstract
+            </h5>
+            <p class="mb-0 lh-lg">{{ s.abstract }}</p>
+          </div>
+        {% endif %}
+
+        {% with kps=s.get_key_points_list %}
+          {% if kps %}
+            <div class="card border-0 shadow-sm rounded-4 p-4 mb-3">
+              <h5 class="fw-semibold mb-3">
+                <i class="bi bi-bullseye text-success me-2"></i>Key Points
+              </h5>
+              <ul class="mb-0 ps-3">
+                {% for point in kps %}
+                  <li class="mb-2">{{ point }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        {% if s.methodology %}
+          <div class="card border-0 shadow-sm rounded-4 p-4 mb-3">
+            <h5 class="fw-semibold mb-3">
+              <i class="bi bi-gear text-warning me-2"></i>Methodology
+            </h5>
+            <p class="mb-0 lh-lg">{{ s.methodology }}</p>
+          </div>
+        {% endif %}
+
+        {% if s.results %}
+          <div class="card border-0 shadow-sm rounded-4 p-4 mb-3">
+            <h5 class="fw-semibold mb-3">
+              <i class="bi bi-graph-up text-info me-2"></i>Results
+            </h5>
+            <p class="mb-0 lh-lg">{{ s.results }}</p>
+          </div>
+        {% endif %}
+
+        {% if s.conclusion %}
+          <div class="card border-0 shadow-sm rounded-4 p-4 mb-3">
+            <h5 class="fw-semibold mb-3">
+              <i class="bi bi-flag text-danger me-2"></i>Conclusion
+            </h5>
+            <p class="mb-0 lh-lg">{{ s.conclusion }}</p>
+          </div>
+        {% endif %}
+
+        <p class="text-muted small text-end">
+          <i class="bi bi-clock me-1"></i>Summarized {{ s.created_at|date:"F d, Y \a\t H:i" }} UTC
+        </p>
+        {% endwith %}
+
+      {% else %}
+        <div class="card border-0 bg-body-secondary rounded-4 p-5 text-center">
+          <i class="bi bi-magic fs-1 text-muted mb-3 d-block"></i>
+          <h4 class="fw-semibold mb-2">Not yet summarized</h4>
+          <p class="text-muted mb-4">
+            Click "Summarize Now" to have Claude analyze and summarize this paper.
+          </p>
+          <a href="{% url 'papers:summarize' paper.pk %}" class="btn btn-primary btn-lg">
+            <i class="bi bi-magic me-2"></i>Summarize Now
+          </a>
+        </div>
+      {% endif %}
+    </div>
+
+  </div>
+</div>
+{% endblock %}
