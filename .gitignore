@@ -1,5 +1,6 @@
 # Diplom ishi
 diplom/
+*.docx
 
 # Environment
 .env
