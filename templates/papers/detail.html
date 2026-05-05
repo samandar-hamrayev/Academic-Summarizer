@@ -33,10 +33,22 @@
 
         <h5 class="fw-bold mb-1">{{ paper.title }}</h5>
         {% if paper.author %}
-          <p class="text-muted small mb-3">
+          <p class="text-muted small mb-2">
             <i class="bi bi-person me-1"></i>{{ paper.author }}
           </p>
         {% endif %}
+
+        {% with tags=paper.tags.all %}
+          {% if tags %}
+            <div class="d-flex flex-wrap gap-1 mb-2">
+              {% for tag in tags %}
+                <a href="{% url 'papers:by_tag' tag.slug %}"
+                 class="tag-badge"
+                 style="background-color:{{ tag.color }};">{{ tag.name }}</a>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
 
         <ul class="list-unstyled small text-muted mb-4">
           <li class="mb-1"><i class="bi bi-calendar3 me-2"></i>{{ paper.uploaded_at|date:"F d, Y" }}</li>
@@ -79,7 +91,13 @@
     <div class="col-lg-8">
       {% if paper.has_summary %}
         {% with s=paper.summary %}
-        <h2 class="fw-bold mb-4 fs-3">Summary</h2>
+        <div class="d-flex align-items-center gap-2 mb-4">
+          <h2 class="fw-bold mb-0 fs-3">Summary</h2>
+          <span class="lang-badge">
+            <i class="bi bi-translate"></i>
+            {% if s.language == 'ru' %}Russian{% elif s.language == 'uz' %}Uzbek{% else %}English{% endif %}
+          </span>
+        </div>
 
         {% if s.abstract %}
           <div class="card border-0 shadow-sm rounded-4 p-4 mb-3">
@@ -131,6 +149,20 @@
             <p class="mb-0 lh-lg">{{ s.conclusion }}</p>
           </div>
         {% endif %}
+
+        {% with cites=s.get_citations_list %}
+          {% if cites %}
+            <div class="card border-0 shadow-sm rounded-4 p-4 mb-3">
+              <h5 class="fw-semibold mb-3">
+                <i class="bi bi-journal-bookmark text-secondary me-2"></i>References
+                <span class="badge bg-secondary-subtle text-secondary fw-normal ms-1" style="font-size:.72rem;">{{ cites|length }}</span>
+              </h5>
+              {% for cite in cites %}
+                <div class="citation-item">[{{ forloop.counter }}] {{ cite }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
 
         <p class="text-muted small text-end">
           <i class="bi bi-clock me-1"></i>Summarized {{ s.created_at|date:"F d, Y \a\t H:i" }} UTC

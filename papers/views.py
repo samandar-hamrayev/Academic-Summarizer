@@ -1,3 +1,4 @@
+import json
 import logging
 
 from django.contrib import messages
@@ -5,14 +6,14 @@ from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import (
     CreateView, DeleteView, DetailView, FormView, ListView
 )
 
 from .forms import PaperSearchForm, PaperUploadForm, UserRegistrationForm
-from .models import Paper
+from .models import Paper, Tag
 from .services import extract_text_from_pdf
 
 logger = logging.getLogger(__name__)
@@ -25,7 +26,12 @@ class PaperListView(LoginRequiredMixin, ListView):
     paginate_by = 12
 
     def get_queryset(self):
-        queryset = Paper.objects.filter(uploaded_by=self.request.user).select_related('uploaded_by')
+        queryset = (
+            Paper.objects
+            .filter(uploaded_by=self.request.user)
+            .select_related('uploaded_by')
+            .prefetch_related('tags')
+        )
         query = self.request.GET.get('query', '').strip()
         if query:
             queryset = queryset.filter(
@@ -40,6 +46,34 @@ class PaperListView(LoginRequiredMixin, ListView):
         return ctx
 
 
+@login_required
+def papers_by_tag(request, tag_slug):
+    """Filter the paper list by a specific tag."""
+    tag = get_object_or_404(Tag, slug=tag_slug)
+    queryset = (
+        Paper.objects
+        .filter(tags=tag, uploaded_by=request.user)
+        .select_related('uploaded_by')
+        .prefetch_related('tags')
+    )
+    query = request.GET.get('query', '').strip()
+    if query:
+        queryset = queryset.filter(
+            Q(title__icontains=query) | Q(author__icontains=query)
+        )
+    from django.core.paginator import Paginator
+    paginator = Paginator(queryset, 12)
+    page_obj = paginator.get_page(request.GET.get('page'))
+    return render(request, 'papers/list.html', {
+        'papers': page_obj.object_list,
+        'page_obj': page_obj,
+        'is_paginated': page_obj.has_other_pages(),
+        'search_form': PaperSearchForm(request.GET),
+        'query': query,
+        'filter_tag': tag,
+    })
+
+
 class PaperUploadView(LoginRequiredMixin, CreateView):
     model = Paper
     form_class = PaperUploadForm
@@ -50,6 +84,19 @@ class PaperUploadView(LoginRequiredMixin, CreateView):
         paper.uploaded_by = self.request.user
         paper.file_size = form.cleaned_data['file'].size
         paper.save()
+
+        # Attach AI-suggested + user-confirmed tags
+        tags_raw = self.request.POST.get('tags_json', '[]')
+        try:
+            tag_names = json.loads(tags_raw)
+            if isinstance(tag_names, list):
+                for name in tag_names[:10]:
+                    name = str(name).strip()[:50]
+                    if name:
+                        tag, _ = Tag.objects.get_or_create(name=name)
+                        paper.tags.add(tag)
+        except (json.JSONDecodeError, ValueError):
+            pass  # Malformed input — skip tags silently
 
         # Extract text and trigger summarization
         try:

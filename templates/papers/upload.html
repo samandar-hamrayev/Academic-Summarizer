@@ -1,12 +1,11 @@
 {% extends 'base.html' %}
-{% load static %}
 
 {% block title %}Upload Paper — Academic Summarizer{% endblock %}
 
 {% block content %}
 <div class="container">
   <div class="row justify-content-center">
-    <div class="col-lg-7">
+    <div class="col-lg-7 col-xl-6">
 
       <div class="d-flex align-items-center mb-4">
         <a href="{% url 'papers:list' %}" class="btn btn-sm btn-outline-secondary me-3">
@@ -20,25 +19,41 @@
           {% csrf_token %}
 
           <!-- Drag-and-drop zone -->
-          <div id="drop-zone" class="drop-zone mb-4 rounded-3 p-5 text-center">
-            <input type="file" name="file" id="pdf-file-input" accept=".pdf" class="d-none">
-            <i class="bi bi-cloud-upload fs-1 text-primary mb-3 d-block"></i>
-            <h5 class="fw-semibold mb-2">Drag & drop your PDF here</h5>
-            <p class="text-muted small mb-3">or click to browse — max 50 MB</p>
-            <button type="button" class="btn btn-outline-primary" id="browse-btn">
-              <i class="bi bi-folder2-open me-2"></i>Browse Files
-            </button>
-            <div id="file-info" class="mt-3 d-none">
-              <i class="bi bi-file-earmark-pdf-fill text-danger me-2"></i>
-              <span id="file-name" class="fw-medium"></span>
-              <span id="file-size" class="text-muted small ms-2"></span>
+          <div id="drop-zone" class="drop-zone mb-4 rounded-3">
+
+            <!-- Default / idle state -->
+            <div id="drop-default">
+              {% load static %}
+              <i class="bi bi-cloud-upload drop-icon mb-3 d-block"></i>
+              <h5 class="fw-semibold mb-2">Drag &amp; drop your PDF here</h5>
+              <p class="text-muted small mb-3">or click to browse — max 50 MB</p>
+              <span class="badge bg-secondary-subtle text-secondary fw-normal px-3 py-2">
+                <i class="bi bi-file-earmark-pdf me-1"></i>PDF only
+              </span>
             </div>
-            {% if form.file.errors %}
-              {% for error in form.file.errors %}
-                <div class="text-danger small mt-2">{{ error }}</div>
-              {% endfor %}
-            {% endif %}
+
+            <!-- File preview (shown after selection) -->
+            <div id="file-preview" class="file-preview mt-3">
+              <i class="bi bi-file-earmark-pdf-fill text-danger" style="font-size:2rem;flex-shrink:0;"></i>
+              <div class="flex-grow-1 text-start overflow-hidden">
+                <div id="file-preview-name" class="fw-semibold text-truncate"></div>
+                <small id="file-preview-size" class="text-muted"></small>
+              </div>
+              <button id="clear-file" type="button" class="btn btn-link p-0 text-danger"
+                      aria-label="Remove file">
+                <i class="bi bi-x-circle-fill fs-5"></i>
+              </button>
+            </div>
+
+            <!-- The actual file input (hidden, managed by JS) -->
+            <input type="file" name="file" id="pdf-file-input" accept=".pdf" class="d-none">
           </div>
+
+          {% if form.file.errors %}
+            <div class="alert alert-danger py-2 mb-3">
+              {% for e in form.file.errors %}<div>{{ e }}</div>{% endfor %}
+            </div>
+          {% endif %}
 
           <!-- Title -->
           <div class="mb-3">
@@ -46,8 +61,8 @@
               Paper Title <span class="text-danger">*</span>
             </label>
             {{ form.title }}
-            {% for error in form.title.errors %}
-              <div class="text-danger small mt-1">{{ error }}</div>
+            {% for e in form.title.errors %}
+              <div class="text-danger small mt-1">{{ e }}</div>
             {% endfor %}
           </div>
 
@@ -60,39 +75,94 @@
             <div class="form-text">Optional. Separate multiple authors with commas.</div>
           </div>
 
-          <!-- Progress -->
-          <div id="upload-progress" class="d-none mb-3">
-            <div class="d-flex align-items-center mb-2">
-              <div class="spinner-border spinner-border-sm text-primary me-2"></div>
-              <span class="text-muted small">Uploading and summarizing — this may take 30–60 seconds…</span>
+          <!-- AI Tag Section (revealed after file selection) -->
+          <div id="tag-section" class="mb-4" style="display:none;">
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <label class="form-label fw-medium mb-0">Tags</label>
+              <span id="tag-status" class="badge bg-info-subtle text-info border border-info-subtle">
+                <span id="tag-status-spinner"
+                      class="spinner-border spinner-border-sm me-1"
+                      role="status" aria-hidden="true"></span>
+                <span id="tag-status-text">AI analyzing…</span>
+              </span>
             </div>
-            <div class="progress" style="height: 6px;">
-              <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary w-100"></div>
+
+            <!-- AI suggestions -->
+            <div id="suggested-tags-wrap" class="mb-3" style="display:none;">
+              <p class="small text-muted mb-2">
+                <i class="bi bi-stars me-1 text-warning"></i>AI suggestions — click to add:
+              </p>
+              <div id="suggested-tags-list" class="d-flex flex-wrap gap-2"></div>
+            </div>
+
+            <!-- Selected tags -->
+            <div class="mb-3">
+              <p class="small text-muted mb-2">
+                <i class="bi bi-tags me-1"></i>Selected tags:
+              </p>
+              <div id="selected-tags-list" class="d-flex flex-wrap gap-2">
+                <span class="text-muted small fst-italic">None yet</span>
+              </div>
+            </div>
+
+            <!-- Custom tag input -->
+            <div class="input-group input-group-sm">
+              <input type="text" id="custom-tag-input" class="form-control"
+                     placeholder="Type a custom tag and press Enter…" maxlength="50">
+              <button type="button" id="add-custom-tag-btn" class="btn btn-outline-secondary">
+                <i class="bi bi-plus-lg"></i> Add
+              </button>
+            </div>
+
+            <!-- Hidden field carries final tags to the server -->
+            <input type="hidden" name="tags_json" id="tags-json-input" value="[]">
+          </div>
+
+          <!-- Progress steps (hidden until submit) -->
+          <div id="progress-steps" class="progress-steps border rounded-3 p-3 mb-4">
+            <p class="fw-medium small text-muted mb-2">Processing steps</p>
+            <div class="step-item" data-step="1">
+              <div class="step-dot">1</div><span>Uploading file…</span>
+            </div>
+            <div class="step-item" data-step="2">
+              <div class="step-dot">2</div><span>Extracting text from PDF…</span>
+            </div>
+            <div class="step-item" data-step="3">
+              <div class="step-dot">3</div><span>Detecting language &amp; context…</span>
+            </div>
+            <div class="step-item" data-step="4">
+              <div class="step-dot">4</div><span>Generating AI summary &amp; citations…</span>
             </div>
           </div>
 
           <div class="d-grid">
             <button type="submit" class="btn btn-primary btn-lg" id="submit-btn">
-              <i class="bi bi-magic me-2"></i>Upload & Summarize
+              <i class="bi bi-magic me-2"></i>Upload &amp; Summarize
             </button>
           </div>
+
+          {% if form.non_field_errors %}
+            <div class="alert alert-danger mt-3">
+              {% for e in form.non_field_errors %}{{ e }}{% endfor %}
+            </div>
+          {% endif %}
         </form>
       </div>
 
-      <!-- Info card -->
+      <!-- Info bar -->
       <div class="card border-0 bg-body-secondary rounded-4 p-3 mt-3">
         <div class="row g-3 text-center">
           <div class="col-4">
             <i class="bi bi-lightning-charge text-primary fs-5 d-block mb-1"></i>
-            <small class="text-muted">~30–60s</small>
+            <small class="text-muted">~10–30 s</small>
           </div>
           <div class="col-4">
-            <i class="bi bi-shield-check text-success fs-5 d-block mb-1"></i>
-            <small class="text-muted">Secure upload</small>
+            <i class="bi bi-translate text-success fs-5 d-block mb-1"></i>
+            <small class="text-muted">EN / RU / UZ</small>
           </div>
           <div class="col-4">
             <i class="bi bi-download text-info fs-5 d-block mb-1"></i>
-            <small class="text-muted">PDF &amp; Word export</small>
+            <small class="text-muted">PDF &amp; Word</small>
           </div>
         </div>
       </div>
@@ -105,56 +175,148 @@
 {% block extra_js %}
 <script>
 (function () {
-  const dropZone   = document.getElementById('drop-zone');
-  const fileInput  = document.getElementById('pdf-file-input');
-  const browseBtn  = document.getElementById('browse-btn');
-  const fileInfo   = document.getElementById('file-info');
-  const fileName   = document.getElementById('file-name');
-  const fileSizeEl = document.getElementById('file-size');
-  const form       = document.getElementById('upload-form');
-  const submitBtn  = document.getElementById('submit-btn');
-  const progress   = document.getElementById('upload-progress');
+  'use strict';
 
-  browseBtn.addEventListener('click', () => fileInput.click());
+  // ── DOM refs ──────────────────────────────────────────────────────────────
+  const fileInput        = document.getElementById('pdf-file-input');
+  const tagSection       = document.getElementById('tag-section');
+  const tagStatus        = document.getElementById('tag-status');
+  const tagStatusSpinner = document.getElementById('tag-status-spinner');
+  const tagStatusText    = document.getElementById('tag-status-text');
+  const suggestedWrap    = document.getElementById('suggested-tags-wrap');
+  const suggestedList    = document.getElementById('suggested-tags-list');
+  const selectedList     = document.getElementById('selected-tags-list');
+  const customInput      = document.getElementById('custom-tag-input');
+  const addCustomBtn     = document.getElementById('add-custom-tag-btn');
+  const tagsJsonInput    = document.getElementById('tags-json-input');
 
-  fileInput.addEventListener('change', () => showFileInfo(fileInput.files[0]));
+  const PREVIEW_URL = '{% url "summarizer:preview_tags" %}';
+  const CSRF_TOKEN  = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
-  ['dragover', 'dragenter'].forEach(evt =>
-    dropZone.addEventListener(evt, e => { e.preventDefault(); dropZone.classList.add('drag-over'); })
-  );
-  ['dragleave', 'dragend', 'drop'].forEach(evt =>
-    dropZone.addEventListener(evt, () => dropZone.classList.remove('drag-over'))
-  );
+  // ── State ─────────────────────────────────────────────────────────────────
+  const selectedTags = new Set();
 
-  dropZone.addEventListener('drop', e => {
-    e.preventDefault();
-    const file = e.dataTransfer.files[0];
-    if (file) {
-      const dt = new DataTransfer();
-      dt.items.add(file);
-      fileInput.files = dt.files;
-      showFileInfo(file);
+  // ── Status badge helpers ──────────────────────────────────────────────────
+  function setStatus(text, variant, showSpinner) {
+    tagStatusText.textContent = text;
+    tagStatus.className = `badge bg-${variant}-subtle text-${variant} border border-${variant}-subtle`;
+    tagStatusSpinner.style.display = showSpinner ? 'inline-block' : 'none';
+  }
+
+  // ── Chip factory ──────────────────────────────────────────────────────────
+  function makeSuggestedChip(name) {
+    const chip = document.createElement('button');
+    chip.type = 'button';
+    chip.className = 'tag-chip tag-chip--suggested';
+    chip.innerHTML = `<i class="bi bi-plus-circle me-1"></i>${escHtml(name)}`;
+    chip.title = 'Click to add this tag';
+    chip.addEventListener('click', () => addTag(name));
+    return chip;
+  }
+
+  function makeSelectedChip(name) {
+    const chip = document.createElement('span');
+    chip.className = 'tag-chip tag-chip--selected';
+    chip.innerHTML =
+      `${escHtml(name)}<button type="button" class="tag-chip__remove" aria-label="Remove ${escHtml(name)}">` +
+      `<i class="bi bi-x-lg"></i></button>`;
+    chip.querySelector('.tag-chip__remove').addEventListener('click', () => removeTag(name));
+    return chip;
+  }
+
+  // ── Tag operations ────────────────────────────────────────────────────────
+  function addTag(name) {
+    name = name.trim().slice(0, 50);
+    if (!name || selectedTags.has(name)) return;
+    selectedTags.add(name);
+    renderSelectedTags();
+    // Dim the matching suggestion chip
+    suggestedList.querySelectorAll('.tag-chip--suggested').forEach(chip => {
+      if (chip.dataset.name === name) { chip.classList.add('tag-chip--added'); chip.disabled = true; }
+    });
+  }
+
+  function removeTag(name) {
+    selectedTags.delete(name);
+    renderSelectedTags();
+    // Re-enable the matching suggestion chip
+    suggestedList.querySelectorAll('.tag-chip--suggested').forEach(chip => {
+      if (chip.dataset.name === name) { chip.classList.remove('tag-chip--added'); chip.disabled = false; }
+    });
+  }
+
+  function renderSelectedTags() {
+    selectedList.innerHTML = '';
+    if (selectedTags.size === 0) {
+      selectedList.innerHTML = '<span class="text-muted small fst-italic">None yet</span>';
+    } else {
+      selectedTags.forEach(name => selectedList.appendChild(makeSelectedChip(name)));
     }
-  });
-
-  function showFileInfo(file) {
-    if (!file) return;
-    fileName.textContent = file.name;
-    fileSizeEl.textContent = formatBytes(file.size);
-    fileInfo.classList.remove('d-none');
+    tagsJsonInput.value = JSON.stringify([...selectedTags]);
   }
 
-  function formatBytes(bytes) {
-    if (bytes < 1024) return bytes + ' B';
-    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+  // ── Fetch tag suggestions ─────────────────────────────────────────────────
+  async function fetchTags(file) {
+    tagSection.style.display = 'block';
+    suggestedWrap.style.display = 'none';
+    setStatus('AI analyzing…', 'info', true);
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    let data;
+    try {
+      const res = await fetch(PREVIEW_URL, {
+        method: 'POST',
+        headers: { 'X-CSRFToken': CSRF_TOKEN },
+        body: formData,
+      });
+      data = await res.json();
+    } catch {
+      setStatus('Could not reach server', 'danger', false);
+      return;
+    }
+
+    const tags = data.suggested_tags || [];
+
+    if (tags.length === 0) {
+      setStatus(data.warning || 'No tags found', 'warning', false);
+      return;
+    }
+
+    suggestedList.innerHTML = '';
+    tags.forEach(t => {
+      const chip = makeSuggestedChip(t);
+      chip.dataset.name = t;
+      suggestedList.appendChild(chip);
+    });
+    suggestedWrap.style.display = 'block';
+    setStatus(`${tags.length} suggestion${tags.length > 1 ? 's' : ''} ready`, 'success', false);
   }
 
-  form.addEventListener('submit', () => {
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing…';
-    progress.classList.remove('d-none');
+  // ── Wire file input ───────────────────────────────────────────────────────
+  // main.js already handles the file preview on this input;
+  // we attach a second listener for tag extraction.
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files.length) fetchTags(fileInput.files[0]);
   });
+
+  // ── Custom tag input ──────────────────────────────────────────────────────
+  function handleCustomAdd() {
+    const val = customInput.value.trim();
+    if (val) { addTag(val); customInput.value = ''; customInput.focus(); }
+  }
+
+  addCustomBtn.addEventListener('click', handleCustomAdd);
+  customInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); handleCustomAdd(); }
+  });
+
+  // ── Utility ───────────────────────────────────────────────────────────────
+  function escHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+              .replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+  }
 })();
 </script>
 {% endblock %}
