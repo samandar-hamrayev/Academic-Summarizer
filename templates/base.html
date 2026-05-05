@@ -16,6 +16,15 @@
   <link rel="stylesheet" href="{% static 'css/main.css' %}">
 
   {% block extra_css %}{% endblock %}
+
+  <!-- Apply saved theme before first paint to avoid flash -->
+  <script>
+    (function(){
+      var t = localStorage.getItem('as-theme') ||
+        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
 </head>
 <body>
 
@@ -25,40 +34,55 @@
     <a class="navbar-brand fw-bold" href="{% url 'home' %}">
       <i class="bi bi-journal-text me-2"></i>Academic Summarizer
     </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent"
+            aria-controls="navContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         {% if user.is_authenticated %}
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'papers:list' %}">
+            <a class="nav-link {% if request.resolver_match.url_name == 'list' %}active{% endif %}"
+               href="{% url 'papers:list' %}">
               <i class="bi bi-files me-1"></i>My Papers
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'papers:upload' %}">
+            <a class="nav-link {% if request.resolver_match.url_name == 'upload' %}active{% endif %}"
+               href="{% url 'papers:upload' %}">
               <i class="bi bi-cloud-upload me-1"></i>Upload
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'summarizer:history' %}">
+            <a class="nav-link {% if request.resolver_match.url_name == 'history' %}active{% endif %}"
+               href="{% url 'summarizer:history' %}">
               <i class="bi bi-clock-history me-1"></i>History
             </a>
           </li>
         {% endif %}
       </ul>
-      <ul class="navbar-nav ms-auto">
+      <ul class="navbar-nav ms-auto align-items-center">
+        <!-- Dark / Light mode toggle -->
+        <li class="nav-item me-1">
+          <button class="btn btn-link theme-toggle nav-link" id="theme-toggle"
+                  aria-label="Toggle dark/light mode" title="Toggle theme">
+            <i id="theme-icon" class="bi bi-moon-fill"></i>
+          </button>
+        </li>
+
         {% if user.is_authenticated %}
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="userMenu" data-bs-toggle="dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="userMenu" data-bs-toggle="dropdown"
+               aria-expanded="false">
               <i class="bi bi-person-circle me-1"></i>{{ user.username }}
             </a>
-            <ul class="dropdown-menu dropdown-menu-end">
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
               {% if user.is_staff %}
-                <li><a class="dropdown-item" href="/admin/" target="_blank">
-                  <i class="bi bi-gear me-2"></i>Admin
-                </a></li>
+                <li>
+                  <a class="dropdown-item" href="/admin/" target="_blank">
+                    <i class="bi bi-gear me-2"></i>Admin
+                  </a>
+                </li>
                 <li><hr class="dropdown-divider"></li>
               {% endif %}
               <li>
@@ -76,9 +100,8 @@
             <a class="nav-link" href="{% url 'login' %}">Sign In</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link btn btn-outline-light btn-sm px-3 ms-2" href="{% url 'register' %}">
-              Sign Up
-            </a>
+            <a class="nav-link btn btn-outline-light btn-sm px-3 ms-2"
+               href="{% url 'register' %}">Sign Up</a>
           </li>
         {% endif %}
       </ul>
@@ -93,7 +116,7 @@
     <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show" role="alert">
       <i class="bi bi-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' or message.tags == 'danger' %}exclamation-circle{% elif message.tags == 'warning' %}exclamation-triangle{% else %}info-circle{% endif %} me-2"></i>
       {{ message }}
-      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
   {% endfor %}
 </div>
@@ -110,10 +133,13 @@
     <p class="mb-0 text-muted small">
       <i class="bi bi-journal-text me-1"></i>
       Academic Summarizer &mdash; Powered by
-      <a href="https://anthropic.com" target="_blank" class="text-decoration-none">Claude AI</a>
+      <a href="https://groq.com" target="_blank" rel="noopener" class="text-decoration-none">Groq AI</a>
     </p>
   </div>
 </footer>
+
+<!-- Toast container (top-right, fixed) -->
+<div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="false"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 {% load static %}

@@ -9,15 +9,28 @@
   <nav aria-label="breadcrumb" class="mb-4">
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><a href="{% url 'papers:list' %}">My Papers</a></li>
-      <li class="breadcrumb-item"><a href="{% url 'papers:detail' summary.paper.pk %}">{{ summary.paper.title|truncatechars:40 }}</a></li>
+      <li class="breadcrumb-item">
+        <a href="{% url 'papers:detail' summary.paper.pk %}">
+          {{ summary.paper.title|truncatechars:35 }}
+        </a>
+      </li>
       <li class="breadcrumb-item active">Summary</li>
     </ol>
   </nav>
 
   <!-- Title + Actions -->
-  <div class="d-flex flex-wrap align-items-start justify-content-between gap-3 mb-5">
+  <div class="d-flex flex-wrap align-items-start justify-content-between gap-3 mb-4">
     <div>
-      <h1 class="fw-bold mb-1 fs-2">{{ summary.paper.title }}</h1>
+      <div class="d-flex align-items-center flex-wrap gap-2 mb-1">
+        <h1 class="fw-bold mb-0 fs-2">{{ summary.paper.title }}</h1>
+        <!-- Language badge -->
+        <span class="lang-badge">
+          <i class="bi bi-translate"></i>
+          {% if summary.language == 'ru' %}Russian
+          {% elif summary.language == 'uz' %}Uzbek
+          {% else %}English{% endif %}
+        </span>
+      </div>
       {% if summary.paper.author %}
         <p class="text-muted mb-0">
           <i class="bi bi-person me-1"></i>{{ summary.paper.author }}
@@ -25,15 +38,99 @@
       {% endif %}
     </div>
     <div class="d-flex gap-2 flex-wrap">
-      <a href="{% url 'summarizer:export_pdf' summary.pk %}" class="btn btn-outline-danger btn-sm">
-        <i class="bi bi-filetype-pdf me-1"></i>Export PDF
+      <a href="{% url 'summarizer:export_pdf' summary.pk %}"
+         class="btn btn-outline-danger btn-sm">
+        <i class="bi bi-filetype-pdf me-1"></i>PDF
       </a>
-      <a href="{% url 'summarizer:export_word' summary.pk %}" class="btn btn-outline-primary btn-sm">
-        <i class="bi bi-filetype-docx me-1"></i>Export Word
+      <a href="{% url 'summarizer:export_word' summary.pk %}"
+         class="btn btn-outline-primary btn-sm">
+        <i class="bi bi-filetype-docx me-1"></i>Word
       </a>
-      <a href="{% url 'papers:summarize' summary.paper.pk %}" class="btn btn-outline-warning btn-sm">
-        <i class="bi bi-arrow-clockwise me-1"></i>Re-summarize
+      <a href="{% url 'papers:summarize' summary.paper.pk %}"
+         class="btn btn-outline-warning btn-sm">
+        <i class="bi bi-arrow-clockwise me-1"></i>Re-run
       </a>
+      <!-- Share toggle -->
+      <button class="btn btn-outline-secondary btn-sm" type="button"
+              data-bs-toggle="collapse" data-bs-target="#share-panel" aria-expanded="false">
+        <i class="bi bi-share me-1"></i>Share
+      </button>
+    </div>
+  </div>
+
+  <!-- Share Panel -->
+  <div class="collapse mb-4" id="share-panel">
+    <div class="card border-0 shadow-sm rounded-4 p-4">
+      <h6 class="fw-semibold mb-3"><i class="bi bi-link-45deg me-1"></i>Share this summary</h6>
+
+      <form method="post" action="{% url 'summarizer:create_share' summary.pk %}"
+            class="row g-2 align-items-end mb-3">
+        {% csrf_token %}
+        <div class="col-auto">
+          <label class="form-label small fw-medium">Expires after</label>
+          <select name="expiry_days" class="form-select form-select-sm">
+            <option value="1">1 day</option>
+            <option value="7" selected>7 days</option>
+            <option value="30">30 days</option>
+            <option value="0">Never</option>
+          </select>
+        </div>
+        <div class="col-auto">
+          <button type="submit" class="btn btn-primary btn-sm">
+            <i class="bi bi-plus me-1"></i>Create Link
+          </button>
+        </div>
+      </form>
+
+      {% if share_links %}
+        <div class="table-responsive">
+          <table class="table table-sm align-middle mb-0">
+            <thead>
+              <tr>
+                <th class="fw-medium text-muted" style="font-size:.78rem;">Link</th>
+                <th class="fw-medium text-muted" style="font-size:.78rem;">Expires</th>
+                <th class="fw-medium text-muted" style="font-size:.78rem;">Visits</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for lnk in share_links %}
+              <tr>
+                <td>
+                  <div class="input-group input-group-sm" style="max-width:320px;">
+                    <input type="text" id="share-link-input"
+                           class="form-control share-link-input"
+                           value="{{ request.scheme }}://{{ request.get_host }}{% url 'summarizer:shared' lnk.token %}"
+                           readonly>
+                    <button class="btn btn-outline-secondary copy-share-link" type="button">
+                      <i class="bi bi-clipboard me-1"></i>Copy
+                    </button>
+                  </div>
+                </td>
+                <td class="text-muted small">
+                  {% if lnk.expires_at %}{{ lnk.expires_at|date:"M d, Y" }}{% else %}Never{% endif %}
+                </td>
+                <td class="text-muted small">{{ lnk.access_count }}</td>
+                <td class="text-end">
+                  <form method="post"
+                        action="{% url 'summarizer:revoke_share' lnk.pk %}"
+                        class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-link btn-sm text-danger p-0"
+                            title="Revoke"
+                            onclick="return confirm('Revoke this link?')">
+                      <i class="bi bi-x-circle"></i>
+                    </button>
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <p class="text-muted small mb-0">No active share links yet.</p>
+      {% endif %}
     </div>
   </div>
 
@@ -109,11 +206,29 @@
     </div>
     {% endif %}
 
+    <!-- Citations -->
+    {% if citations %}
+    <div class="col-12">
+      <div class="card border-0 shadow-sm rounded-4 p-4">
+        <h4 class="fw-semibold mb-3">
+          <span class="section-badge bg-secondary-subtle text-secondary me-2">
+            <i class="bi bi-journal-bookmark"></i>
+          </span>References
+          <span class="badge bg-secondary-subtle text-secondary fw-normal ms-2"
+                style="font-size:.75rem;">{{ citations|length }}</span>
+        </h4>
+        {% for cite in citations %}
+          <div class="citation-item">[{{ forloop.counter }}] {{ cite }}</div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
   </div>
 
   <div class="text-end mt-4">
     <small class="text-muted">
-      <i class="bi bi-robot me-1"></i>Generated by Claude AI &nbsp;|&nbsp;
+      <i class="bi bi-robot me-1"></i>Generated by Groq AI &nbsp;|&nbsp;
       <i class="bi bi-clock me-1"></i>{{ summary.created_at|date:"F d, Y \a\t H:i" }} UTC
     </small>
   </div>
