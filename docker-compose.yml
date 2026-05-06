@@ -29,43 +29,22 @@ services:
     restart: unless-stopped
     env_file: .env
     environment:
-      # Override DATABASE_URL to point at the 'db' service
       DATABASE_URL: postgres://${POSTGRES_USER:-django}:${POSTGRES_PASSWORD:-django_secret}@db:5432/${POSTGRES_DB:-academic_summarizer}
     volumes:
-      - media_data:/app/media
-      - static_data:/app/staticfiles
+      - ./media:/app/media
+      - ./staticfiles:/app/staticfiles
+    ports:
+      - "127.0.0.1:8000:8000"
     depends_on:
       db:
         condition: service_healthy
     networks:
       - backend
-      - frontend
-    expose:
-      - "8000"
-
-  # ── Nginx (reverse proxy + static/media) ────────────────────────────────────
-  nginx:
-    image: nginx:1.27-alpine
-    container_name: academic_nginx
-    restart: unless-stopped
-    ports:
-      - "${NGINX_HTTP_PORT:-80}:80"
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
-      - static_data:/app/staticfiles:ro
-      - media_data:/app/media:ro
-    depends_on:
-      - web
-    networks:
-      - frontend
 
 # ── Volumes ──────────────────────────────────────────────────────────────────
 volumes:
   postgres_data:
-  media_data:
-  static_data:
 
 # ── Networks ─────────────────────────────────────────────────────────────────
 networks:
   backend:
-  frontend:

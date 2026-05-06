@@ -150,7 +150,7 @@ def summarize_paper_text(text: str, title: str = '', language: str | None = None
             ],
             temperature=0.3,
             max_tokens=2500,
-            response_format={"type": "json_object"},
+            response_format={'type': 'json_object'},
         )
         response_text = response.choices[0].message.content.strip()
         logger.debug('Groq response (first 500 chars): %s', response_text[:500])
