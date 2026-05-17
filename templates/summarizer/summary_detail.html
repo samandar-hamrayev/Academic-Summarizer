@@ -46,10 +46,12 @@
          class="btn btn-outline-primary btn-sm">
         <i class="bi bi-filetype-docx me-1"></i>Word
       </a>
-      <a href="{% url 'papers:summarize' summary.paper.pk %}"
-         class="btn btn-outline-warning btn-sm">
-        <i class="bi bi-arrow-clockwise me-1"></i>Re-run
-      </a>
+      <form method="post" action="{% url 'papers:summarize' summary.paper.pk %}" class="d-inline m-0">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-outline-warning btn-sm">
+          <i class="bi bi-arrow-clockwise me-1"></i>Re-run
+        </button>
+      </form>
       <!-- Share toggle -->
       <button class="btn btn-outline-secondary btn-sm" type="button"
               data-bs-toggle="collapse" data-bs-target="#share-panel" aria-expanded="false">

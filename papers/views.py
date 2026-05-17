@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
+from django.views.decorators.http import require_POST
 from django.views.generic import (
     CreateView, DeleteView, DetailView, FormView, ListView
 )
@@ -146,8 +147,10 @@ class PaperDeleteView(LoginRequiredMixin, DeleteView):
 
 
 @login_required
+@require_POST
 def trigger_summarize(request, pk):
-    """Re-run summarization for an existing paper."""
+    """Re-run summarization for an existing paper. POST only — prevents
+    link prefetchers and back-button reloads from triggering Groq calls."""
     paper = get_object_or_404(Paper, pk=pk, uploaded_by=request.user)
     try:
         text = extract_text_from_pdf(paper.file)

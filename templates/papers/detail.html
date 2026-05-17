@@ -69,10 +69,13 @@
             </a>
           {% endif %}
 
-          <a href="{% url 'papers:summarize' paper.pk %}" class="btn btn-{% if paper.has_summary %}outline-{% endif %}warning">
-            <i class="bi bi-magic me-2"></i>
-            {% if paper.has_summary %}Re-summarize{% else %}Summarize Now{% endif %}
-          </a>
+          <form method="post" action="{% url 'papers:summarize' paper.pk %}" class="d-grid m-0">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-{% if paper.has_summary %}outline-{% endif %}warning">
+              <i class="bi bi-magic me-2"></i>
+              {% if paper.has_summary %}Re-summarize{% else %}Summarize Now{% endif %}
+            </button>
+          </form>
 
           <a href="{{ paper.file.url }}" class="btn btn-outline-primary" target="_blank">
             <i class="bi bi-download me-2"></i>Download PDF
@@ -176,9 +179,12 @@
           <p class="text-muted mb-4">
             Click "Summarize Now" to have Groq AI analyze and summarize this paper.
           </p>
-          <a href="{% url 'papers:summarize' paper.pk %}" class="btn btn-primary btn-lg">
-            <i class="bi bi-magic me-2"></i>Summarize Now
-          </a>
+          <form method="post" action="{% url 'papers:summarize' paper.pk %}" class="d-inline">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary btn-lg">
+              <i class="bi bi-magic me-2"></i>Summarize Now
+            </button>
+          </form>
         </div>
       {% endif %}
     </div>
