@@ -157,25 +157,60 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ---- Copy share link ---- */
   document.querySelectorAll('.copy-share-link').forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', async () => {
       const input = document.getElementById('share-link-input');
       if (!input) return;
-      navigator.clipboard.writeText(input.value).then(() => {
+      const ok = await copyToClipboard(input.value);
+      if (ok) {
         const orig = btn.innerHTML;
         btn.innerHTML = '<i class="bi bi-check2 me-1"></i>Copied!';
         btn.classList.replace('btn-outline-secondary', 'btn-success');
+        showToast('Share link copied to clipboard.', 'success');
         setTimeout(() => {
           btn.innerHTML = orig;
           btn.classList.replace('btn-success', 'btn-outline-secondary');
         }, 2200);
-      }).catch(() => {
-        input.select();
-        document.execCommand('copy');
-      });
+      } else {
+        showToast('Could not copy — please copy manually.', 'danger');
+      }
     });
   });
 
 });
+
+/* ---- Clipboard helper (callable from anywhere) ----
+   Tries the modern async Clipboard API first; falls back to a hidden
+   textarea + execCommand on insecure contexts (http://) or older browsers.
+   Returns a Promise<boolean> — true on success, false on failure. */
+async function copyToClipboard(text) {
+  // Modern path — requires a secure context (https:// or localhost)
+  if (window.isSecureContext && navigator.clipboard && navigator.clipboard.writeText) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch (e) { /* fall through to legacy */ }
+  }
+  // Legacy path — works on http:// inside a user gesture
+  try {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed';
+    ta.style.top = '0';
+    ta.style.left = '0';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    ta.setSelectionRange(0, text.length);
+    const ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    return ok;
+  } catch (e) {
+    return false;
+  }
+}
+window.copyToClipboard = copyToClipboard;
 
 /* ---- Toast helper (callable from anywhere) ---- */
 function showToast(message, type = 'info', title = '') {

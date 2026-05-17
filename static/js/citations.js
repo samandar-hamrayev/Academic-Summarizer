@@ -79,8 +79,8 @@
       copyBtn.addEventListener('click', async () => {
         if (!citations) return;
         const text = citations[active] || '';
-        try {
-          await navigator.clipboard.writeText(text);
+        const ok = await window.copyToClipboard(text);
+        if (ok) {
           const orig = copyBtn.innerHTML;
           copyBtn.innerHTML = '<i class="bi bi-check2"></i> Copied';
           copyBtn.classList.add('is-copied');
@@ -91,10 +91,8 @@
             copyBtn.innerHTML = orig;
             copyBtn.classList.remove('is-copied');
           }, 1800);
-        } catch (e) {
-          if (typeof window.showToast === 'function') {
-            window.showToast('Could not copy: ' + e.message, 'danger');
-          }
+        } else if (typeof window.showToast === 'function') {
+          window.showToast('Could not copy — please copy manually.', 'danger');
         }
       });
     }

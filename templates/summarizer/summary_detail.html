@@ -307,16 +307,24 @@
     });
   })();
 
-  // Per-row copy-link
+  // Per-row copy-link — uses shared window.copyToClipboard helper from main.js
   document.querySelectorAll('.copy-share-link').forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', async () => {
       const input = btn.parentElement.querySelector('.share-link-input');
       if (!input) return;
-      navigator.clipboard.writeText(input.value).then(() => {
+      const ok = window.copyToClipboard
+        ? await window.copyToClipboard(input.value)
+        : false;
+      if (ok) {
         const orig = btn.innerHTML;
         btn.innerHTML = '<i class="bi bi-check2"></i>';
+        if (typeof window.showToast === 'function') {
+          window.showToast('Share link copied to clipboard.', 'success');
+        }
         setTimeout(() => { btn.innerHTML = orig; }, 1800);
-      });
+      } else if (typeof window.showToast === 'function') {
+        window.showToast('Could not copy — please copy manually.', 'danger');
+      }
     });
   });
 </script>
