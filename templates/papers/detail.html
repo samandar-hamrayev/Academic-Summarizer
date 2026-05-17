@@ -144,6 +144,8 @@
           {% endif %}
         {% endwith %}
 
+        {% include 'papers/_citation_panel.html' with paper=paper %}
+
         {% include 'summarizer/_chat_panel.html' with paper=paper %}
 
         <div class="h-row" style="justify-content: space-between; border-top: 1px solid var(--rule-strong); padding-top: 32px; margin-top: 56px;">

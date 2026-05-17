@@ -1,0 +1,43 @@
+{% comment %}
+  Reusable citation export panel for a Paper.
+  Usage: {% include 'papers/_citation_panel.html' with paper=paper %}
+  Loads APA / MLA / IEEE / BibTeX via GET /papers/<pk>/citations/.
+{% endcomment %}
+<section class="cite-panel"
+         data-cite-panel
+         data-paper-id="{{ paper.pk }}"
+         data-citations-url="{% url 'papers:citations' paper.pk %}"
+         data-bib-url="{% url 'papers:citations_bib' paper.pk %}">
+
+  <div class="cite-head">
+    <div>
+      <h3>Cite this paper</h3>
+      <div class="cite-sub">apa · mla · ieee · bibtex · auto-generated</div>
+    </div>
+  </div>
+
+  <div class="cite-tabs" role="tablist">
+    <button type="button" class="chip is-on" role="tab" data-cite-tab="apa"    aria-selected="true">APA</button>
+    <button type="button" class="chip"       role="tab" data-cite-tab="mla"    aria-selected="false">MLA</button>
+    <button type="button" class="chip"       role="tab" data-cite-tab="ieee"   aria-selected="false">IEEE</button>
+    <button type="button" class="chip"       role="tab" data-cite-tab="bibtex" aria-selected="false">BibTeX</button>
+  </div>
+
+  <div class="cite-body">
+    <pre class="cite-code" data-cite-code aria-live="polite"><span class="cite-loading">Loading citation…</span></pre>
+
+    <div class="cite-actions">
+      <button type="button" class="btn btn-secondary btn-sm" data-cite-copy>
+        <i class="bi bi-clipboard"></i> Copy
+      </button>
+      <a class="btn btn-ghost btn-sm" href="{% url 'papers:citations_bib' paper.pk %}"
+         data-cite-download download>
+        <i class="bi bi-download"></i> Download .bib
+      </a>
+    </div>
+  </div>
+
+  <div class="cite-hint">
+    Citations are generated from the paper's metadata. Verify before submission.
+  </div>
+</section>

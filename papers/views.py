@@ -6,8 +6,9 @@ from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.views.decorators.http import require_POST
 from django.views.generic import (
     CreateView, DeleteView, DetailView, FormView, ListView
@@ -15,7 +16,7 @@ from django.views.generic import (
 
 from .forms import PaperSearchForm, PaperUploadForm, UserRegistrationForm
 from .models import Paper, Tag
-from .services import extract_text_from_pdf
+from .services import extract_text_from_pdf, generate_citations
 
 logger = logging.getLogger(__name__)
 
@@ -166,6 +167,26 @@ def trigger_summarize(request, pk):
         messages.error(request, f'Summarization failed: {exc}')
 
     return redirect('papers:detail', pk=pk)
+
+
+@login_required
+def paper_citations(request, pk):
+    """Return APA / MLA / IEEE / BibTeX citations for this paper as JSON."""
+    paper = get_object_or_404(Paper, pk=pk, uploaded_by=request.user)
+    base_url = request.build_absolute_uri(reverse('papers:detail', args=[paper.pk]))
+    citations = generate_citations(paper, base_url)
+    return JsonResponse(citations)
+
+
+@login_required
+def paper_citation_bib(request, pk):
+    """Download the BibTeX citation as a .bib file."""
+    paper = get_object_or_404(Paper, pk=pk, uploaded_by=request.user)
+    base_url = request.build_absolute_uri(reverse('papers:detail', args=[paper.pk]))
+    citations = generate_citations(paper, base_url)
+    response = HttpResponse(citations['bibtex'], content_type='application/x-bibtex; charset=utf-8')
+    response['Content-Disposition'] = f'attachment; filename="{citations["bibtex_key"]}.bib"'
+    return response
 
 
 class RegisterView(FormView):

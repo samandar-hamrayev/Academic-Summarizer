@@ -1716,6 +1716,109 @@ tr:hover .row-actions { opacity: 1; }
 }
 
 
+/* ── 18c.  Citation export (Cite this paper panel) ──────────────────── */
+
+.cite-panel {
+  margin-top: 32px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--bg-elev);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-width: var(--measure);
+}
+
+.cite-head {
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--rule);
+}
+.cite-head h3 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 1.3rem;
+  margin: 0;
+  letter-spacing: -0.008em;
+}
+.cite-head .cite-sub {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-top: 4px;
+}
+
+.cite-tabs {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  padding: 16px 24px 0;
+}
+.cite-tabs .chip {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-color: var(--rule);
+}
+
+.cite-body {
+  padding: 16px 24px 20px;
+}
+
+.cite-code {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.65;
+  color: var(--ink);
+  background: var(--bg-sunk);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  margin: 0 0 14px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-x: auto;
+  min-height: 86px;
+  transition: background var(--t), border-color var(--t);
+}
+.cite-code .cite-loading {
+  color: var(--ink-3);
+  font-style: italic;
+}
+.cite-code.cite-error {
+  color: var(--err);
+  border-color: var(--err);
+}
+
+.cite-actions {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  align-items: center;
+}
+.cite-actions .btn.is-copied {
+  color: var(--ok);
+  border-color: var(--ok);
+}
+
+.cite-hint {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--ink-4);
+  padding: 0 24px 14px;
+  text-align: right;
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+  .cite-head     { padding: 16px 18px 12px; }
+  .cite-tabs     { padding: 12px 18px 0; }
+  .cite-body     { padding: 12px 18px 16px; }
+  .cite-hint     { padding: 0 18px 12px; }
+  .cite-code     { font-size: 11.5px; padding: 14px 16px; }
+}
+
+
 /* ── 19.  Reduced motion ────────────────────────────────────────────── */
 
 @media (prefers-reduced-motion: reduce) {
