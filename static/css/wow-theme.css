@@ -1,0 +1,1001 @@
+/* ============================================================================
+   Academic Summarizer — "wow" theme (v1, Wave 1 of 5)
+
+   HYBRID AESTHETIC
+   - Terminal (developer-tool) layout, typography, controls everywhere.
+   - Aurora gradient blobs reserved for the landing hero only
+     (use `.aurora` + `.aurora .blob` inside the hero container).
+
+   PALETTE: electric violet primary + lime status accent
+            + coral/cyan as hero gradient warmth.
+
+   FONTS:   Bricolage Grotesque (display) + Geist (body) + JetBrains Mono (UI)
+            Loaded from Google Fonts in base.html (Wave 2).
+
+   STATE:   Wave 1 ships the file. Wave 2 swaps the <link> href in base.html.
+            Existing class names from main.css are re-implemented here so
+            templates continue rendering correctly the moment the link flips.
+   ============================================================================ */
+
+
+/* ── 1.  Design tokens ───────────────────────────────────────────────────── */
+
+:root {
+  /* DARK is the default (existing app behaviour — localStorage key `as-theme`) */
+  --bg-0:           #08080C;
+  --bg-1:           #0E0E14;
+  --bg-2:           #14141E;
+  --bg-3:           #1C1C2A;
+  --bg-hover:       #1C1C28;
+
+  --text-0:         #FAFAFB;
+  --text-1:         #D4D4DE;
+  --text-2:         #8B8B9A;
+  --text-3:         #51515D;
+
+  --border-1:       #1F1F2D;
+  --border-2:       #2A2A3C;
+  --border-3:       #3D3D52;
+
+  --violet:         #8B5CF6;
+  --violet-mute:    #6D28D9;
+  --violet-bg:      rgba(139, 92, 246, 0.10);
+  --violet-glow:    rgba(139, 92, 246, 0.32);
+
+  --lime:           #A3E635;
+  --lime-bg:        rgba(163, 230, 53, 0.12);
+
+  --amber:          #FBBF24;
+  --amber-bg:       rgba(251, 191, 36, 0.12);
+  --rose:           #FB7185;
+  --rose-bg:        rgba(251, 113, 133, 0.12);
+  --cyan:           #67E8F9;
+  --cyan-bg:        rgba(103, 232, 249, 0.12);
+
+  --grid-color:     rgba(139, 92, 246, 0.06);
+
+  --radius-xs:      4px;
+  --radius-sm:      6px;
+  --radius-md:      8px;
+  --radius-lg:      12px;
+  --radius-xl:      18px;
+  --radius-pill:    100px;
+
+  --shadow-sm:      0 1px 2px rgba(0,0,0,0.25);
+  --shadow-md:      0 6px 18px rgba(0,0,0,0.35);
+  --shadow-lg:      0 16px 40px rgba(0,0,0,0.45);
+  --shadow-glow:    0 0 0 4px var(--violet-glow), 0 6px 24px var(--violet-glow);
+
+  --t-fast:         120ms;
+  --t-base:         180ms;
+  --t-slow:         320ms;
+  --ease:           cubic-bezier(.2, .9, .3, 1);
+}
+
+[data-theme="light"] {
+  --bg-0:           #F6F6F8;
+  --bg-1:           #FFFFFF;
+  --bg-2:           #F1F1F4;
+  --bg-3:           #E8E8EE;
+  --bg-hover:       #F4F1FB;
+
+  --text-0:         #0A0A12;
+  --text-1:         #2F2F3A;
+  --text-2:         #6B6B7A;
+  --text-3:         #A0A0AC;
+
+  --border-1:       #E8E8EE;
+  --border-2:       #DEDEE6;
+  --border-3:       #C5C5D0;
+
+  --violet:         #7C3AED;
+  --violet-mute:    #5B21B6;
+  --violet-bg:      rgba(124, 58, 237, 0.07);
+  --violet-glow:    rgba(124, 58, 237, 0.18);
+
+  --lime:           #65A30D;
+  --lime-bg:        rgba(101, 163, 13, 0.10);
+  --amber:          #D97706;
+  --amber-bg:       rgba(217, 119, 6, 0.10);
+  --rose:           #E11D48;
+  --rose-bg:        rgba(225, 29, 72, 0.10);
+  --cyan:           #0891B2;
+  --cyan-bg:        rgba(8, 145, 178, 0.10);
+
+  --grid-color:     rgba(124, 58, 237, 0.08);
+
+  --shadow-sm:      0 1px 2px rgba(15, 15, 32, 0.06);
+  --shadow-md:      0 6px 18px rgba(15, 15, 32, 0.08);
+  --shadow-lg:      0 16px 40px rgba(15, 15, 32, 0.10);
+  --shadow-glow:    0 0 0 4px var(--violet-glow), 0 6px 24px var(--violet-glow);
+}
+
+
+/* ── 2.  Base reset & body ───────────────────────────────────────────────── */
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  transition: background-color var(--t-slow) ease, color var(--t-slow) ease;
+}
+
+body {
+  font-family: 'Geist', system-ui, -apple-system, sans-serif;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.55;
+  background: var(--bg-0);
+  color: var(--text-1);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color var(--t-slow) ease, color var(--t-slow) ease;
+}
+
+main { flex: 1; position: relative; z-index: 1; }
+
+
+/* ── 3.  Typography ──────────────────────────────────────────────────────── */
+
+.display,
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Bricolage Grotesque', 'Inter Tight', system-ui, sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  color: var(--text-0);
+  font-variation-settings: "wdth" 90;
+  margin: 0 0 0.5em;
+}
+
+h1, .display { font-size: clamp(2rem, 5vw, 3.25rem); }
+h2          { font-size: clamp(1.5rem, 3.5vw, 2.1rem); }
+h3          { font-size: 1.3rem; }
+h4          { font-size: 1.05rem; }
+h5, h6      { font-size: 0.95rem; font-weight: 500; }
+
+.mono       { font-family: 'JetBrains Mono', 'SFMono-Regular', Menlo, monospace; }
+
+.meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+a { color: var(--violet); text-decoration: none; transition: color var(--t-fast) ease; }
+a:hover { color: var(--violet-mute); }
+
+[data-theme="light"] a:hover { color: var(--violet-mute); }
+
+p { margin: 0 0 1em; color: var(--text-1); }
+small { color: var(--text-2); }
+
+.text-gradient {
+  background: linear-gradient(120deg, var(--rose) 0%, var(--violet) 50%, var(--cyan) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+
+/* ── 4.  Animations ──────────────────────────────────────────────────────── */
+
+@keyframes wow-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes wow-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes wow-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.4; }
+}
+
+@keyframes wow-blink {
+  50% { opacity: 0; }
+}
+
+@keyframes wow-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes wow-drift-1 { to { transform: translate(15vw, 10vh) scale(1.15); } }
+@keyframes wow-drift-2 { to { transform: translate(-12vw, -8vh) scale(0.95); } }
+@keyframes wow-drift-3 { to { transform: translate(-20vw, 15vh) scale(1.1) rotate(45deg); } }
+
+.rise         { animation: wow-rise   600ms var(--ease) both; }
+.rise-delay-1 { animation-delay: 80ms; }
+.rise-delay-2 { animation-delay: 160ms; }
+.rise-delay-3 { animation-delay: 240ms; }
+.rise-delay-4 { animation-delay: 320ms; }
+
+
+/* ── 5.  Layout primitives ───────────────────────────────────────────────── */
+
+.container,
+.container-fluid {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+@media (max-width: 600px) {
+  .container, .container-fluid { padding-left: 16px; padding-right: 16px; }
+}
+
+
+/* ── 6.  Dot-grid background utility ─────────────────────────────────────── */
+
+.dot-grid-bg {
+  position: relative;
+}
+.dot-grid-bg::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: radial-gradient(var(--grid-color) 1px, transparent 1px);
+  background-size: 24px 24px;
+  pointer-events: none;
+  mask-image: radial-gradient(ellipse at center top, black 0%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse at center top, black 0%, transparent 70%);
+}
+
+
+/* ── 7.  Aurora hero background (Wave 3 — landing page only) ─────────────── */
+
+.aurora {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.aurora::before,
+.aurora::after,
+.aurora .blob {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(110px);
+  will-change: transform;
+}
+.aurora::before {
+  width: 50vw; height: 50vw;
+  background: var(--violet);
+  top: -15vw; left: -10vw;
+  opacity: 0.45;
+  animation: wow-drift-1 28s ease-in-out infinite alternate;
+}
+.aurora::after {
+  width: 40vw; height: 40vw;
+  background: var(--rose);
+  bottom: -10vw; right: -10vw;
+  opacity: 0.40;
+  animation: wow-drift-2 34s ease-in-out infinite alternate;
+}
+.aurora .blob {
+  width: 35vw; height: 35vw;
+  background: var(--cyan);
+  top: 20vh; right: 25vw;
+  opacity: 0.30;
+  animation: wow-drift-3 42s ease-in-out infinite alternate;
+}
+[data-theme="light"] .aurora::before { opacity: 0.55; background: #C4B5FD; }
+[data-theme="light"] .aurora::after  { opacity: 0.50; background: #FECDD3; }
+[data-theme="light"] .aurora .blob   { opacity: 0.45; background: #A5F3FC; }
+
+
+/* ── 8.  Glass primitive (used sparingly inside aurora hero) ─────────────── */
+
+.glass {
+  background: color-mix(in srgb, var(--bg-1) 60%, transparent);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid var(--border-2);
+  border-radius: var(--radius-xl);
+}
+
+
+/* ── 9.  Buttons ─────────────────────────────────────────────────────────── */
+
+button, .btn { font-family: inherit; }
+
+.btn,
+.btn-primary,
+.btn-secondary,
+.btn-violet {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: var(--radius-sm);
+  font-family: 'Geist', sans-serif;
+  font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 1;
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform var(--t-fast) ease,
+              background-color var(--t-fast) ease,
+              border-color    var(--t-fast) ease,
+              color           var(--t-fast) ease,
+              box-shadow      var(--t-fast) ease;
+}
+
+.btn-primary,
+.btn-violet {
+  background: var(--violet);
+  color: #fff;
+  border-color: var(--violet-mute);
+  box-shadow: 0 2px 8px var(--violet-glow);
+}
+.btn-primary:hover,
+.btn-violet:hover {
+  transform: translateY(-1px);
+  background: var(--violet);
+  color: #fff;
+  box-shadow: var(--shadow-glow);
+}
+.btn-primary:active,
+.btn-violet:active { transform: translateY(0); }
+
+.btn-secondary,
+.btn-outline-primary,
+.btn-outline-secondary,
+.btn-tech {
+  background: var(--bg-1);
+  color: var(--text-1);
+  border: 1px solid var(--border-2);
+}
+.btn-secondary:hover,
+.btn-outline-primary:hover,
+.btn-outline-secondary:hover,
+.btn-tech:hover {
+  border-color: var(--border-3);
+  background: var(--bg-2);
+  color: var(--text-0);
+}
+
+.btn-outline-danger { background: transparent; color: var(--rose); border-color: color-mix(in srgb, var(--rose) 40%, transparent); }
+.btn-outline-danger:hover { background: var(--rose-bg); color: var(--rose); border-color: var(--rose); }
+
+.btn-outline-warning { background: transparent; color: var(--amber); border-color: color-mix(in srgb, var(--amber) 40%, transparent); }
+.btn-outline-warning:hover { background: var(--amber-bg); color: var(--amber); border-color: var(--amber); }
+
+.btn-danger { background: var(--rose); color: #fff; border-color: transparent; }
+.btn-danger:hover { background: color-mix(in srgb, var(--rose) 85%, black); color: #fff; }
+
+.btn-light { background: var(--bg-1); color: var(--text-0); border-color: var(--border-2); }
+.btn-link  { background: transparent; color: var(--violet); border: none; padding: 0; box-shadow: none; }
+.btn-link:hover { color: var(--violet-mute); transform: none; box-shadow: none; }
+
+.btn-lg { padding: 12px 22px; font-size: 0.95rem; }
+.btn-sm { padding: 6px 12px; font-size: 0.8rem; }
+
+.btn-close {
+  background: transparent;
+  border: none;
+  color: var(--text-2);
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 4px 8px;
+}
+.btn-close:hover { color: var(--text-0); }
+
+
+/* ── 10.  Icon button ────────────────────────────────────────────────────── */
+
+.icon-btn {
+  width: 32px; height: 32px;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-2);
+  display: grid; place-items: center;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: all var(--t-fast) ease;
+}
+.icon-btn:hover { background: var(--bg-2); color: var(--text-0); border-color: var(--border-2); }
+
+
+/* ── 11.  Form controls ──────────────────────────────────────────────────── */
+
+.form-control,
+.form-select,
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="search"],
+textarea,
+select {
+  background: var(--bg-1);
+  border: 1px solid var(--border-2);
+  border-radius: var(--radius-sm);
+  padding: 9px 12px;
+  color: var(--text-0);
+  font-family: 'Geist', sans-serif;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  transition: border-color var(--t-fast) ease,
+              background-color var(--t-fast) ease,
+              box-shadow var(--t-fast) ease;
+  width: 100%;
+}
+
+.form-control:focus,
+.form-select:focus,
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--violet);
+  background: var(--bg-1);
+  color: var(--text-0);
+  box-shadow: 0 0 0 3px var(--violet-glow);
+}
+
+.form-control::placeholder,
+input::placeholder,
+textarea::placeholder { color: var(--text-3); }
+
+.form-label { color: var(--text-1); font-weight: 500; font-size: 0.85rem; margin-bottom: 6px; }
+.form-text  { color: var(--text-3); font-size: 0.78rem; font-family: 'JetBrains Mono', monospace; }
+
+.form-control.is-invalid { border-color: var(--rose); }
+.invalid-feedback { color: var(--rose); font-size: 0.78rem; margin-top: 4px; }
+
+
+/* ── 12.  Cards (generic + paper-card overrides) ─────────────────────────── */
+
+.card {
+  background: var(--bg-1);
+  border: 1px solid var(--border-1);
+  border-radius: var(--radius-md);
+  color: var(--text-1);
+  transition: border-color var(--t-base) ease,
+              background-color var(--t-base) ease,
+              transform var(--t-base) ease,
+              box-shadow var(--t-base) ease;
+}
+
+.card.shadow-sm,
+.shadow-sm { box-shadow: var(--shadow-sm) !important; }
+
+.feature-card,
+.feature-icon,
+.feature-icon-lg {
+  /* legacy from main.css — overridden so old templates still look right */
+  background: transparent !important;
+  border: none !important;
+  color: var(--violet);
+}
+
+.paper-card {
+  background: var(--bg-1);
+  border: 1px solid var(--border-1);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: border-color var(--t-base) ease,
+              background-color var(--t-base) ease,
+              transform var(--t-base) ease,
+              box-shadow var(--t-base) ease;
+}
+.paper-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--violet), transparent);
+  opacity: 0; transition: opacity var(--t-base) ease;
+}
+.paper-card:hover {
+  border-color: var(--border-3);
+  background: var(--bg-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 0 0 1px var(--violet-glow), var(--shadow-md);
+}
+.paper-card:hover::before { opacity: 1; }
+.paper-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 600;
+  font-size: 1.05rem;
+  line-height: 1.3;
+  color: var(--text-0);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+
+/* ── 13.  Tags (terminal style) ──────────────────────────────────────────── */
+
+.tag,
+.tag-tech,
+.tag-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  padding: 3px 8px;
+  border-radius: var(--radius-xs);
+  background: var(--violet-bg);
+  color: var(--violet);
+  border: 1px solid color-mix(in srgb, var(--violet) 28%, transparent);
+  text-decoration: none;
+  text-transform: none;
+  transition: opacity var(--t-fast) ease;
+}
+.tag-badge:hover { opacity: 0.85; color: var(--violet); }
+.tag-neutral {
+  background: var(--bg-2); color: var(--text-2); border-color: var(--border-2);
+}
+
+
+/* ── 14.  Language pill ──────────────────────────────────────────────────── */
+
+.lang-badge,
+.lang-pill {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.66rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--bg-2);
+  color: var(--text-2);
+  border: 1px solid var(--border-2);
+}
+
+
+/* ── 15.  Status pill (online · ready · etc) ─────────────────────────────── */
+
+.status {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--lime);
+}
+.status .dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--lime);
+  box-shadow: 0 0 6px var(--lime);
+}
+.status.pulse .dot { animation: wow-pulse 2s ease-in-out infinite; }
+
+
+/* ── 16.  Keyboard hint ──────────────────────────────────────────────────── */
+
+.kbd {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  background: var(--bg-2);
+  border: 1px solid var(--border-2);
+  padding: 2px 6px;
+  border-radius: var(--radius-xs);
+  color: var(--text-1);
+}
+
+
+/* ── 17.  Section header pattern ─────────────────────────────────────────── */
+
+.section-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px;
+  border-radius: var(--radius-sm);
+  background: var(--violet-bg);
+  color: var(--violet);
+  font-size: 0.9rem;
+  border: 1px solid color-mix(in srgb, var(--violet) 22%, transparent);
+}
+
+
+/* ── 18.  Citations & references ─────────────────────────────────────────── */
+
+.citation-item {
+  padding: 10px 14px;
+  border-left: 2px solid var(--violet);
+  background: var(--bg-1);
+  border-top: 1px solid var(--border-1);
+  border-right: 1px solid var(--border-1);
+  border-bottom: 1px solid var(--border-1);
+  border-radius: 0 var(--radius-xs) var(--radius-xs) 0;
+  margin-bottom: 6px;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--text-1);
+  font-family: 'Geist', sans-serif;
+}
+
+
+/* ── 19.  Share link readout ─────────────────────────────────────────────── */
+
+.share-link-input {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 0.78rem !important;
+  background: var(--bg-2) !important;
+  color: var(--text-0) !important;
+  border-color: var(--border-2) !important;
+}
+
+
+/* ── 20.  Drop zone (upload page) ────────────────────────────────────────── */
+
+.drop-zone {
+  border: 1px dashed var(--border-3);
+  background: var(--bg-1);
+  border-radius: var(--radius-md);
+  padding: 36px 24px;
+  text-align: center;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: border-color var(--t-base) ease, background-color var(--t-base) ease;
+}
+.drop-zone:hover,
+.drop-zone.drag-over {
+  border-color: var(--violet);
+  background: var(--violet-bg);
+}
+.drop-zone.has-file {
+  border-color: var(--lime);
+  background: var(--lime-bg);
+}
+.drop-icon {
+  font-size: 2.4rem;
+  color: var(--text-2);
+  transition: color var(--t-base) ease, transform var(--t-base) ease;
+}
+.drop-zone:hover .drop-icon,
+.drop-zone.drag-over .drop-icon {
+  color: var(--violet);
+  transform: translateY(-2px);
+}
+
+.file-preview {
+  display: none;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--bg-1);
+  border: 1px solid var(--border-2);
+  border-radius: var(--radius-sm);
+  text-align: left;
+}
+.file-preview.visible { display: flex; }
+
+
+/* ── 21.  Progress steps ─────────────────────────────────────────────────── */
+
+.progress-steps { display: none; }
+.progress-steps.visible { display: block; }
+
+.step-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 8px 0;
+  color: var(--text-2);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
+  transition: color var(--t-base) ease;
+}
+.step-item.active { color: var(--violet); }
+.step-item.done   { color: var(--lime); }
+.step-dot {
+  width: 22px; height: 22px;
+  border-radius: var(--radius-xs);
+  background: var(--bg-2);
+  border: 1px solid var(--border-2);
+  display: grid; place-items: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+.step-item.active .step-dot {
+  background: var(--violet); color: #fff;
+  border-color: var(--violet-mute);
+  box-shadow: 0 0 0 3px var(--violet-glow);
+}
+.step-item.done .step-dot { background: var(--lime); color: #08080C; border-color: var(--lime); }
+
+
+/* ── 22.  Tag chips (upload page suggestion UI) ──────────────────────────── */
+
+.tag-chip {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 5px 11px;
+  border-radius: var(--radius-pill);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid transparent;
+  background: transparent;
+  transition: all var(--t-fast) ease;
+}
+.tag-chip--suggested {
+  background: var(--violet-bg);
+  color: var(--violet);
+  border-color: color-mix(in srgb, var(--violet) 35%, transparent);
+  border-style: dashed;
+}
+.tag-chip--suggested:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--violet) 14%, transparent);
+  transform: translateY(-1px);
+}
+.tag-chip--suggested.tag-chip--added { opacity: 0.4; cursor: default; transform: none; }
+.tag-chip--selected {
+  background: var(--violet); color: #fff;
+  border-color: var(--violet-mute);
+  box-shadow: 0 0 0 1px var(--violet-glow);
+}
+.tag-chip__remove {
+  background: none; border: none; color: rgba(255, 255, 255, 0.7);
+  padding: 0; margin-left: 2px; cursor: pointer; line-height: 1;
+  display: inline-flex; align-items: center;
+}
+.tag-chip__remove:hover { color: #fff; }
+
+
+/* ── 23.  Toasts ─────────────────────────────────────────────────────────── */
+
+.toast-container {
+  position: fixed;
+  top: 80px;
+  right: 24px;
+  z-index: 9999;
+  max-width: 380px;
+  pointer-events: none;
+}
+.toast-container .toast { pointer-events: all; }
+
+.toast {
+  background: var(--bg-1) !important;
+  color: var(--text-0) !important;
+  border: 1px solid var(--border-2) !important;
+  border-radius: var(--radius-md) !important;
+  box-shadow: var(--shadow-md) !important;
+  margin-bottom: 8px;
+}
+.toast-header {
+  background: transparent !important;
+  border-bottom: 1px solid var(--border-1) !important;
+  color: var(--text-0) !important;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+}
+
+
+/* ── 24.  Alerts ─────────────────────────────────────────────────────────── */
+
+.alert {
+  background: var(--bg-1);
+  border: 1px solid var(--border-2);
+  color: var(--text-1);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  font-size: 0.875rem;
+  display: flex; align-items: center; gap: 8px;
+}
+.alert-success { background: var(--lime-bg);  border-color: color-mix(in srgb, var(--lime) 35%, transparent);  color: var(--lime); }
+.alert-warning { background: var(--amber-bg); border-color: color-mix(in srgb, var(--amber) 35%, transparent); color: var(--amber); }
+.alert-danger,
+.alert-error   { background: var(--rose-bg);  border-color: color-mix(in srgb, var(--rose) 35%, transparent);  color: var(--rose); }
+.alert-info    { background: var(--violet-bg); border-color: color-mix(in srgb, var(--violet) 35%, transparent); color: var(--violet); }
+
+
+/* ── 25.  Tables ─────────────────────────────────────────────────────────── */
+
+.table {
+  width: 100%;
+  color: var(--text-1);
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.table thead {
+  background: var(--bg-2);
+}
+.table th, .table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border-1);
+  text-align: left;
+  font-size: 0.875rem;
+}
+.table th {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--text-2);
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border-2);
+}
+.table-hover tbody tr:hover { background: var(--bg-hover); }
+.table-dark { background: var(--bg-2); color: var(--text-0); }
+.table-responsive {
+  border: 1px solid var(--border-1);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+
+/* ── 26.  Pagination ─────────────────────────────────────────────────────── */
+
+.pagination { display: inline-flex; gap: 4px; list-style: none; padding: 0; margin: 0; }
+.page-item .page-link {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 32px; height: 32px;
+  border: 1px solid var(--border-2);
+  background: var(--bg-1);
+  color: var(--text-1);
+  border-radius: var(--radius-xs);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  text-decoration: none;
+  transition: all var(--t-fast) ease;
+}
+.page-item .page-link:hover { background: var(--bg-2); color: var(--text-0); border-color: var(--border-3); }
+.page-item.active .page-link {
+  background: var(--violet);
+  border-color: var(--violet-mute);
+  color: #fff;
+}
+
+
+/* ── 27.  Breadcrumb ─────────────────────────────────────────────────────── */
+
+.breadcrumb {
+  list-style: none;
+  padding: 0; margin: 0;
+  display: flex; flex-wrap: wrap; gap: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--text-3);
+}
+.breadcrumb-item a { color: var(--text-2); text-decoration: none; }
+.breadcrumb-item a:hover { color: var(--violet); }
+.breadcrumb-item + .breadcrumb-item::before { content: '/ '; color: var(--text-3); padding-right: 4px; }
+.breadcrumb-item.active { color: var(--text-1); }
+
+
+/* ── 28.  Dropdown ───────────────────────────────────────────────────────── */
+
+.dropdown-menu {
+  background: var(--bg-1) !important;
+  border: 1px solid var(--border-2) !important;
+  border-radius: var(--radius-md) !important;
+  box-shadow: var(--shadow-md);
+  padding: 4px;
+  min-width: 180px;
+}
+.dropdown-item {
+  color: var(--text-1) !important;
+  font-size: 0.85rem;
+  padding: 8px 12px;
+  border-radius: var(--radius-xs);
+  display: flex; align-items: center; gap: 8px;
+}
+.dropdown-item:hover { background: var(--bg-2) !important; color: var(--text-0) !important; }
+.dropdown-divider { border-color: var(--border-1) !important; margin: 4px 0; }
+
+
+/* ── 29.  Badge (Bootstrap subtle variants — used in detail page) ────────── */
+
+.badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.66rem;
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: var(--radius-xs);
+  letter-spacing: 0.02em;
+}
+.bg-primary,         .badge.bg-primary         { background: var(--violet); color: #fff; }
+.bg-success,         .badge.bg-success         { background: var(--lime);   color: #08080C; }
+.bg-warning,         .badge.bg-warning         { background: var(--amber);  color: #08080C; }
+.bg-danger,          .badge.bg-danger          { background: var(--rose);   color: #fff; }
+.bg-info,            .badge.bg-info            { background: var(--cyan);   color: #08080C; }
+.bg-secondary,       .badge.bg-secondary       { background: var(--bg-3);   color: var(--text-0); }
+.bg-light,           .badge.bg-light           { background: var(--bg-1);   color: var(--text-0); }
+
+.bg-primary-subtle   { background: var(--violet-bg) !important; color: var(--violet) !important; }
+.bg-success-subtle   { background: var(--lime-bg)   !important; color: var(--lime)   !important; }
+.bg-warning-subtle   { background: var(--amber-bg)  !important; color: var(--amber)  !important; }
+.bg-danger-subtle    { background: var(--rose-bg)   !important; color: var(--rose)   !important; }
+.bg-info-subtle      { background: var(--cyan-bg)   !important; color: var(--cyan)   !important; }
+.bg-secondary-subtle { background: var(--bg-2)      !important; color: var(--text-1) !important; }
+
+.text-primary   { color: var(--violet) !important; }
+.text-success   { color: var(--lime)   !important; }
+.text-warning   { color: var(--amber)  !important; }
+.text-danger    { color: var(--rose)   !important; }
+.text-info      { color: var(--cyan)   !important; }
+.text-secondary { color: var(--text-2) !important; }
+.text-muted     { color: var(--text-2) !important; }
+.text-body      { color: var(--text-1) !important; }
+
+.border-top    { border-top: 1px solid var(--border-1) !important; }
+.border-bottom { border-bottom: 1px solid var(--border-1) !important; }
+
+
+/* ── 30.  Skeleton loaders ───────────────────────────────────────────────── */
+
+.skeleton {
+  background: linear-gradient(90deg,
+    var(--bg-2) 25%,
+    var(--bg-3) 50%,
+    var(--bg-2) 75%);
+  background-size: 200% 100%;
+  animation: wow-shimmer 1.5s infinite;
+  border-radius: var(--radius-xs);
+}
+.skeleton-text  { height: 1em;   margin-bottom: 0.5rem; }
+.skeleton-title { height: 1.4em; width: 70%; margin-bottom: 0.75rem; }
+.skeleton-card  { height: 200px; border-radius: var(--radius-md); }
+
+
+/* ── 31.  Misc utilities used by templates ───────────────────────────────── */
+
+.rounded-4 { border-radius: var(--radius-xl) !important; }
+.rounded-3 { border-radius: var(--radius-lg) !important; }
+.rounded-2 { border-radius: var(--radius-md) !important; }
+
+.bg-body-secondary { background-color: var(--bg-2) !important; }
+
+hr { border: none; border-top: 1px solid var(--border-1); margin: 24px 0; }
+
+/* Bootstrap close button (dark mode) */
+.btn-close { filter: none; }
+[data-theme="dark"] .btn-close { filter: invert(1) grayscale(1) opacity(0.7); }
+
+
+/* ── 32.  Responsive ─────────────────────────────────────────────────────── */
+
+@media (max-width: 900px) {
+  .toast-container { right: 16px; left: 16px; max-width: unset; }
+}
+
+@media (max-width: 600px) {
+  h1, .display { font-size: clamp(1.75rem, 6vw, 2.4rem); }
+  h2           { font-size: 1.4rem; }
+}
+
+
+/* ── 33.  Reduced motion ─────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .aurora::before,
+  .aurora::after,
+  .aurora .blob { animation: none; }
+}
