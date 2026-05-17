@@ -776,28 +776,6 @@ input::placeholder, textarea::placeholder { color: var(--ink-3); }
   font-size: 12px;
   min-width: 200px;
 }
-.file-analysis-message {
-  margin-top: 12px;
-  padding: 10px 12px;
-  background: var(--bg-sunk);
-  border: 1px dashed var(--rule);
-  border-radius: var(--radius);
-  font-size: 13px;
-  line-height: 1.55;
-  color: var(--ink-2);
-}
-.file-analysis-actions {
-  margin-top: 8px;
-}
-.file-analysis-actions a {
-  font-size: 11.5px;
-  letter-spacing: 0.06em;
-  color: var(--warn);
-  text-decoration: none;
-  font-weight: 500;
-}
-.file-analysis-actions a:hover { text-decoration: underline; }
-
 .side-card { padding: 24px; }
 .side-card h4 { font-family: var(--serif); font-weight: 500; font-size: 1.1rem; letter-spacing: -0.006em; margin-bottom: 14px; }
 .kv { display: grid; grid-template-columns: 1fr auto; gap: 8px 16px; font-size: 13px; }

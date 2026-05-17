@@ -62,7 +62,7 @@
           </div>
         {% endif %}
 
-        <!-- FILE ANALYSIS (client-side token estimate) -->
+        <!-- FILE ANALYSIS (client-side token estimate · informational) -->
         <div id="file-analysis" class="card file-analysis" style="display: none;" aria-live="polite">
           <div class="file-analysis-head">
             <div>
@@ -75,12 +75,7 @@
             <div class="kv file-analysis-metrics">
               <div class="k">{% trans "Pages" %}</div>     <div class="v mono" id="fa-pages">—</div>
               <div class="k">{% trans "Tokens (est.)" %}</div><div class="v mono" id="fa-tokens">—</div>
-              <div class="k">{% trans "Limit" %}</div>     <div class="v mono">8,000</div>
             </div>
-          </div>
-          <div id="file-analysis-message" class="file-analysis-message" style="display: none;"></div>
-          <div id="file-analysis-actions" class="file-analysis-actions" style="display: none;">
-            <a href="#" id="fa-try-anyway" class="mono">{% trans "Try anyway →" %}</a>
           </div>
         </div>
 
@@ -358,21 +353,17 @@
   }
 
 
-  // ── Client-side file analysis (token estimate via pdf.js) ─────────────
-  const TOKEN_LIMIT = 8000;
+  // ── Client-side file analysis (token estimate via pdf.js · informational) ──
+  const TOKEN_SAFE  = 8000;    // ≤ this: green
+  const TOKEN_LARGE = 30000;   // > 8000 ≤ this: amber (map-reduce); > this: red
 
-  const faPanel    = document.getElementById('file-analysis');
-  const faPill     = document.getElementById('file-analysis-pill');
-  const faStatus   = document.getElementById('file-analysis-status');
-  const faPages    = document.getElementById('fa-pages');
-  const faTokens   = document.getElementById('fa-tokens');
-  const faMessage  = document.getElementById('file-analysis-message');
-  const faActions  = document.getElementById('file-analysis-actions');
-  const faTryAny   = document.getElementById('fa-try-anyway');
-  const submitBtn  = document.getElementById('submit-btn');
+  const faPanel  = document.getElementById('file-analysis');
+  const faPill   = document.getElementById('file-analysis-pill');
+  const faStatus = document.getElementById('file-analysis-status');
+  const faPages  = document.getElementById('fa-pages');
+  const faTokens = document.getElementById('fa-tokens');
 
-  let userOverride = false;   // set when user clicks "Try anyway"
-  let analysisToken = 0;      // increments per-run to ignore stale promises
+  let analysisToken = 0;  // increments per-run to ignore stale promises
 
   function setPillState(text, variant) {
     faStatus.textContent = text;
@@ -380,62 +371,39 @@
     if (variant) faPill.classList.add(variant);
   }
 
-  function setSubmitEnabled(enabled, reason) {
-    if (!submitBtn) return;
-    submitBtn.disabled = !enabled;
-    submitBtn.title = enabled ? '' : (reason || '');
-  }
-
   function resetAnalysis() {
-    userOverride = false;
-    faPanel.style.display = 'none';
-    faMessage.style.display = 'none';
-    faActions.style.display = 'none';
     faPages.textContent = '—';
     faTokens.textContent = '—';
     setPillState('Analyzing PDF…', 'is-run');
-    setSubmitEnabled(true);
   }
 
-  function showReady(tokens, pages) {
-    setPillState(`Ready to summarize (${tokens.toLocaleString()} tokens, ${pages} page${pages === 1 ? '' : 's'})`, 'is-ok');
-    faMessage.style.display = 'none';
-    faActions.style.display = 'none';
-    setSubmitEnabled(true);
-    if (submitBtn) submitBtn.innerHTML = '<i class="bi bi-sparkle"></i> Upload &amp; summarize';
-  }
-
-  function showTooLarge(tokens, pages) {
-    setPillState(`File too large (${tokens.toLocaleString()} tokens > ${TOKEN_LIMIT.toLocaleString()})`, 'is-err');
-    faMessage.textContent = `This paper is estimated at ${tokens.toLocaleString()} tokens across ${pages} page${pages === 1 ? '' : 's'}. The current plan's per-request limit is ${TOKEN_LIMIT.toLocaleString()} tokens. Try a shorter paper, or proceed anyway if you want to attempt it.`;
-    faMessage.style.display = 'block';
-    faActions.style.display = 'block';
-    if (!userOverride) {
-      setSubmitEnabled(false, 'File exceeds the 8,000-token limit.');
+  function showResult(tokens, pages) {
+    const pg = `${pages} page${pages === 1 ? '' : 's'}`;
+    const tk = tokens.toLocaleString();
+    if (tokens <= TOKEN_SAFE) {
+      setPillState(`Ready · ~${tk} tokens, ${pg}`, 'is-ok');
+    } else if (tokens <= TOKEN_LARGE) {
+      setPillState(`Large file · ~${tk} tokens (will use map-reduce chunking)`, 'is-warn');
+    } else {
+      setPillState(`Very large · ~${tk} tokens (may fail or be slow)`, 'is-err');
     }
   }
 
   function showAnalysisError(msg) {
-    setPillState('Could not analyze PDF', 'is-warn');
-    faMessage.textContent = `${msg}. You can still attempt to upload — the server-side extractor may handle it.`;
-    faMessage.style.display = 'block';
-    faActions.style.display = 'none';
-    setSubmitEnabled(true);
+    setPillState(`${msg} — server will still attempt extraction`, 'is-warn');
   }
 
   async function analyzeFile(file) {
     if (!file || !file.name.toLowerCase().endsWith('.pdf')) {
       faPanel.style.display = 'none';
-      setSubmitEnabled(true);
       return;
     }
+    faPanel.style.display = 'block';
     if (!window.pdfjsLib) {
-      faPanel.style.display = 'block';
       showAnalysisError('PDF analysis library unavailable');
       return;
     }
     resetAnalysis();
-    faPanel.style.display = 'block';
 
     const myToken = ++analysisToken;
     let pageCount = 0;
@@ -467,25 +435,13 @@
 
     const tokens = Math.ceil(fullText.length / 4);
     faTokens.textContent = tokens.toLocaleString();
-
-    if (tokens > TOKEN_LIMIT) showTooLarge(tokens, pageCount);
-    else                      showReady(tokens, pageCount);
+    showResult(tokens, pageCount);
   }
 
   fileInput.addEventListener('change', () => {
     if (fileInput.files.length) analyzeFile(fileInput.files[0]);
-    else { faPanel.style.display = 'none'; setSubmitEnabled(true); }
+    else faPanel.style.display = 'none';
   });
-
-  if (faTryAny) {
-    faTryAny.addEventListener('click', (e) => {
-      e.preventDefault();
-      userOverride = true;
-      setSubmitEnabled(true);
-      setPillState('Override active — attempting upload', 'is-warn');
-      faActions.style.display = 'none';
-    });
-  }
 
   // Reset analysis when the file is cleared
   const clearBtn = document.getElementById('clear-file');
@@ -493,10 +449,6 @@
     clearBtn.addEventListener('click', () => {
       analysisToken++;          // invalidate any in-flight analysis
       faPanel.style.display = 'none';
-      faMessage.style.display = 'none';
-      faActions.style.display = 'none';
-      setSubmitEnabled(true);
-      userOverride = false;
     });
   }
 })();
