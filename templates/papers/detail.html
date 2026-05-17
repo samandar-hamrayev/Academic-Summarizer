@@ -6,96 +6,97 @@
 <div class="container">
 
   <!-- Breadcrumb -->
-  <nav aria-label="breadcrumb" class="mb-4">
+  <nav aria-label="breadcrumb" style="margin: 24px 0 12px;">
     <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="{% url 'papers:list' %}">My Papers</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'papers:list' %}">my papers</a></li>
       <li class="breadcrumb-item active">{{ paper.title|truncatechars:50 }}</li>
     </ol>
   </nav>
 
-  <div class="row g-4">
+  <div class="row g-4" style="margin-top: 8px;">
 
-    <!-- Left: Paper Info + Actions -->
+    <!-- Left: paper info + actions -->
     <div class="col-lg-4">
-      <div class="card border-0 shadow-sm rounded-4 p-4 sticky-top" style="top:80px;">
-        <div class="text-center mb-4">
-          <i class="bi bi-file-earmark-pdf-fill text-danger" style="font-size:3rem;"></i>
+      <aside class="paper-aside">
+        <div class="file-icon-wrap">
+          <i class="bi bi-file-earmark-pdf"></i>
+        </div>
+
+        <div style="text-align: center; margin-bottom: 14px;">
           {% if paper.processed %}
-            <span class="badge bg-success d-block mt-2">
-              <i class="bi bi-check-circle me-1"></i>Summarized
-            </span>
+            <span class="status"><span class="dot"></span>SUMMARIZED</span>
           {% else %}
-            <span class="badge bg-secondary d-block mt-2">
-              <i class="bi bi-clock me-1"></i>Not summarized
+            <span class="meta" style="color: var(--text-3);">
+              <i class="bi bi-clock"></i> NOT SUMMARIZED
             </span>
           {% endif %}
         </div>
 
-        <h5 class="fw-bold mb-1">{{ paper.title }}</h5>
+        <h2 style="font-size: 1.15rem; margin: 0 0 6px; text-align: center;">{{ paper.title }}</h2>
         {% if paper.author %}
-          <p class="text-muted small mb-2">
-            <i class="bi bi-person me-1"></i>{{ paper.author }}
+          <p style="color: var(--text-2); font-size: 0.85rem; text-align: center; margin: 0 0 14px;">
+            <i class="bi bi-person"></i> {{ paper.author }}
           </p>
         {% endif %}
 
         {% with tags=paper.tags.all %}
           {% if tags %}
-            <div class="d-flex flex-wrap gap-1 mb-2">
+            <div style="display:flex; flex-wrap:wrap; gap:4px; justify-content: center; margin-bottom: 12px;">
               {% for tag in tags %}
-                <a href="{% url 'papers:by_tag' tag.slug %}"
-                 class="tag-badge"
-                 style="background-color:{{ tag.color }};">{{ tag.name }}</a>
+                <a href="{% url 'papers:by_tag' tag.slug %}" class="tag-badge">{{ tag.name }}</a>
               {% endfor %}
             </div>
           {% endif %}
         {% endwith %}
 
-        <ul class="list-unstyled small text-muted mb-4">
-          <li class="mb-1"><i class="bi bi-calendar3 me-2"></i>{{ paper.uploaded_at|date:"F d, Y" }}</li>
-          <li class="mb-1"><i class="bi bi-hdd me-2"></i>{{ paper.file_size_display }}</li>
-          <li><i class="bi bi-file-earmark me-2"></i>{{ paper.filename }}</li>
+        <ul class="kv-list">
+          <li><i class="bi bi-calendar3"></i>{{ paper.uploaded_at|date:"F d, Y" }}</li>
+          <li><i class="bi bi-hdd"></i>{{ paper.file_size_display }}</li>
+          <li><i class="bi bi-file-earmark"></i>{{ paper.filename|truncatechars:24 }}</li>
         </ul>
 
-        <div class="d-grid gap-2">
+        <div style="display:flex; flex-direction: column; gap: 8px; margin-top: 12px;">
           {% if paper.has_summary %}
-            <a href="{% url 'summarizer:detail' paper.summary.pk %}" class="btn btn-primary">
-              <i class="bi bi-eye me-2"></i>View Summary
+            <a href="{% url 'summarizer:detail' paper.summary.pk %}" class="btn btn-violet">
+              <i class="bi bi-eye"></i>View summary
             </a>
-            <a href="{% url 'summarizer:export_pdf' paper.summary.pk %}" class="btn btn-outline-secondary">
-              <i class="bi bi-filetype-pdf me-2"></i>Export PDF
+            <a href="{% url 'summarizer:export_pdf' paper.summary.pk %}" class="btn btn-tech">
+              <i class="bi bi-filetype-pdf"></i>Export PDF
             </a>
-            <a href="{% url 'summarizer:export_word' paper.summary.pk %}" class="btn btn-outline-secondary">
-              <i class="bi bi-filetype-docx me-2"></i>Export Word
+            <a href="{% url 'summarizer:export_word' paper.summary.pk %}" class="btn btn-tech">
+              <i class="bi bi-filetype-docx"></i>Export Word
             </a>
           {% endif %}
 
-          <form method="post" action="{% url 'papers:summarize' paper.pk %}" class="d-grid m-0">
+          <form method="post" action="{% url 'papers:summarize' paper.pk %}"
+                class="js-summarize-form" data-confirm-loading style="margin:0;">
             {% csrf_token %}
-            <button type="submit" class="btn btn-{% if paper.has_summary %}outline-{% endif %}warning">
-              <i class="bi bi-magic me-2"></i>
-              {% if paper.has_summary %}Re-summarize{% else %}Summarize Now{% endif %}
+            <button type="submit" class="btn btn-outline-warning" style="width: 100%;">
+              <i class="bi bi-magic"></i>
+              {% if paper.has_summary %}Re-summarize{% else %}Summarize now{% endif %}
             </button>
           </form>
 
-          <a href="{{ paper.file.url }}" class="btn btn-outline-primary" target="_blank">
-            <i class="bi bi-download me-2"></i>Download PDF
+          <a href="{{ paper.file.url }}" class="btn btn-tech" target="_blank" rel="noopener">
+            <i class="bi bi-download"></i>Download PDF
           </a>
 
           <a href="{% url 'papers:delete' paper.pk %}"
              class="btn btn-outline-danger"
              onclick="return confirm('Delete this paper and its summary?')">
-            <i class="bi bi-trash me-2"></i>Delete
+            <i class="bi bi-trash"></i>Delete
           </a>
         </div>
-      </div>
+      </aside>
     </div>
 
-    <!-- Right: Summary Preview -->
+    <!-- Right: summary preview -->
     <div class="col-lg-8">
       {% if paper.has_summary %}
         {% with s=paper.summary %}
-        <div class="d-flex align-items-center gap-2 mb-4">
-          <h2 class="fw-bold mb-0 fs-3">Summary</h2>
+
+        <div style="display:flex; align-items:center; gap: 12px; margin-bottom: 24px;">
+          <h2 style="font-size: 1.6rem; margin: 0;">Summary</h2>
           <span class="lang-badge">
             <i class="bi bi-translate"></i>
             {% if s.language == 'ru' %}Russian{% elif s.language == 'uz' %}Uzbek{% else %}English{% endif %}
@@ -103,63 +104,69 @@
         </div>
 
         {% if s.abstract %}
-          <div class="card border-0 shadow-sm rounded-4 p-4 mb-3">
-            <h5 class="fw-semibold mb-3">
-              <i class="bi bi-file-text text-primary me-2"></i>Abstract
-            </h5>
-            <p class="mb-0 lh-lg">{{ s.abstract }}</p>
+          <div class="section-card">
+            <h3>
+              <span class="section-badge"><i class="bi bi-file-text"></i></span>
+              Abstract
+            </h3>
+            <p>{{ s.abstract }}</p>
           </div>
         {% endif %}
 
         {% with kps=s.get_key_points_list %}
           {% if kps %}
-            <div class="card border-0 shadow-sm rounded-4 p-4 mb-3">
-              <h5 class="fw-semibold mb-3">
-                <i class="bi bi-bullseye text-success me-2"></i>Key Points
-              </h5>
-              <ul class="mb-0 ps-3">
+            <div class="section-card">
+              <h3>
+                <span class="section-badge" style="background: var(--lime-bg); color: var(--lime); border-color: color-mix(in srgb, var(--lime) 22%, transparent);"><i class="bi bi-bullseye"></i></span>
+                Key points
+              </h3>
+              <ol>
                 {% for point in kps %}
-                  <li class="mb-2">{{ point }}</li>
+                  <li>{{ point }}</li>
                 {% endfor %}
-              </ul>
+              </ol>
             </div>
           {% endif %}
         {% endwith %}
 
         {% if s.methodology %}
-          <div class="card border-0 shadow-sm rounded-4 p-4 mb-3">
-            <h5 class="fw-semibold mb-3">
-              <i class="bi bi-gear text-warning me-2"></i>Methodology
-            </h5>
-            <p class="mb-0 lh-lg">{{ s.methodology }}</p>
+          <div class="section-card">
+            <h3>
+              <span class="section-badge" style="background: var(--amber-bg); color: var(--amber); border-color: color-mix(in srgb, var(--amber) 22%, transparent);"><i class="bi bi-gear"></i></span>
+              Methodology
+            </h3>
+            <p>{{ s.methodology }}</p>
           </div>
         {% endif %}
 
         {% if s.results %}
-          <div class="card border-0 shadow-sm rounded-4 p-4 mb-3">
-            <h5 class="fw-semibold mb-3">
-              <i class="bi bi-graph-up text-info me-2"></i>Results
-            </h5>
-            <p class="mb-0 lh-lg">{{ s.results }}</p>
+          <div class="section-card">
+            <h3>
+              <span class="section-badge" style="background: var(--cyan-bg); color: var(--cyan); border-color: color-mix(in srgb, var(--cyan) 22%, transparent);"><i class="bi bi-graph-up"></i></span>
+              Results
+            </h3>
+            <p>{{ s.results }}</p>
           </div>
         {% endif %}
 
         {% if s.conclusion %}
-          <div class="card border-0 shadow-sm rounded-4 p-4 mb-3">
-            <h5 class="fw-semibold mb-3">
-              <i class="bi bi-flag text-danger me-2"></i>Conclusion
-            </h5>
-            <p class="mb-0 lh-lg">{{ s.conclusion }}</p>
+          <div class="section-card">
+            <h3>
+              <span class="section-badge" style="background: var(--rose-bg); color: var(--rose); border-color: color-mix(in srgb, var(--rose) 22%, transparent);"><i class="bi bi-flag"></i></span>
+              Conclusion
+            </h3>
+            <p>{{ s.conclusion }}</p>
           </div>
         {% endif %}
 
         {% with cites=s.get_citations_list %}
           {% if cites %}
-            <div class="card border-0 shadow-sm rounded-4 p-4 mb-3">
-              <h5 class="fw-semibold mb-3">
-                <i class="bi bi-journal-bookmark text-secondary me-2"></i>References
-                <span class="badge bg-secondary-subtle text-secondary fw-normal ms-1" style="font-size:.72rem;">{{ cites|length }}</span>
-              </h5>
+            <div class="section-card">
+              <h3>
+                <span class="section-badge" style="background: var(--bg-2); color: var(--text-1); border-color: var(--border-2);"><i class="bi bi-journal-bookmark"></i></span>
+                References
+                <span class="badge bg-secondary-subtle" style="margin-left: auto; font-size: .7rem;">{{ cites|length }}</span>
+              </h3>
               {% for cite in cites %}
                 <div class="citation-item">[{{ forloop.counter }}] {{ cite }}</div>
               {% endfor %}
@@ -167,22 +174,23 @@
           {% endif %}
         {% endwith %}
 
-        <p class="text-muted small text-end">
-          <i class="bi bi-clock me-1"></i>Summarized {{ s.created_at|date:"F d, Y \a\t H:i" }} UTC
+        <p class="meta" style="text-align: right; margin-top: 16px;">
+          <i class="bi bi-clock"></i> Summarized {{ s.created_at|date:"F d, Y \a\t H:i" }} UTC
         </p>
         {% endwith %}
 
       {% else %}
-        <div class="card border-0 bg-body-secondary rounded-4 p-5 text-center">
-          <i class="bi bi-magic fs-1 text-muted mb-3 d-block"></i>
-          <h4 class="fw-semibold mb-2">Not yet summarized</h4>
-          <p class="text-muted mb-4">
-            Click "Summarize Now" to have Groq AI analyze and summarize this paper.
+        <div class="section-card" style="text-align: center; padding: 64px 24px;">
+          <i class="bi bi-magic" style="font-size: 2.4rem; color: var(--violet); display:block; margin-bottom: 16px;"></i>
+          <h3 style="margin-bottom: 8px;">Not yet summarized</h3>
+          <p style="color: var(--text-2); margin-bottom: 24px;">
+            Click "Summarize now" to have Groq AI analyze this paper.
           </p>
-          <form method="post" action="{% url 'papers:summarize' paper.pk %}" class="d-inline">
+          <form method="post" action="{% url 'papers:summarize' paper.pk %}"
+                class="js-summarize-form" data-confirm-loading style="display:inline;">
             {% csrf_token %}
-            <button type="submit" class="btn btn-primary btn-lg">
-              <i class="bi bi-magic me-2"></i>Summarize Now
+            <button type="submit" class="btn btn-violet btn-lg">
+              <i class="bi bi-magic"></i>Summarize now
             </button>
           </form>
         </div>

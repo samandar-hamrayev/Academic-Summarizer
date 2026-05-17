@@ -1,18 +1,20 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ summary.paper.title }} — Shared Summary</title>
+  <title>{{ summary.paper.title }} — Shared summary</title>
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  {% load static %}
-  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,300..700&family=Geist:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/wow-theme.css' %}">
 
   <script>
-    (function(){
+    (function () {
       var t = localStorage.getItem('as-theme') ||
         (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
       document.documentElement.setAttribute('data-theme', t);
@@ -21,169 +23,140 @@
 </head>
 <body>
 
-<!-- Minimal navbar -->
-<nav class="navbar navbar-dark sticky-top" id="main-nav">
+<header class="navbar-wow">
   <div class="container">
-    <a class="navbar-brand fw-bold" href="{% url 'home' %}">
-      <i class="bi bi-journal-text me-2"></i>Academic Summarizer
-    </a>
-    <div class="d-flex align-items-center gap-2">
-      <span class="badge bg-secondary">
-        <i class="bi bi-share me-1"></i>Shared View
-      </span>
-      <button class="btn btn-link theme-toggle nav-link" id="theme-toggle"
-              aria-label="Toggle theme">
-        <i id="theme-icon" class="bi bi-moon-fill"></i>
-      </button>
+    <div class="navbar-inner">
+      <a href="{% url 'home' %}" class="brand">
+        <span class="brand-mark">S</span>
+        <span class="brand-name">summarizer<span class="domain">.hamrayev.me</span></span>
+      </a>
+      <nav class="nav-links">
+        <span class="filter-pill">
+          <i class="bi bi-share"></i>shared view
+        </span>
+        <button class="icon-btn" id="theme-toggle" type="button" aria-label="Toggle theme">
+          <i id="theme-icon" class="bi bi-moon-fill"></i>
+        </button>
+      </nav>
     </div>
   </div>
-</nav>
+</header>
 
-<main class="py-4">
+<main>
 <div class="container" style="max-width: 900px;">
 
-  <!-- Header -->
-  <div class="mb-4">
-    <div class="d-flex align-items-center flex-wrap gap-2 mb-1">
-      <h1 class="fw-bold mb-0 fs-2">{{ summary.paper.title }}</h1>
-      <span class="lang-badge">
-        <i class="bi bi-translate"></i>
-        {% if summary.language == 'ru' %}Russian
-        {% elif summary.language == 'uz' %}Uzbek
-        {% else %}English{% endif %}
-      </span>
+  <div class="page-header" style="margin-top: 24px;">
+    <div>
+      <div style="display:flex; align-items:center; gap: 10px; flex-wrap: wrap; margin-bottom: 6px;">
+        <h1>{{ summary.paper.title }}</h1>
+        <span class="lang-badge">
+          <i class="bi bi-translate"></i>
+          {% if summary.language == 'ru' %}Russian
+          {% elif summary.language == 'uz' %}Uzbek
+          {% else %}English{% endif %}
+        </span>
+      </div>
+      {% if summary.paper.author %}
+        <div class="sub" style="color: var(--text-2);">
+          <i class="bi bi-person"></i> {{ summary.paper.author }}
+        </div>
+      {% endif %}
+      <div class="meta" style="margin-top: 8px;">
+        <i class="bi bi-clock"></i> Summarized {{ summary.created_at|date:"F d, Y" }}
+        &nbsp;·&nbsp;
+        <i class="bi bi-eye"></i> {{ link.access_count }} view{{ link.access_count|pluralize }}
+      </div>
     </div>
-    {% if summary.paper.author %}
-      <p class="text-muted mb-1">
-        <i class="bi bi-person me-1"></i>{{ summary.paper.author }}
-      </p>
-    {% endif %}
-    <small class="text-muted">
-      <i class="bi bi-clock me-1"></i>Summarized {{ summary.created_at|date:"F d, Y" }}
-      &nbsp;·&nbsp;
-      <i class="bi bi-eye me-1"></i>{{ link.access_count }} view{{ link.access_count|pluralize }}
-    </small>
   </div>
 
-  <!-- Sections -->
-  <div class="row g-4">
+  {% if summary.abstract %}
+    <section class="section-card">
+      <h3>
+        <span class="section-badge"><i class="bi bi-file-text"></i></span>
+        Abstract
+      </h3>
+      <p>{{ summary.abstract }}</p>
+    </section>
+  {% endif %}
 
-    {% if summary.abstract %}
-    <div class="col-12">
-      <div class="card border-0 shadow-sm rounded-4 p-4">
-        <h4 class="fw-semibold mb-3">
-          <span class="section-badge bg-primary-subtle text-primary me-2">
-            <i class="bi bi-file-text"></i>
-          </span>Abstract
-        </h4>
-        <p class="lh-lg mb-0">{{ summary.abstract }}</p>
-      </div>
-    </div>
-    {% endif %}
-
-    {% with kps=summary.get_key_points_list %}
-    {% if kps %}
-    <div class="col-lg-6">
-      <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
-        <h4 class="fw-semibold mb-3">
-          <span class="section-badge bg-success-subtle text-success me-2">
-            <i class="bi bi-bullseye"></i>
-          </span>Key Points
-        </h4>
-        <ol class="mb-0">
-          {% for point in kps %}
-            <li class="mb-2 lh-base">{{ point }}</li>
-          {% endfor %}
-        </ol>
-      </div>
-    </div>
-    {% endif %}
-    {% endwith %}
-
-    {% if summary.methodology %}
-    <div class="col-lg-6">
-      <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
-        <h4 class="fw-semibold mb-3">
-          <span class="section-badge bg-warning-subtle text-warning me-2">
-            <i class="bi bi-gear"></i>
-          </span>Methodology
-        </h4>
-        <p class="lh-lg mb-0">{{ summary.methodology }}</p>
-      </div>
-    </div>
-    {% endif %}
-
-    {% if summary.results %}
-    <div class="col-lg-6">
-      <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
-        <h4 class="fw-semibold mb-3">
-          <span class="section-badge bg-info-subtle text-info me-2">
-            <i class="bi bi-graph-up"></i>
-          </span>Results
-        </h4>
-        <p class="lh-lg mb-0">{{ summary.results }}</p>
-      </div>
-    </div>
-    {% endif %}
-
-    {% if summary.conclusion %}
-    <div class="col-lg-6">
-      <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
-        <h4 class="fw-semibold mb-3">
-          <span class="section-badge bg-danger-subtle text-danger me-2">
-            <i class="bi bi-flag"></i>
-          </span>Conclusion
-        </h4>
-        <p class="lh-lg mb-0">{{ summary.conclusion }}</p>
-      </div>
-    </div>
-    {% endif %}
-
-    {% with cites=summary.get_citations_list %}
-    {% if cites %}
-    <div class="col-12">
-      <div class="card border-0 shadow-sm rounded-4 p-4">
-        <h4 class="fw-semibold mb-3">
-          <span class="section-badge bg-secondary-subtle text-secondary me-2">
-            <i class="bi bi-journal-bookmark"></i>
-          </span>References
-          <span class="badge bg-secondary-subtle text-secondary fw-normal ms-2"
-                style="font-size:.75rem;">{{ cites|length }}</span>
-        </h4>
-        {% for cite in cites %}
-          <div class="citation-item">[{{ forloop.counter }}] {{ cite }}</div>
+  {% if key_points %}
+    <section class="section-card">
+      <h3>
+        <span class="section-badge" style="background: var(--lime-bg); color: var(--lime); border-color: color-mix(in srgb, var(--lime) 22%, transparent);"><i class="bi bi-bullseye"></i></span>
+        Key points
+      </h3>
+      <ol>
+        {% for point in key_points %}
+          <li>{{ point }}</li>
         {% endfor %}
-      </div>
-    </div>
-    {% endif %}
-    {% endwith %}
+      </ol>
+    </section>
+  {% endif %}
 
-  </div>
+  {% if summary.methodology %}
+    <section class="section-card">
+      <h3>
+        <span class="section-badge" style="background: var(--amber-bg); color: var(--amber); border-color: color-mix(in srgb, var(--amber) 22%, transparent);"><i class="bi bi-gear"></i></span>
+        Methodology
+      </h3>
+      <p>{{ summary.methodology }}</p>
+    </section>
+  {% endif %}
 
-  <!-- CTA -->
-  <div class="text-center mt-5 py-4 border-top">
-    <p class="text-muted mb-3">Want to summarize your own academic papers?</p>
-    <a href="{% url 'register' %}" class="btn btn-primary px-4">
-      <i class="bi bi-person-plus me-2"></i>Create Free Account
+  {% if summary.results %}
+    <section class="section-card">
+      <h3>
+        <span class="section-badge" style="background: var(--cyan-bg); color: var(--cyan); border-color: color-mix(in srgb, var(--cyan) 22%, transparent);"><i class="bi bi-graph-up"></i></span>
+        Results
+      </h3>
+      <p>{{ summary.results }}</p>
+    </section>
+  {% endif %}
+
+  {% if summary.conclusion %}
+    <section class="section-card">
+      <h3>
+        <span class="section-badge" style="background: var(--rose-bg); color: var(--rose); border-color: color-mix(in srgb, var(--rose) 22%, transparent);"><i class="bi bi-flag"></i></span>
+        Conclusion
+      </h3>
+      <p>{{ summary.conclusion }}</p>
+    </section>
+  {% endif %}
+
+  {% if citations %}
+    <section class="section-card">
+      <h3>
+        <span class="section-badge" style="background: var(--bg-2); color: var(--text-1); border-color: var(--border-2);"><i class="bi bi-journal-bookmark"></i></span>
+        References
+        <span class="badge bg-secondary-subtle" style="margin-left: auto;">{{ citations|length }}</span>
+      </h3>
+      {% for cite in citations %}
+        <div class="citation-item">[{{ forloop.counter }}] {{ cite }}</div>
+      {% endfor %}
+    </section>
+  {% endif %}
+
+  <div style="text-align:center; padding: 40px 16px; margin-top: 24px; border-top: 1px solid var(--border-1);">
+    <p class="meta" style="margin-bottom: 16px;">Want to summarize your own academic papers?</p>
+    <a href="{% url 'register' %}" class="btn btn-violet">
+      <i class="bi bi-person-plus"></i>Create free account
     </a>
-    <a href="{% url 'login' %}" class="btn btn-outline-secondary ms-2 px-4">Sign In</a>
+    <a href="{% url 'login' %}" class="btn btn-tech" style="margin-left: 6px;">Sign in</a>
   </div>
 
 </div>
 </main>
 
-<footer class="footer py-3 mt-auto">
-  <div class="container text-center">
-    <p class="mb-0 text-muted small">
-      <i class="bi bi-journal-text me-1"></i>Academic Summarizer
-    </p>
+<footer class="footer-wow" style="margin-top: 32px;">
+  <div class="container footer-inner">
+    <div class="footer-meta">
+      <span class="status pulse"><span class="dot"></span></span>
+      summarizer.hamrayev.me · groq llama-3.3-70b
+    </div>
   </div>
 </footer>
 
-<div id="toast-container" class="toast-container"></div>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-{% load static %}
 <script src="{% static 'js/main.js' %}"></script>
 </body>
 </html>

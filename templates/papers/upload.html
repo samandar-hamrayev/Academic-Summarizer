@@ -1,168 +1,150 @@
 {% extends 'base.html' %}
 
-{% block title %}Upload Paper — Academic Summarizer{% endblock %}
+{% block title %}Upload paper — Academic Summarizer{% endblock %}
 
 {% block content %}
 <div class="container">
   <div class="row justify-content-center">
-    <div class="col-lg-7 col-xl-6">
+    <div class="col-lg-8 col-xl-7">
 
-      <div class="d-flex align-items-center mb-4">
-        <a href="{% url 'papers:list' %}" class="btn btn-sm btn-outline-secondary me-3">
-          <i class="bi bi-arrow-left"></i>
-        </a>
-        <h1 class="fw-bold mb-0 fs-3">Upload Paper</h1>
+      <div class="page-header">
+        <div style="display:flex; align-items:center; gap: 12px;">
+          <a href="{% url 'papers:list' %}" class="icon-btn" aria-label="Back to papers">
+            <i class="bi bi-arrow-left"></i>
+          </a>
+          <div>
+            <h1 style="margin:0;">Upload paper</h1>
+            <div class="sub">PDF · max 50 MB · EN / RU / UZ</div>
+          </div>
+        </div>
       </div>
 
-      <div class="card border-0 shadow-sm rounded-4 p-4">
-        <form method="post" enctype="multipart/form-data" id="upload-form">
+      <div class="section-card">
+        <form method="post" enctype="multipart/form-data" id="upload-form"
+              class="js-summarize-form" data-confirm-loading>
           {% csrf_token %}
 
-          <!-- Drag-and-drop zone -->
-          <div id="drop-zone" class="drop-zone mb-4 rounded-3">
-
-            <!-- Default / idle state -->
+          <!-- Drop zone -->
+          <div id="drop-zone" class="drop-zone" style="margin-bottom: 16px;">
             <div id="drop-default">
-              {% load static %}
-              <i class="bi bi-cloud-upload drop-icon mb-3 d-block"></i>
-              <h5 class="fw-semibold mb-2">Drag &amp; drop your PDF here</h5>
-              <p class="text-muted small mb-3">or click to browse — max 50 MB</p>
-              <span class="badge bg-secondary-subtle text-secondary fw-normal px-3 py-2">
-                <i class="bi bi-file-earmark-pdf me-1"></i>PDF only
-              </span>
+              <i class="bi bi-cloud-upload drop-icon" style="display:block; margin-bottom: 12px;"></i>
+              <h4 style="font-size: 1.1rem; margin: 0 0 6px;">Drag &amp; drop your PDF here</h4>
+              <p style="font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--text-3); margin: 0;">
+                or click to browse — max 50 MB
+              </p>
             </div>
 
-            <!-- File preview (shown after selection) -->
-            <div id="file-preview" class="file-preview mt-3">
-              <i class="bi bi-file-earmark-pdf-fill text-danger" style="font-size:2rem;flex-shrink:0;"></i>
-              <div class="flex-grow-1 text-start overflow-hidden">
-                <div id="file-preview-name" class="fw-semibold text-truncate"></div>
-                <small id="file-preview-size" class="text-muted"></small>
+            <div id="file-preview" class="file-preview" style="margin-top: 14px;">
+              <i class="bi bi-file-earmark-pdf-fill" style="font-size:1.6rem; color: var(--rose); flex-shrink:0;"></i>
+              <div style="flex-grow:1; text-align:left; overflow: hidden;">
+                <div id="file-preview-name" class="mono" style="font-weight: 500; color: var(--text-0); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"></div>
+                <small id="file-preview-size" class="mono" style="color: var(--text-3);"></small>
               </div>
-              <button id="clear-file" type="button" class="btn btn-link p-0 text-danger"
-                      aria-label="Remove file">
-                <i class="bi bi-x-circle-fill fs-5"></i>
+              <button id="clear-file" type="button" class="icon-btn" aria-label="Remove file">
+                <i class="bi bi-x-lg"></i>
               </button>
             </div>
 
-            <!-- The actual file input (hidden, managed by JS) -->
             <input type="file" name="file" id="pdf-file-input" accept=".pdf" class="d-none">
           </div>
 
           {% if form.file.errors %}
-            <div class="alert alert-danger py-2 mb-3">
+            <div class="alert alert-danger" style="margin-bottom: 14px;">
               {% for e in form.file.errors %}<div>{{ e }}</div>{% endfor %}
             </div>
           {% endif %}
 
           <!-- Title -->
-          <div class="mb-3">
-            <label for="{{ form.title.id_for_label }}" class="form-label fw-medium">
-              Paper Title <span class="text-danger">*</span>
+          <div style="margin-bottom: 14px;">
+            <label for="{{ form.title.id_for_label }}" class="form-label">
+              Paper title <span style="color: var(--rose);">*</span>
             </label>
             {{ form.title }}
             {% for e in form.title.errors %}
-              <div class="text-danger small mt-1">{{ e }}</div>
+              <div class="invalid-feedback d-block">{{ e }}</div>
             {% endfor %}
           </div>
 
           <!-- Author -->
-          <div class="mb-4">
-            <label for="{{ form.author.id_for_label }}" class="form-label fw-medium">
+          <div style="margin-bottom: 20px;">
+            <label for="{{ form.author.id_for_label }}" class="form-label">
               Author(s)
             </label>
             {{ form.author }}
-            <div class="form-text">Optional. Separate multiple authors with commas.</div>
+            <div class="form-text" style="margin-top: 4px;">
+              Optional · separate multiple authors with commas
+            </div>
           </div>
 
           <!-- AI Tag Section (revealed after file selection) -->
-          <div id="tag-section" class="mb-4" style="display:none;">
-            <div class="d-flex align-items-center gap-2 mb-2">
-              <label class="form-label fw-medium mb-0">Tags</label>
-              <span id="tag-status" class="badge bg-info-subtle text-info border border-info-subtle">
+          <div id="tag-section" style="display:none; margin-bottom: 20px; padding: 16px; background: var(--bg-2); border-radius: var(--radius-sm); border: 1px solid var(--border-1);">
+            <div style="display:flex; align-items:center; gap: 8px; margin-bottom: 10px;">
+              <span class="form-label" style="margin: 0;">Tags</span>
+              <span id="tag-status" class="filter-pill" style="font-size: 0.7rem;">
                 <span id="tag-status-spinner"
                       class="spinner-border spinner-border-sm me-1"
-                      role="status" aria-hidden="true"></span>
+                      role="status" aria-hidden="true"
+                      style="width: 12px; height: 12px; border-width: 2px;"></span>
                 <span id="tag-status-text">AI analyzing…</span>
               </span>
             </div>
 
-            <!-- AI suggestions -->
-            <div id="suggested-tags-wrap" class="mb-3" style="display:none;">
-              <p class="small text-muted mb-2">
-                <i class="bi bi-stars me-1 text-warning"></i>AI suggestions — click to add:
+            <div id="suggested-tags-wrap" style="display:none; margin-bottom: 12px;">
+              <p class="meta" style="margin-bottom: 8px;">
+                <i class="bi bi-stars" style="color: var(--amber);"></i> AI suggestions — click to add
               </p>
-              <div id="suggested-tags-list" class="d-flex flex-wrap gap-2"></div>
+              <div id="suggested-tags-list" style="display:flex; flex-wrap:wrap; gap: 6px;"></div>
             </div>
 
-            <!-- Selected tags -->
-            <div class="mb-3">
-              <p class="small text-muted mb-2">
-                <i class="bi bi-tags me-1"></i>Selected tags:
+            <div style="margin-bottom: 10px;">
+              <p class="meta" style="margin-bottom: 8px;">
+                <i class="bi bi-tags"></i> Selected tags
               </p>
-              <div id="selected-tags-list" class="d-flex flex-wrap gap-2">
-                <span class="text-muted small fst-italic">None yet</span>
+              <div id="selected-tags-list" style="display:flex; flex-wrap:wrap; gap: 6px;">
+                <span class="meta" style="color: var(--text-3); font-style: italic;">None yet</span>
               </div>
             </div>
 
-            <!-- Custom tag input -->
-            <div class="input-group input-group-sm">
-              <input type="text" id="custom-tag-input" class="form-control"
-                     placeholder="Type a custom tag and press Enter…" maxlength="50">
-              <button type="button" id="add-custom-tag-btn" class="btn btn-outline-secondary">
-                <i class="bi bi-plus-lg"></i> Add
+            <div style="display:flex; gap:6px;">
+              <input type="text" id="custom-tag-input"
+                     placeholder="Custom tag…" maxlength="50"
+                     class="form-control" style="font-size: 0.82rem; padding: 6px 10px;">
+              <button type="button" id="add-custom-tag-btn" class="btn btn-tech btn-sm">
+                <i class="bi bi-plus-lg"></i>Add
               </button>
             </div>
 
-            <!-- Hidden field carries final tags to the server -->
             <input type="hidden" name="tags_json" id="tags-json-input" value="[]">
           </div>
 
-          <!-- Progress steps (hidden until submit) -->
-          <div id="progress-steps" class="progress-steps border rounded-3 p-3 mb-4">
-            <p class="fw-medium small text-muted mb-2">Processing steps</p>
-            <div class="step-item" data-step="1">
-              <div class="step-dot">1</div><span>Uploading file…</span>
-            </div>
-            <div class="step-item" data-step="2">
-              <div class="step-dot">2</div><span>Extracting text from PDF…</span>
-            </div>
-            <div class="step-item" data-step="3">
-              <div class="step-dot">3</div><span>Detecting language &amp; context…</span>
-            </div>
-            <div class="step-item" data-step="4">
-              <div class="step-dot">4</div><span>Generating AI summary &amp; citations…</span>
-            </div>
-          </div>
-
-          <div class="d-grid">
-            <button type="submit" class="btn btn-primary btn-lg" id="submit-btn">
-              <i class="bi bi-magic me-2"></i>Upload &amp; Summarize
+          <div style="display: grid;">
+            <button type="submit" class="btn btn-violet btn-lg" id="submit-btn">
+              <i class="bi bi-magic"></i>Upload &amp; summarize
             </button>
           </div>
 
           {% if form.non_field_errors %}
-            <div class="alert alert-danger mt-3">
+            <div class="alert alert-danger" style="margin-top: 14px;">
               {% for e in form.non_field_errors %}{{ e }}{% endfor %}
             </div>
           {% endif %}
         </form>
       </div>
 
-      <!-- Info bar -->
-      <div class="card border-0 bg-body-secondary rounded-4 p-3 mt-3">
+      <!-- Info row -->
+      <div class="section-card" style="background: var(--bg-2); padding: 16px;">
         <div class="row g-3 text-center">
           <div class="col-4">
-            <i class="bi bi-lightning-charge text-primary fs-5 d-block mb-1"></i>
-            <small class="text-muted">~10–30 s</small>
+            <i class="bi bi-lightning-charge" style="color: var(--violet); font-size: 1.1rem; display:block; margin-bottom: 4px;"></i>
+            <small class="meta">~10-30 s</small>
           </div>
           <div class="col-4">
-            <i class="bi bi-translate text-success fs-5 d-block mb-1"></i>
-            <small class="text-muted">EN / RU / UZ</small>
+            <i class="bi bi-translate" style="color: var(--lime); font-size: 1.1rem; display:block; margin-bottom: 4px;"></i>
+            <small class="meta">EN · RU · UZ</small>
           </div>
           <div class="col-4">
-            <i class="bi bi-download text-info fs-5 d-block mb-1"></i>
-            <small class="text-muted">PDF &amp; Word</small>
+            <i class="bi bi-download" style="color: var(--cyan); font-size: 1.1rem; display:block; margin-bottom: 4px;"></i>
+            <small class="meta">PDF &amp; Word</small>
           </div>
         </div>
       </div>
@@ -177,7 +159,7 @@
 (function () {
   'use strict';
 
-  // ── DOM refs ──────────────────────────────────────────────────────────────
+  // ── DOM refs ──────────────────────────────────────────────────────────
   const fileInput        = document.getElementById('pdf-file-input');
   const tagSection       = document.getElementById('tag-section');
   const tagStatus        = document.getElementById('tag-status');
@@ -193,22 +175,22 @@
   const PREVIEW_URL = '{% url "summarizer:preview_tags" %}';
   const CSRF_TOKEN  = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
-  // ── State ─────────────────────────────────────────────────────────────────
   const selectedTags = new Set();
 
-  // ── Status badge helpers ──────────────────────────────────────────────────
   function setStatus(text, variant, showSpinner) {
     tagStatusText.textContent = text;
-    tagStatus.className = `badge bg-${variant}-subtle text-${variant} border border-${variant}-subtle`;
+    tagStatus.style.color =
+      variant === 'success' ? 'var(--lime)' :
+      variant === 'warning' ? 'var(--amber)' :
+      variant === 'danger'  ? 'var(--rose)'  : 'var(--violet)';
     tagStatusSpinner.style.display = showSpinner ? 'inline-block' : 'none';
   }
 
-  // ── Chip factory ──────────────────────────────────────────────────────────
   function makeSuggestedChip(name) {
     const chip = document.createElement('button');
     chip.type = 'button';
     chip.className = 'tag-chip tag-chip--suggested';
-    chip.innerHTML = `<i class="bi bi-plus-circle me-1"></i>${escHtml(name)}`;
+    chip.innerHTML = `<i class="bi bi-plus-circle"></i>${escHtml(name)}`;
     chip.title = 'Click to add this tag';
     chip.addEventListener('click', () => addTag(name));
     return chip;
@@ -224,13 +206,11 @@
     return chip;
   }
 
-  // ── Tag operations ────────────────────────────────────────────────────────
   function addTag(name) {
     name = name.trim().slice(0, 50);
     if (!name || selectedTags.has(name)) return;
     selectedTags.add(name);
     renderSelectedTags();
-    // Dim the matching suggestion chip
     suggestedList.querySelectorAll('.tag-chip--suggested').forEach(chip => {
       if (chip.dataset.name === name) { chip.classList.add('tag-chip--added'); chip.disabled = true; }
     });
@@ -239,7 +219,6 @@
   function removeTag(name) {
     selectedTags.delete(name);
     renderSelectedTags();
-    // Re-enable the matching suggestion chip
     suggestedList.querySelectorAll('.tag-chip--suggested').forEach(chip => {
       if (chip.dataset.name === name) { chip.classList.remove('tag-chip--added'); chip.disabled = false; }
     });
@@ -248,14 +227,13 @@
   function renderSelectedTags() {
     selectedList.innerHTML = '';
     if (selectedTags.size === 0) {
-      selectedList.innerHTML = '<span class="text-muted small fst-italic">None yet</span>';
+      selectedList.innerHTML = '<span class="meta" style="color: var(--text-3); font-style: italic;">None yet</span>';
     } else {
       selectedTags.forEach(name => selectedList.appendChild(makeSelectedChip(name)));
     }
     tagsJsonInput.value = JSON.stringify([...selectedTags]);
   }
 
-  // ── Fetch tag suggestions ─────────────────────────────────────────────────
   async function fetchTags(file) {
     tagSection.style.display = 'block';
     suggestedWrap.style.display = 'none';
@@ -294,25 +272,19 @@
     setStatus(`${tags.length} suggestion${tags.length > 1 ? 's' : ''} ready`, 'success', false);
   }
 
-  // ── Wire file input ───────────────────────────────────────────────────────
-  // main.js already handles the file preview on this input;
-  // we attach a second listener for tag extraction.
   fileInput.addEventListener('change', () => {
     if (fileInput.files.length) fetchTags(fileInput.files[0]);
   });
 
-  // ── Custom tag input ──────────────────────────────────────────────────────
   function handleCustomAdd() {
     const val = customInput.value.trim();
     if (val) { addTag(val); customInput.value = ''; customInput.focus(); }
   }
-
   addCustomBtn.addEventListener('click', handleCustomAdd);
   customInput.addEventListener('keydown', e => {
     if (e.key === 'Enter') { e.preventDefault(); handleCustomAdd(); }
   });
 
-  // ── Utility ───────────────────────────────────────────────────────────────
   function escHtml(str) {
     return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
               .replace(/"/g,'&quot;').replace(/'/g,'&#039;');

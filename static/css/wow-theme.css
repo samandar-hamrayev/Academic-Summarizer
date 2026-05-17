@@ -1337,6 +1337,328 @@ hr { border: none; border-top: 1px solid var(--border-1); margin: 24px 0; }
 @media (max-width: 900px) { .paper-grid-wow { grid-template-columns: 1fr; } }
 
 
+/* ── 32h. Page header pattern (Wave 4) ────────────────────────────────── */
+
+.page-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin: 32px 0 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border-1);
+}
+.page-header h1 {
+  font-size: 1.75rem;
+  margin: 0 0 4px;
+}
+.page-header .sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--text-3);
+}
+
+/* Filter / pill row */
+.filter-bar {
+  display: flex; align-items: center; gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.filter-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--text-1);
+  background: var(--violet-bg);
+  border: 1px solid color-mix(in srgb, var(--violet) 28%, transparent);
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+}
+.filter-pill .clear {
+  background: none; border: none; padding: 0;
+  color: var(--text-2); cursor: pointer; line-height: 1;
+}
+.filter-pill .clear:hover { color: var(--rose); }
+
+
+/* ── 32i. Summary-detail layout (Wave 4) ──────────────────────────────── */
+
+.summary-shell {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 32px;
+  align-items: start;
+  margin-top: 24px;
+}
+@media (max-width: 900px) {
+  .summary-shell { grid-template-columns: 1fr; gap: 16px; }
+  .summary-nav { position: static !important; }
+}
+
+.summary-nav {
+  position: sticky;
+  top: 80px;
+  background: var(--bg-1);
+  border: 1px solid var(--border-1);
+  border-radius: var(--radius-md);
+  padding: 14px;
+}
+.summary-nav .nav-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin: 0 0 10px;
+  padding: 0 8px;
+}
+.summary-nav a {
+  display: flex; align-items: center; gap: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  color: var(--text-2);
+  text-decoration: none;
+  padding: 7px 8px;
+  border-radius: var(--radius-xs);
+  transition: all var(--t-fast) ease;
+}
+.summary-nav a:hover { background: var(--bg-2); color: var(--text-0); }
+.summary-nav a.is-active { background: var(--violet-bg); color: var(--violet); }
+.summary-nav a i { width: 16px; text-align: center; }
+
+.section-card {
+  background: var(--bg-1);
+  border: 1px solid var(--border-1);
+  border-radius: var(--radius-md);
+  padding: 28px;
+  margin-bottom: 16px;
+  scroll-margin-top: 80px;
+}
+.section-card h3 {
+  font-size: 1.15rem;
+  margin: 0 0 16px;
+  display: flex; align-items: center; gap: 12px;
+}
+.section-card h3 .section-badge { flex-shrink: 0; }
+.section-card p,
+.section-card ol,
+.section-card ul {
+  color: var(--text-1);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  margin: 0;
+}
+.section-card ol, .section-card ul { padding-left: 1.4rem; }
+.section-card li { margin-bottom: 8px; }
+
+/* Paper sidebar (detail page left column) */
+.paper-aside {
+  background: var(--bg-1);
+  border: 1px solid var(--border-1);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  position: sticky;
+  top: 80px;
+}
+.paper-aside .file-icon-wrap {
+  width: 56px; height: 56px;
+  margin: 0 auto 12px;
+  border-radius: var(--radius-md);
+  background: var(--violet-bg);
+  display: grid; place-items: center;
+  color: var(--violet);
+  font-size: 1.75rem;
+}
+.paper-aside .kv-list {
+  list-style: none; padding: 0; margin: 16px 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--text-2);
+}
+.paper-aside .kv-list li {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 0;
+  border-bottom: 1px dashed var(--border-1);
+}
+.paper-aside .kv-list li:last-child { border-bottom: none; }
+.paper-aside .kv-list i { color: var(--text-3); width: 14px; text-align: center; }
+
+
+/* ── 32j. Action button row (Wave 4) ──────────────────────────────────── */
+
+.action-row {
+  display: flex; gap: 8px; flex-wrap: wrap;
+}
+.action-row form { display: inline-flex; }
+
+
+/* ── 32k. Auth card (Wave 5) ──────────────────────────────────────────── */
+
+.auth-shell {
+  min-height: calc(100vh - 200px);
+  display: grid;
+  place-items: center;
+  padding: 48px 16px;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--bg-1);
+  border: 1px solid var(--border-1);
+  border-radius: var(--radius-lg);
+  padding: 36px;
+  position: relative;
+  z-index: 2;
+  box-shadow: var(--shadow-md);
+}
+.auth-card .auth-mark {
+  width: 44px; height: 44px;
+  margin: 0 auto 16px;
+  border-radius: var(--radius-md);
+  background: var(--violet);
+  display: grid; place-items: center;
+  color: #fff;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  font-size: 1.1rem;
+  box-shadow: 0 0 0 1px var(--violet-mute), 0 4px 16px var(--violet-glow);
+}
+.auth-card h1 {
+  font-size: 1.5rem;
+  text-align: center;
+  margin: 0 0 4px;
+}
+.auth-card .auth-sub {
+  text-align: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--text-3);
+  margin-bottom: 28px;
+}
+.auth-card form .mb-3 { margin-bottom: 14px; }
+.auth-card .form-divider {
+  margin: 24px 0 16px;
+  text-align: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--text-3);
+  position: relative;
+}
+.auth-card .form-divider::before,
+.auth-card .form-divider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 38%;
+  height: 1px;
+  background: var(--border-1);
+}
+.auth-card .form-divider::before { left: 0; }
+.auth-card .form-divider::after  { right: 0; }
+
+
+/* ── 32l. Loading overlay (Wave 6) ────────────────────────────────────── */
+
+.wow-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: color-mix(in srgb, var(--bg-0) 92%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: wow-fade 240ms ease both;
+}
+.wow-overlay.is-active { display: flex; }
+.wow-overlay-inner {
+  width: 100%;
+  max-width: 480px;
+  background: var(--bg-1);
+  border: 1px solid var(--border-2);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+}
+.wow-overlay h3 {
+  font-size: 1.15rem;
+  margin: 0 0 4px;
+}
+.wow-overlay .ov-sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--text-3);
+  margin-bottom: 24px;
+}
+.wow-progress {
+  height: 4px;
+  background: var(--bg-2);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  margin-bottom: 24px;
+  position: relative;
+}
+.wow-progress::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, var(--violet), transparent);
+  animation: wow-prog-slide 1.4s ease-in-out infinite;
+  width: 40%;
+}
+@keyframes wow-prog-slide {
+  0%   { left: -40%; }
+  100% { left: 100%; }
+}
+.wow-steps {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.wow-steps li {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
+  color: var(--text-3);
+  transition: color var(--t-base) ease;
+}
+.wow-steps li .step-dot {
+  width: 22px; height: 22px;
+  border-radius: var(--radius-xs);
+  background: var(--bg-2);
+  border: 1px solid var(--border-2);
+  display: grid; place-items: center;
+  font-size: 0.7rem;
+  font-weight: 500;
+  flex-shrink: 0;
+  transition: all var(--t-base) ease;
+}
+.wow-steps li.is-active { color: var(--violet); }
+.wow-steps li.is-active .step-dot {
+  background: var(--violet);
+  border-color: var(--violet-mute);
+  color: #fff;
+  box-shadow: 0 0 0 3px var(--violet-glow);
+}
+.wow-steps li.is-done { color: var(--lime); }
+.wow-steps li.is-done .step-dot {
+  background: var(--lime);
+  border-color: var(--lime);
+  color: #08080C;
+}
+
+
 /* ── 33.  Reduced motion ─────────────────────────────────────────────────── */
 
 @media (prefers-reduced-motion: reduce) {
