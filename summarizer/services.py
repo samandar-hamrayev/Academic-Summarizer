@@ -368,6 +368,15 @@ def chat_with_paper(paper, summary, history, question: str) -> str:
 
     context = '\n\n'.join(sections) if sections else '(no structured summary available)'
 
+    # Reply in the paper's language so the user sees consistent content,
+    # regardless of which UI language they have selected.
+    paper_lang = getattr(paper, 'language', None) or getattr(summary, 'language', 'en')
+    lang_directive = {
+        'en': "Respond in clear, academic English.",
+        'ru': "Отвечайте на грамотном академическом русском языке.",
+        'uz': "Akademik o'zbek tilida (lotin yozuvi, o' va g' apostroflari bilan) javob bering.",
+    }.get(paper_lang, "Respond in clear, academic English.")
+
     system_prompt = (
         "You are an academic research assistant. The user has uploaded the paper "
         f"'{title}' by {author}. Below is the structured summary of the paper:\n\n"
@@ -377,7 +386,8 @@ def chat_with_paper(paper, summary, history, question: str) -> str:
         "If asked about content not present in the summary, say so honestly — do not invent details. "
         "Format your response in Markdown when helpful (bullet points, **bold** for key terms, "
         "inline `code` for variable names, blockquotes for direct claims). "
-        "Keep answers concise unless the user explicitly asks for more detail."
+        "Keep answers concise unless the user explicitly asks for more detail. "
+        f"{lang_directive}"
     )
 
     messages = [{'role': 'system', 'content': system_prompt}]
@@ -411,10 +421,16 @@ def chat_with_paper(paper, summary, history, question: str) -> str:
 # ---- Orchestration -------------------------------------------------------
 
 def summarize_paper_task(paper, text: str) -> None:
-    """Summarize a Paper and persist the result."""
+    """Summarize a Paper and persist the result.
+
+    Generates the summary in `paper.language`, which was set by the upload
+    flow (either auto-detected or user-overridden). UI language is irrelevant
+    here — the summary always matches the paper's own language.
+    """
     from .models import Summary
 
-    result = summarize_paper_text(text, title=paper.title)
+    lang = paper.language if paper.language in {'en', 'ru', 'uz'} else None
+    result = summarize_paper_text(text, title=paper.title, language=lang)
 
     summary, _ = Summary.objects.get_or_create(paper=paper)
     summary.abstract    = result['abstract']
