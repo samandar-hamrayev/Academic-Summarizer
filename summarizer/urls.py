@@ -12,4 +12,9 @@ urlpatterns = [
     path('<int:pk>/share/',             views.create_share_link,             name='create_share'),
     path('share/revoke/<int:link_pk>/', views.revoke_share_link,             name='revoke_share'),
     path('shared/<uuid:token>/',        views.shared_summary_view,           name='shared'),
+
+    # Chat with paper — scoped to a Paper pk (not Summary pk)
+    path('paper/<int:pk>/chat/history/', views.chat_history,                 name='chat_history'),
+    path('paper/<int:pk>/chat/send/',    views.chat_send,                    name='chat_send'),
+    path('paper/<int:pk>/chat/clear/',   views.chat_clear,                   name='chat_clear'),
 ]

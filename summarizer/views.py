@@ -1,4 +1,5 @@
 import io
+import json
 import logging
 
 from django.contrib import messages
@@ -11,7 +12,9 @@ from django.utils.dateparse import parse_datetime
 from django.views.decorators.http import require_POST
 from django.views.generic import DetailView, ListView
 
-from .models import ShareLink, Summary
+from papers.models import Paper
+
+from .models import ChatMessage, ShareLink, Summary
 
 logger = logging.getLogger(__name__)
 
@@ -131,6 +134,90 @@ def shared_summary_view(request, token):
         'citations':  summary.get_citations_list(),
         'link':       link,
     })
+
+
+# ---- Chat with paper -----------------------------------------------------
+
+@login_required
+def chat_history(request, pk):
+    """Return the user's chat history for this paper as JSON."""
+    paper = get_object_or_404(Paper, pk=pk, uploaded_by=request.user)
+    msgs = ChatMessage.objects.filter(paper=paper, user=request.user).order_by('created_at')
+    return JsonResponse({
+        'messages': [
+            {
+                'role':       m.role,
+                'content':    m.content,
+                'created_at': m.created_at.isoformat(),
+            }
+            for m in msgs
+        ],
+    })
+
+
+@login_required
+@require_POST
+def chat_send(request, pk):
+    """Accept a new user message, call Groq, persist + return the assistant reply."""
+    paper = get_object_or_404(Paper, pk=pk, uploaded_by=request.user)
+
+    if not hasattr(paper, 'summary'):
+        return JsonResponse(
+            {'error': 'This paper has not been summarized yet — generate a summary first.'},
+            status=400,
+        )
+
+    try:
+        payload = json.loads(request.body.decode('utf-8'))
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        return JsonResponse({'error': 'Invalid JSON body.'}, status=400)
+
+    content = (payload.get('content') or '').strip()
+    if not content:
+        return JsonResponse({'error': 'Message is empty.'}, status=400)
+    if len(content) > 2000:
+        return JsonResponse({'error': 'Message too long (max 2000 chars).'}, status=400)
+
+    # Persist user message first so it survives even if the API call fails
+    user_msg = ChatMessage.objects.create(
+        paper=paper, user=request.user, role='user', content=content,
+    )
+
+    history = list(
+        ChatMessage.objects
+        .filter(paper=paper, user=request.user)
+        .exclude(pk=user_msg.pk)
+        .order_by('created_at')
+    )
+
+    try:
+        from .services import chat_with_paper
+        reply = chat_with_paper(paper, paper.summary, history, content)
+    except ValueError as exc:
+        logger.error('chat_with_paper failed for paper %s: %s', pk, exc)
+        return JsonResponse({'error': str(exc)}, status=500)
+    except Exception as exc:
+        logger.exception('Unexpected chat error for paper %s', pk)
+        return JsonResponse({'error': f'Unexpected error: {exc}'}, status=500)
+
+    assistant_msg = ChatMessage.objects.create(
+        paper=paper, user=request.user, role='assistant', content=reply,
+    )
+
+    return JsonResponse({
+        'reply':      reply,
+        'message_id': assistant_msg.pk,
+        'created_at': assistant_msg.created_at.isoformat(),
+    })
+
+
+@login_required
+@require_POST
+def chat_clear(request, pk):
+    """Wipe the chat history for this paper for this user."""
+    paper = get_object_or_404(Paper, pk=pk, uploaded_by=request.user)
+    deleted, _ = ChatMessage.objects.filter(paper=paper, user=request.user).delete()
+    return JsonResponse({'deleted': deleted})
 
 
 # ---- PDF / Word exports --------------------------------------------------

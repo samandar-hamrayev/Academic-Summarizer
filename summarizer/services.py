@@ -263,6 +263,79 @@ def extract_tags_from_text(text: str, max_tags: int = 5) -> list:
         return []
 
 
+# ---- Chat with paper ----------------------------------------------------
+
+def chat_with_paper(paper, summary, history, question: str) -> str:
+    """
+    Answer a free-form question about a paper, using its structured summary
+    as the grounding context plus the last ten turns of conversation.
+
+    Args:
+        paper:    papers.models.Paper
+        summary:  summarizer.models.Summary (must exist)
+        history:  iterable of ChatMessage in chronological order
+                  (NOT including the new question)
+        question: the new user question
+
+    Returns the assistant reply as a string. Raises ValueError on API errors.
+    """
+    client = _get_client()
+
+    title  = paper.title
+    author = paper.author or 'Unknown'
+
+    sections = []
+    if summary.abstract:    sections.append(f'## ABSTRACT\n{summary.abstract}')
+    kps = summary.get_key_points_list()
+    if kps:                 sections.append('## KEY POINTS\n' + '\n'.join(f'- {kp}' for kp in kps))
+    if summary.methodology: sections.append(f'## METHODOLOGY\n{summary.methodology}')
+    if summary.results:     sections.append(f'## RESULTS\n{summary.results}')
+    if summary.conclusion:  sections.append(f'## CONCLUSION\n{summary.conclusion}')
+    cites = summary.get_citations_list()
+    if cites:               sections.append('## REFERENCES\n' + '\n'.join(f'[{i}] {c}' for i, c in enumerate(cites, 1)))
+
+    context = '\n\n'.join(sections) if sections else '(no structured summary available)'
+
+    system_prompt = (
+        "You are an academic research assistant. The user has uploaded the paper "
+        f"'{title}' by {author}. Below is the structured summary of the paper:\n\n"
+        f"{context}\n\n"
+        "Answer the user's questions about this paper based on this context. "
+        "Be precise, academic, and helpful. "
+        "If asked about content not present in the summary, say so honestly — do not invent details. "
+        "Format your response in Markdown when helpful (bullet points, **bold** for key terms, "
+        "inline `code` for variable names, blockquotes for direct claims). "
+        "Keep answers concise unless the user explicitly asks for more detail."
+    )
+
+    messages = [{'role': 'system', 'content': system_prompt}]
+    # Keep the last 10 turns to fit context window comfortably
+    for msg in list(history)[-10:]:
+        messages.append({'role': msg.role, 'content': msg.content})
+    messages.append({'role': 'user', 'content': question})
+
+    try:
+        response = client.chat.completions.create(
+            model='llama-3.3-70b-versatile',
+            messages=messages,
+            temperature=0.4,
+            max_tokens=1500,
+        )
+    except APIStatusError as exc:
+        logger.error('Groq chat status error %s: %s', exc.status_code, exc.message)
+        if exc.status_code == 429:
+            raise ValueError('Groq rate limit reached. Please wait a moment and try again.') from exc
+        raise ValueError(f'Groq API error ({exc.status_code}): {exc.message}') from exc
+    except APIConnectionError as exc:
+        logger.error('Groq chat connection error: %s', exc)
+        raise ValueError(f'Could not connect to Groq API: {exc}') from exc
+
+    reply = (response.choices[0].message.content or '').strip()
+    if not reply:
+        raise ValueError('Empty response from model.')
+    return reply
+
+
 # ---- Orchestration -------------------------------------------------------
 
 def summarize_paper_task(paper, text: str) -> None:

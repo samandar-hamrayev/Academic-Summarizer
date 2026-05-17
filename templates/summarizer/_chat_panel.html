@@ -1,0 +1,66 @@
+{% comment %}
+  Reusable chat panel for a Paper.
+  Usage: {% include 'summarizer/_chat_panel.html' with paper=paper %}
+  Renders nothing if the paper has no summary yet.
+{% endcomment %}
+{% if paper.has_summary %}
+<section class="chat-panel"
+         data-chat-panel
+         data-paper-id="{{ paper.pk }}"
+         data-history-url="{% url 'summarizer:chat_history' paper.pk %}"
+         data-send-url="{% url 'summarizer:chat_send' paper.pk %}"
+         data-clear-url="{% url 'summarizer:chat_clear' paper.pk %}"
+         data-csrf="{{ csrf_token }}">
+
+  <div class="chat-head">
+    <div>
+      <h3>Chat with this paper</h3>
+      <div class="chat-sub">groq · llama-3.3-70b · grounded in the summary above</div>
+    </div>
+    <span class="spacer"></span>
+    <button type="button" class="chat-clear" data-chat-clear>Clear history</button>
+  </div>
+
+  <div class="chat-empty" data-chat-empty>
+    <div class="chat-empty-icon"><i class="bi bi-chat-square-text"></i></div>
+    <h4>Ask anything about this paper.</h4>
+    <p>Try one of these prompts to get started, or type your own.</p>
+    <div class="chat-suggestions">
+      <button type="button" class="chip" data-suggestion="What is the main contribution of this paper?">
+        Main contribution?
+      </button>
+      <button type="button" class="chip" data-suggestion="Summarize the methodology in plain language.">
+        Methodology in plain language
+      </button>
+      <button type="button" class="chip" data-suggestion="What are the most important results, with numbers?">
+        Most important results
+      </button>
+      <button type="button" class="chip" data-suggestion="What are the limitations or weaknesses?">
+        Limitations &amp; weaknesses
+      </button>
+      <button type="button" class="chip" data-suggestion="Suggest three follow-up research questions.">
+        Follow-up questions
+      </button>
+    </div>
+  </div>
+
+  <div class="chat-messages" data-chat-messages
+       role="log" aria-live="polite" aria-relevant="additions"></div>
+
+  <div class="chat-error" data-chat-error role="alert"></div>
+
+  <form class="chat-input" data-chat-form>
+    <textarea data-chat-input
+              placeholder="Ask about this paper…"
+              rows="1"
+              maxlength="2000"
+              aria-label="Your message"></textarea>
+    <button type="submit" class="btn btn-primary send-btn" data-chat-send>
+      <i class="bi bi-arrow-up"></i> Send
+    </button>
+  </form>
+  <div class="chat-hint">
+    Enter to send · Shift+Enter for a new line · max 2,000 chars
+  </div>
+</section>
+{% endif %}
