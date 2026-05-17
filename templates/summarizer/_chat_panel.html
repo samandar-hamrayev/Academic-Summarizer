@@ -1,3 +1,4 @@
+{% load i18n %}
 {% comment %}
   Reusable chat panel for a Paper.
   Usage: {% include 'summarizer/_chat_panel.html' with paper=paper %}
@@ -14,32 +15,32 @@
 
   <div class="chat-head">
     <div>
-      <h3>Chat with this paper</h3>
-      <div class="chat-sub">groq · llama-3.3-70b · grounded in the summary above</div>
+      <h3>{% trans "Chat with this paper" %}</h3>
+      <div class="chat-sub">{% trans "groq · llama-3.3-70b · grounded in the summary above" %}</div>
     </div>
     <span class="spacer"></span>
-    <button type="button" class="chat-clear" data-chat-clear>Clear history</button>
+    <button type="button" class="chat-clear" data-chat-clear>{% trans "Clear history" %}</button>
   </div>
 
   <div class="chat-empty" data-chat-empty>
     <div class="chat-empty-icon"><i class="bi bi-chat-square-text"></i></div>
-    <h4>Ask anything about this paper.</h4>
-    <p>Try one of these prompts to get started, or type your own.</p>
+    <h4>{% trans "Ask anything about this paper." %}</h4>
+    <p>{% trans "Try one of these prompts to get started, or type your own." %}</p>
     <div class="chat-suggestions">
-      <button type="button" class="chip" data-suggestion="What is the main contribution of this paper?">
-        Main contribution?
+      <button type="button" class="chip" data-suggestion="{% trans 'What is the main contribution of this paper?' %}">
+        {% trans "Main contribution?" %}
       </button>
-      <button type="button" class="chip" data-suggestion="Summarize the methodology in plain language.">
-        Methodology in plain language
+      <button type="button" class="chip" data-suggestion="{% trans 'Summarize the methodology in plain language.' %}">
+        {% trans "Methodology in plain language" %}
       </button>
-      <button type="button" class="chip" data-suggestion="What are the most important results, with numbers?">
-        Most important results
+      <button type="button" class="chip" data-suggestion="{% trans 'What are the most important results, with numbers?' %}">
+        {% trans "Most important results" %}
       </button>
-      <button type="button" class="chip" data-suggestion="What are the limitations or weaknesses?">
-        Limitations &amp; weaknesses
+      <button type="button" class="chip" data-suggestion="{% trans 'What are the limitations or weaknesses?' %}">
+        {% trans "Limitations & weaknesses" %}
       </button>
-      <button type="button" class="chip" data-suggestion="Suggest three follow-up research questions.">
-        Follow-up questions
+      <button type="button" class="chip" data-suggestion="{% trans 'Suggest three follow-up research questions.' %}">
+        {% trans "Follow-up questions" %}
       </button>
     </div>
   </div>
@@ -51,16 +52,16 @@
 
   <form class="chat-input" data-chat-form>
     <textarea data-chat-input
-              placeholder="Ask about this paper…"
+              placeholder="{% trans 'Ask about this paper…' %}"
               rows="1"
               maxlength="2000"
-              aria-label="Your message"></textarea>
+              aria-label="{% trans 'Your message' %}"></textarea>
     <button type="submit" class="btn btn-primary send-btn" data-chat-send>
-      <i class="bi bi-arrow-up"></i> Send
+      <i class="bi bi-arrow-up"></i> {% trans "Send" %}
     </button>
   </form>
   <div class="chat-hint">
-    Enter to send · Shift+Enter for a new line · max 2,000 chars
+    {% trans "Enter to send · Shift+Enter for a new line · max 2,000 chars" %}
   </div>
 </section>
 {% endif %}

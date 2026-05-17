@@ -1,23 +1,23 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}History — Academic Summarizer{% endblock %}
+{% block title %}{% trans "History — Academic Summarizer" %}{% endblock %}
 
 {% block content %}
 <div class="container history-page">
 
   <div class="history-head">
     <div>
-      <div class="eyebrow" style="margin-bottom: 8px;">Summary history</div>
-      <h1 style="font-size: clamp(2rem, 4vw, 2.8rem);">Your reading log.</h1>
+      <div class="eyebrow" style="margin-bottom: 8px;">{% trans "Summary history" %}</div>
+      <h1 style="font-size: clamp(2rem, 4vw, 2.8rem);">{% trans "Your reading log." %}</h1>
       <p class="dim" style="margin-top: 8px;">
         <span class="mono">{{ page_obj.paginator.count }}</span>
-        summar{{ page_obj.paginator.count|pluralize:"y,ies" }} ·
-        ordered by recency.
+        {% blocktrans count counter=page_obj.paginator.count %}summary · ordered by recency.{% plural %}summaries · ordered by recency.{% endblocktrans %}
       </p>
     </div>
     <div class="h-row">
       <a href="{% url 'papers:upload' %}" class="btn btn-primary">
-        <i class="bi bi-plus-lg"></i> New paper
+        <i class="bi bi-plus-lg"></i> {% trans "New paper" %}
       </a>
     </div>
   </div>
@@ -27,9 +27,9 @@
       <table class="history-table">
         <thead>
           <tr>
-            <th style="width: 55%;">Paper</th>
-            <th>Lang</th>
-            <th>Date</th>
+            <th style="width: 55%;">{% trans "Paper" %}</th>
+            <th>{% trans "Lang" %}</th>
+            <th>{% trans "Date" %}</th>
             <th></th>
           </tr>
         </thead>
@@ -40,7 +40,7 @@
               <a href="{% url 'summarizer:detail' summary.pk %}" class="history-title">
                 {{ summary.paper.title }}
               </a>
-              <span class="history-author">{{ summary.paper.author|default:"Unknown author" }}</span>
+              <span class="history-author">{{ summary.paper.author|default:_("Unknown author") }}</span>
             </td>
             <td>
               <span class="history-lang">
@@ -52,9 +52,9 @@
             <td><span class="history-date">{{ summary.created_at|date:"Y-m-d" }}</span></td>
             <td>
               <div class="row-actions h-row" onclick="event.stopPropagation();">
-                <a href="{% url 'summarizer:detail' summary.pk %}" class="icon-btn" title="Open"><i class="bi bi-eye"></i></a>
-                <a href="{% url 'summarizer:export_pdf' summary.pk %}" class="icon-btn" title="PDF"><i class="bi bi-filetype-pdf"></i></a>
-                <a href="{% url 'summarizer:export_word' summary.pk %}" class="icon-btn" title="Word"><i class="bi bi-filetype-docx"></i></a>
+                <a href="{% url 'summarizer:detail' summary.pk %}" class="icon-btn" title="{% trans 'Open' %}"><i class="bi bi-eye"></i></a>
+                <a href="{% url 'summarizer:export_pdf' summary.pk %}" class="icon-btn" title="{% trans 'PDF' %}"><i class="bi bi-filetype-pdf"></i></a>
+                <a href="{% url 'summarizer:export_word' summary.pk %}" class="icon-btn" title="{% trans 'Word' %}"><i class="bi bi-filetype-docx"></i></a>
               </div>
             </td>
           </tr>
@@ -84,17 +84,17 @@
     {% endif %}
 
     <div class="h-row" style="justify-content: space-between; margin-top: 22px; color: var(--ink-3); font-size: 12px;">
-      <span class="mono">{{ summaries|length }} of {{ page_obj.paginator.count }} summaries</span>
-      <span class="mono">page {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+      <span class="mono">{% blocktrans with n=summaries|length total=page_obj.paginator.count %}{{ n }} of {{ total }} summaries{% endblocktrans %}</span>
+      <span class="mono">{% blocktrans with n=page_obj.number total=page_obj.paginator.num_pages %}page {{ n }} / {{ total }}{% endblocktrans %}</span>
     </div>
 
   {% else %}
     <div style="text-align:center; padding: 80px 16px; color: var(--ink-3);">
-      <div class="eyebrow" style="margin-bottom: 10px;">Empty history</div>
-      <h2 style="font-family: var(--serif); margin-bottom: 10px;">No summaries yet.</h2>
-      <p style="margin-bottom: 24px;">Upload and summarize your first paper to see it here.</p>
+      <div class="eyebrow" style="margin-bottom: 10px;">{% trans "Empty history" %}</div>
+      <h2 style="font-family: var(--serif); margin-bottom: 10px;">{% trans "No summaries yet." %}</h2>
+      <p style="margin-bottom: 24px;">{% trans "Upload and summarize your first paper to see it here." %}</p>
       <a href="{% url 'papers:upload' %}" class="btn btn-primary">
-        <i class="bi bi-cloud-upload"></i> Upload a paper
+        <i class="bi bi-cloud-upload"></i> {% trans "Upload a paper" %}
       </a>
     </div>
   {% endif %}

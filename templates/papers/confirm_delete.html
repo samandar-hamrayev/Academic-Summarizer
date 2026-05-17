@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Delete paper — Academic Summarizer{% endblock %}
+{% block title %}{% trans "Delete paper" %} — {% trans "Academic Summarizer" %}{% endblock %}
 
 {% block content %}
 <div class="container" style="padding: 64px 0;">
@@ -8,24 +9,23 @@
     <div class="auth-card" style="box-shadow: none;">
 
       <div class="h-row" style="gap: 10px; margin-bottom: 18px;">
-        <span class="pill is-err"><span class="dot"></span>destructive</span>
-        <span class="eyebrow">paper · {{ object.pk|stringformat:"04d" }}</span>
+        <span class="pill is-err"><span class="dot"></span>{% trans "destructive" %}</span>
+        <span class="eyebrow">{% trans "paper" %} · {{ object.pk|stringformat:"04d" }}</span>
       </div>
 
-      <h1 style="margin-bottom: 12px;">Delete this paper?</h1>
+      <h1 style="margin-bottom: 12px;">{% trans "Delete this paper?" %}</h1>
       <p class="dim" style="margin-bottom: 28px;">
         "<strong style="color: var(--ink); font-family: var(--serif); font-weight: 500;">{{ object.title }}</strong>"
       </p>
       <p style="font-size: 13.5px; color: var(--ink-3); margin-bottom: 28px;">
-        The PDF, its summary, and any share links will be removed permanently.
-        This action cannot be undone.
+        {% trans "The PDF, its summary, and any share links will be removed permanently. This action cannot be undone." %}
       </p>
 
       <form method="post" class="h-row" style="gap: 10px; justify-content: flex-end;">
         {% csrf_token %}
-        <a href="{% url 'papers:detail' object.pk %}" class="btn btn-ghost">Cancel</a>
+        <a href="{% url 'papers:detail' object.pk %}" class="btn btn-ghost">{% trans "Cancel" %}</a>
         <button type="submit" class="btn btn-danger">
-          <i class="bi bi-trash"></i> Delete paper
+          <i class="bi bi-trash"></i> {% trans "Delete paper" %}
         </button>
       </form>
     </div>

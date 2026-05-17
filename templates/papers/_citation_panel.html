@@ -1,3 +1,4 @@
+{% load i18n %}
 {% comment %}
   Reusable citation export panel for a Paper.
   Usage: {% include 'papers/_citation_panel.html' with paper=paper %}
@@ -11,8 +12,8 @@
 
   <div class="cite-head">
     <div>
-      <h3>Cite this paper</h3>
-      <div class="cite-sub">apa · mla · ieee · bibtex · auto-generated</div>
+      <h3>{% trans "Cite this paper" %}</h3>
+      <div class="cite-sub">{% trans "apa · mla · ieee · bibtex · auto-generated" %}</div>
     </div>
   </div>
 
@@ -24,20 +25,20 @@
   </div>
 
   <div class="cite-body">
-    <pre class="cite-code" data-cite-code aria-live="polite"><span class="cite-loading">Loading citation…</span></pre>
+    <pre class="cite-code" data-cite-code aria-live="polite"><span class="cite-loading">{% trans "Loading citation…" %}</span></pre>
 
     <div class="cite-actions">
       <button type="button" class="btn btn-secondary btn-sm" data-cite-copy>
-        <i class="bi bi-clipboard"></i> Copy
+        <i class="bi bi-clipboard"></i> {% trans "Copy" %}
       </button>
       <a class="btn btn-ghost btn-sm" href="{% url 'papers:citations_bib' paper.pk %}"
          data-cite-download download>
-        <i class="bi bi-download"></i> Download .bib
+        <i class="bi bi-download"></i> {% trans "Download .bib" %}
       </a>
     </div>
   </div>
 
   <div class="cite-hint">
-    Citations are generated from the paper's metadata. Verify before submission.
+    {% trans "Citations are generated from the paper's metadata. Verify before submission." %}
   </div>
 </section>

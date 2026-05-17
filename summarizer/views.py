@@ -9,6 +9,7 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
+from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_POST
 from django.views.generic import DetailView, ListView
 
@@ -101,7 +102,7 @@ def create_share_link(request, pk):
             expires_at = timezone.now() + timezone.timedelta(days=expiry_days)
 
         link = ShareLink.objects.create(summary=summary, expires_at=expires_at)
-        messages.success(request, 'Share link created successfully.')
+        messages.success(request, _('Share link created successfully.'))
         return redirect('summarizer:detail', pk=pk)
 
     return redirect('summarizer:detail', pk=pk)
@@ -113,7 +114,7 @@ def revoke_share_link(request, link_pk):
     link = get_object_or_404(ShareLink, pk=link_pk, summary__paper__uploaded_by=request.user)
     link.is_active = False
     link.save(update_fields=['is_active'])
-    messages.success(request, 'Share link revoked.')
+    messages.success(request, _('Share link revoked.'))
     return redirect('summarizer:detail', pk=link.summary_id)
 
 

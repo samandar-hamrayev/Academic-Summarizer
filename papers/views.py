@@ -9,6 +9,7 @@ from django.db.models import Q
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
+from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_POST
 from django.views.generic import (
     CreateView, DeleteView, DetailView, FormView, ListView
@@ -119,18 +120,18 @@ class PaperUploadView(LoginRequiredMixin, CreateView):
                 summarize_paper_task(paper, text)
                 messages.success(
                     self.request,
-                    f'"{paper.title}" uploaded and summarized successfully!'
+                    _('"%(title)s" uploaded and summarized successfully!') % {'title': paper.title},
                 )
             else:
                 messages.warning(
                     self.request,
-                    f'"{paper.title}" uploaded, but no text could be extracted from the PDF.'
+                    _('"%(title)s" uploaded, but no text could be extracted from the PDF.') % {'title': paper.title},
                 )
         except Exception as exc:
             logger.error('Error processing paper %s: %s', paper.pk, exc)
             messages.error(
                 self.request,
-                f'"{paper.title}" uploaded, but summarization failed: {exc}'
+                _('"%(title)s" uploaded, but summarization failed: %(error)s') % {'title': paper.title, 'error': exc},
             )
 
         return redirect('papers:detail', pk=paper.pk)
@@ -154,7 +155,7 @@ class PaperDeleteView(LoginRequiredMixin, DeleteView):
         return Paper.objects.filter(uploaded_by=self.request.user)
 
     def form_valid(self, form):
-        messages.success(self.request, 'Paper deleted successfully.')
+        messages.success(self.request, _('Paper deleted successfully.'))
         return super().form_valid(form)
 
 
@@ -167,15 +168,15 @@ def trigger_summarize(request, pk):
     try:
         text = extract_text_from_pdf(paper.file)
         if not text.strip():
-            messages.error(request, 'No text could be extracted from this PDF.')
+            messages.error(request, _('No text could be extracted from this PDF.'))
             return redirect('papers:detail', pk=pk)
 
         from summarizer.services import summarize_paper_task
         summarize_paper_task(paper, text)
-        messages.success(request, 'Paper summarized successfully!')
+        messages.success(request, _('Paper summarized successfully!'))
     except Exception as exc:
         logger.error('Re-summarization failed for paper %s: %s', pk, exc)
-        messages.error(request, f'Summarization failed: {exc}')
+        messages.error(request, _('Summarization failed: %(error)s') % {'error': exc})
 
     return redirect('papers:detail', pk=pk)
 
@@ -208,5 +209,8 @@ class RegisterView(FormView):
     def form_valid(self, form):
         user = form.save()
         login(self.request, user)
-        messages.success(self.request, f'Welcome, {user.username}! Your account has been created.')
+        messages.success(
+            self.request,
+            _('Welcome, %(name)s! Your account has been created.') % {'name': user.username},
+        )
         return super().form_valid(form)

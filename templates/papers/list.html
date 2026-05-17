@@ -1,47 +1,47 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Papers — Academic Summarizer{% endblock %}
+{% block title %}{% trans "Papers — Academic Summarizer" %}{% endblock %}
 
 {% block content %}
 <div class="container history-page">
 
   <div class="history-head">
     <div>
-      <div class="eyebrow" style="margin-bottom: 8px;">Your library</div>
-      <h1 style="font-size: clamp(2rem, 4vw, 2.8rem);">Papers, summarized.</h1>
+      <div class="eyebrow" style="margin-bottom: 8px;">{% trans "Your library" %}</div>
+      <h1 style="font-size: clamp(2rem, 4vw, 2.8rem);">{% trans "Papers, summarized." %}</h1>
       <p class="dim" style="margin-top: 8px;">
         <span class="mono">{{ page_obj.paginator.count }}</span>
-        paper{{ page_obj.paginator.count|pluralize }} ·
-        distilled into structured summaries.
+        {% blocktrans count counter=page_obj.paginator.count %}paper · distilled into structured summaries.{% plural %}papers · distilled into structured summaries.{% endblocktrans %}
       </p>
     </div>
     <div class="h-row">
       <form method="get" style="display:flex; gap: 8px; align-items: center;">
         {{ search_form.query }}
         <button type="submit" class="btn btn-secondary">
-          <i class="bi bi-search"></i> Search
+          <i class="bi bi-search"></i> {% trans "Search" %}
         </button>
       </form>
       <a href="{% url 'papers:upload' %}" class="btn btn-primary">
-        <i class="bi bi-plus-lg"></i> Add paper
+        <i class="bi bi-plus-lg"></i> {% trans "Add paper" %}
       </a>
     </div>
   </div>
 
   {% if filter_tag %}
     <div class="history-filters" style="margin-bottom: 18px;">
-      <span class="eyebrow" style="margin-right: 4px;">Filter</span>
+      <span class="eyebrow" style="margin-right: 4px;">{% trans "Filter" %}</span>
       <span class="chip is-on"><i class="bi bi-tag"></i> {{ filter_tag.name }}</span>
       <a href="{% url 'papers:list' %}" class="chip">
-        <i class="bi bi-x-lg"></i> clear
+        <i class="bi bi-x-lg"></i> {% trans "clear" %}
       </a>
     </div>
   {% elif query %}
     <div class="history-filters" style="margin-bottom: 18px;">
-      <span class="eyebrow" style="margin-right: 4px;">Search</span>
+      <span class="eyebrow" style="margin-right: 4px;">{% trans "Search" %}</span>
       <span class="chip is-on">"{{ query }}"</span>
       <a href="{% url 'papers:list' %}" class="chip">
-        <i class="bi bi-x-lg"></i> clear
+        <i class="bi bi-x-lg"></i> {% trans "clear" %}
       </a>
     </div>
   {% endif %}
@@ -51,10 +51,10 @@
       <table class="history-table">
         <thead>
           <tr>
-            <th style="width: 55%;">Paper</th>
-            <th>Tags</th>
-            <th>Lang</th>
-            <th>Date</th>
+            <th style="width: 55%;">{% trans "Paper" %}</th>
+            <th>{% trans "Tags" %}</th>
+            <th>{% trans "Lang" %}</th>
+            <th>{% trans "Date" %}</th>
             <th></th>
           </tr>
         </thead>
@@ -65,7 +65,7 @@
               <a href="{% url 'papers:detail' paper.pk %}" class="history-title">
                 {{ paper.title }}
               </a>
-              <span class="history-author">{{ paper.author|default:"Unknown author" }}</span>
+              <span class="history-author">{{ paper.author|default:_("Unknown author") }}</span>
             </td>
             <td>
               <div class="h-row" style="gap: 4px;">
@@ -94,14 +94,14 @@
             <td>
               <div class="row-actions h-row" onclick="event.stopPropagation();">
                 {% if paper.has_summary %}
-                  <a href="{% url 'summarizer:detail' paper.summary.pk %}" class="icon-btn" title="Open summary">
+                  <a href="{% url 'summarizer:detail' paper.summary.pk %}" class="icon-btn" title="{% trans 'Open summary' %}">
                     <i class="bi bi-eye"></i>
                   </a>
-                  <a href="{% url 'summarizer:export_pdf' paper.summary.pk %}" class="icon-btn" title="Export PDF">
+                  <a href="{% url 'summarizer:export_pdf' paper.summary.pk %}" class="icon-btn" title="{% trans 'Export PDF' %}">
                     <i class="bi bi-download"></i>
                   </a>
                 {% endif %}
-                <a href="{% url 'papers:delete' paper.pk %}" class="icon-btn" title="Delete">
+                <a href="{% url 'papers:delete' paper.pk %}" class="icon-btn" title="{% trans 'Delete' %}">
                   <i class="bi bi-trash"></i>
                 </a>
               </div>
@@ -143,24 +143,24 @@
     {% endif %}
 
     <div class="h-row" style="justify-content: space-between; margin-top: 22px; color: var(--ink-3); font-size: 12px;">
-      <span class="mono">{{ papers|length }} of {{ page_obj.paginator.count }} papers</span>
-      <span class="mono">page {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+      <span class="mono">{% blocktrans with n=papers|length total=page_obj.paginator.count %}{{ n }} of {{ total }} papers{% endblocktrans %}</span>
+      <span class="mono">{% blocktrans with n=page_obj.number total=page_obj.paginator.num_pages %}page {{ n }} / {{ total }}{% endblocktrans %}</span>
     </div>
 
   {% else %}
     <div style="text-align:center; padding: 80px 16px; color: var(--ink-3);">
-      <div class="eyebrow" style="margin-bottom: 10px;">Empty library</div>
+      <div class="eyebrow" style="margin-bottom: 10px;">{% trans "Empty library" %}</div>
       <h2 style="font-family: var(--serif); margin-bottom: 10px;">
-        {% if query %}No papers match "{{ query }}".{% else %}No papers yet.{% endif %}
+        {% if query %}{% blocktrans %}No papers match "{{ query }}".{% endblocktrans %}{% else %}{% trans "No papers yet." %}{% endif %}
       </h2>
       <p style="margin-bottom: 24px;">
-        {% if query %}Try a different search term, or clear the filter.{% else %}Upload your first academic paper to get started.{% endif %}
+        {% if query %}{% trans "Try a different search term, or clear the filter." %}{% else %}{% trans "Upload your first academic paper to get started." %}{% endif %}
       </p>
       {% if query %}
-        <a href="{% url 'papers:list' %}" class="btn btn-ghost">Clear search</a>
+        <a href="{% url 'papers:list' %}" class="btn btn-ghost">{% trans "Clear search" %}</a>
       {% else %}
         <a href="{% url 'papers:upload' %}" class="btn btn-primary">
-          <i class="bi bi-cloud-upload"></i> Upload your first paper
+          <i class="bi bi-cloud-upload"></i> {% trans "Upload your first paper" %}
         </a>
       {% endif %}
     </div>

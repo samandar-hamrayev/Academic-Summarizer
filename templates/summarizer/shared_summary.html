@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-{% load static %}
-<html lang="en">
+{% load static i18n %}
+<html lang="{{ LANGUAGE_CODE|default:'en' }}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ summary.paper.title }} — Shared summary</title>
+  <title>{{ summary.paper.title }} — {% trans "Shared summary" %}</title>
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
@@ -25,12 +25,12 @@
 <header class="nav">
   <div class="container nav-inner">
     <a href="{% url 'home' %}" class="nav-brand">
-      <span>Academic Summarizer</span>
+      <span>{% trans "Academic Summarizer" %}</span>
       <span class="brand-sub">v2.0</span>
     </a>
     <nav class="nav-links">
-      <span class="pill"><span class="dot"></span>shared view</span>
-      <button class="icon-btn" id="theme-toggle" type="button" aria-label="Toggle theme">
+      <span class="pill"><span class="dot"></span>{% trans "shared view" %}</span>
+      <button class="icon-btn" id="theme-toggle" type="button" aria-label="{% trans 'Toggle theme' %}">
         <i id="theme-icon" class="bi bi-moon"></i>
       </button>
     </nav>
@@ -45,31 +45,31 @@
 
       <header class="summary-header">
         <div class="h-row" style="gap: 10px; margin-bottom: 8px;">
-          <span class="pill is-ok"><span class="dot"></span>shared summary</span>
-          <span class="eyebrow">paper · {{ summary.language|upper }} · {{ link.access_count }} view{{ link.access_count|pluralize }}</span>
+          <span class="pill is-ok"><span class="dot"></span>{% trans "shared summary" %}</span>
+          <span class="eyebrow">{% trans "paper" %} · {{ summary.language|upper }} · {% blocktrans count counter=link.access_count %}{{ counter }} view{% plural %}{{ counter }} views{% endblocktrans %}</span>
         </div>
         <h1>{{ summary.paper.title }}</h1>
         {% if summary.paper.author %}
           <div class="summary-author">{{ summary.paper.author }}</div>
         {% endif %}
         <div class="summary-mono-row">
-          <span><span class="k">model:</span><span class="v">llama-3.3-70b</span></span>
-          <span><span class="k">generated:</span><span class="v">{{ summary.created_at|date:"Y-m-d" }}</span></span>
+          <span><span class="k">{% trans "model" %}:</span><span class="v">llama-3.3-70b</span></span>
+          <span><span class="k">{% trans "generated" %}:</span><span class="v">{{ summary.created_at|date:"Y-m-d" }}</span></span>
         </div>
       </header>
 
       {% if summary.abstract %}
         <section class="sec has-dropcap">
-          <div class="sec-eyebrow"><span class="num">§ 01</span><span class="label">Abstract</span><span class="rule"></span></div>
-          <h2>Summary of the paper.</h2>
+          <div class="sec-eyebrow"><span class="num">§ 01</span><span class="label">{% trans "Abstract" %}</span><span class="rule"></span></div>
+          <h2>{% trans "Summary of the paper." %}</h2>
           <p>{{ summary.abstract }}</p>
         </section>
       {% endif %}
 
       {% if key_points %}
         <section class="sec">
-          <div class="sec-eyebrow"><span class="num">§ 02</span><span class="label">Key points</span><span class="rule"></span></div>
-          <h2>What the paper actually shows.</h2>
+          <div class="sec-eyebrow"><span class="num">§ 02</span><span class="label">{% trans "Key points" %}</span><span class="rule"></span></div>
+          <h2>{% trans "What the paper actually shows." %}</h2>
           <ol class="key-points">
             {% for point in key_points %}
               <li><span class="k-num">[{{ forloop.counter|stringformat:"02d" }}]</span><span>{{ point }}</span></li>
@@ -80,32 +80,32 @@
 
       {% if summary.methodology %}
         <section class="sec has-dropcap">
-          <div class="sec-eyebrow"><span class="num">§ 03</span><span class="label">Methodology</span><span class="rule"></span></div>
-          <h2>How the work was done.</h2>
+          <div class="sec-eyebrow"><span class="num">§ 03</span><span class="label">{% trans "Methodology" %}</span><span class="rule"></span></div>
+          <h2>{% trans "How the work was done." %}</h2>
           <p>{{ summary.methodology }}</p>
         </section>
       {% endif %}
 
       {% if summary.results %}
         <section class="sec has-dropcap">
-          <div class="sec-eyebrow"><span class="num">§ 04</span><span class="label">Results</span><span class="rule"></span></div>
-          <h2>What the numbers say.</h2>
+          <div class="sec-eyebrow"><span class="num">§ 04</span><span class="label">{% trans "Results" %}</span><span class="rule"></span></div>
+          <h2>{% trans "What the numbers say." %}</h2>
           <p>{{ summary.results }}</p>
         </section>
       {% endif %}
 
       {% if summary.conclusion %}
         <section class="sec has-dropcap">
-          <div class="sec-eyebrow"><span class="num">§ 05</span><span class="label">Conclusion</span><span class="rule"></span></div>
-          <h2>What it means.</h2>
+          <div class="sec-eyebrow"><span class="num">§ 05</span><span class="label">{% trans "Conclusion" %}</span><span class="rule"></span></div>
+          <h2>{% trans "What it means." %}</h2>
           <p>{{ summary.conclusion }}</p>
         </section>
       {% endif %}
 
       {% if citations %}
         <section class="sec">
-          <div class="sec-eyebrow"><span class="num">§ 06</span><span class="label">References</span><span class="rule"></span></div>
-          <h2>Extracted citation list</h2>
+          <div class="sec-eyebrow"><span class="num">§ 06</span><span class="label">{% trans "References" %}</span><span class="rule"></span></div>
+          <h2>{% trans "Extracted citation list" %}</h2>
           <ol class="fn-list">
             {% for cite in citations %}<li>{{ cite }}</li>{% endfor %}
           </ol>
@@ -113,12 +113,12 @@
       {% endif %}
 
       <div style="text-align: center; padding: 48px 0 0; margin-top: 32px; border-top: 1px solid var(--rule-strong);">
-        <div class="eyebrow" style="margin-bottom: 10px;">Like this?</div>
-        <h2 style="margin-bottom: 12px;">Summarize your own papers.</h2>
-        <p class="dim" style="margin-bottom: 24px;">Free while in beta · sign-up takes 30 seconds.</p>
+        <div class="eyebrow" style="margin-bottom: 10px;">{% trans "Like this?" %}</div>
+        <h2 style="margin-bottom: 12px;">{% trans "Summarize your own papers." %}</h2>
+        <p class="dim" style="margin-bottom: 24px;">{% trans "Free while in beta · sign-up takes 30 seconds." %}</p>
         <div class="h-row" style="justify-content: center;">
-          <a href="{% url 'register' %}" class="btn btn-primary">Create free account</a>
-          <a href="{% url 'login' %}" class="btn btn-ghost">Sign in</a>
+          <a href="{% url 'register' %}" class="btn btn-primary">{% trans "Create free account" %}</a>
+          <a href="{% url 'login' %}" class="btn btn-ghost">{% trans "Sign in" %}</a>
         </div>
       </div>
     </article>
@@ -130,11 +130,11 @@
 <footer class="footer">
   <div class="container footer-inner">
     <div class="h-row" style="gap: 14px;">
-      <span class="pill is-ok"><span class="dot"></span>All systems operational</span>
+      <span class="pill is-ok"><span class="dot"></span>{% trans "All systems operational" %}</span>
       <span>summarizer.hamrayev.me · groq · llama-3.3-70b</span>
     </div>
     <div class="h-row" style="gap: 18px;">
-      <a href="{% url 'home' %}">Home</a>
+      <a href="{% url 'home' %}">{% trans "Home" %}</a>
       <span>© 2026 Hamrayev S.</span>
     </div>
   </div>

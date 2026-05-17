@@ -1,0 +1,1129 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-17 12:49+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: academic_summarizer/settings.py:93 templates/papers/detail.html:215
+#: templates/papers/upload.html:111
+msgid "English"
+msgstr "English"
+
+#: academic_summarizer/settings.py:94 templates/papers/detail.html:213
+#: templates/papers/upload.html:112
+msgid "Russian"
+msgstr "Russian"
+
+#: academic_summarizer/settings.py:95
+msgid "Uzbek (Lotin)"
+msgstr "Uzbek (Lotin)"
+
+#: papers/views.py:123
+#, python-format
+msgid "\"%(title)s\" uploaded and summarized successfully!"
+msgstr "\"%(title)s\" uploaded and summarized successfully!"
+
+#: papers/views.py:128
+#, python-format
+msgid "\"%(title)s\" uploaded, but no text could be extracted from the PDF."
+msgstr "\"%(title)s\" uploaded, but no text could be extracted from the PDF."
+
+#: papers/views.py:134
+#, python-format
+msgid "\"%(title)s\" uploaded, but summarization failed: %(error)s"
+msgstr "\"%(title)s\" uploaded, but summarization failed: %(error)s"
+
+#: papers/views.py:158
+msgid "Paper deleted successfully."
+msgstr "Paper deleted successfully."
+
+#: papers/views.py:171
+msgid "No text could be extracted from this PDF."
+msgstr "No text could be extracted from this PDF."
+
+#: papers/views.py:176
+msgid "Paper summarized successfully!"
+msgstr "Paper summarized successfully!"
+
+#: papers/views.py:179
+#, python-format
+msgid "Summarization failed: %(error)s"
+msgstr "Summarization failed: %(error)s"
+
+#: papers/views.py:214
+#, python-format
+msgid "Welcome, %(name)s! Your account has been created."
+msgstr "Welcome, %(name)s! Your account has been created."
+
+#: summarizer/views.py:105
+msgid "Share link created successfully."
+msgstr "Share link created successfully."
+
+#: summarizer/views.py:117
+msgid "Share link revoked."
+msgstr "Share link revoked."
+
+#: templates/base.html:7 templates/base.html:38
+#: templates/papers/confirm_delete.html:4 templates/papers/detail.html:4
+#: templates/summarizer/shared_summary.html:28
+msgid "Academic Summarizer"
+msgstr "Academic Summarizer"
+
+#: templates/base.html:43
+msgid "Search papers"
+msgstr "Search papers"
+
+#: templates/base.html:45
+msgid "Search papers, tags, authors…"
+msgstr "Search papers, tags, authors…"
+
+#: templates/base.html:45 templates/papers/list.html:22
+#: templates/papers/list.html:41
+msgid "Search"
+msgstr "Search"
+
+#: templates/base.html:53 templates/papers/detail.html:12
+msgid "Papers"
+msgstr "Papers"
+
+#: templates/base.html:55
+msgid "Upload"
+msgstr "Upload"
+
+#: templates/base.html:63 templates/base.html:120
+msgid "Switch language"
+msgstr "Switch language"
+
+#: templates/base.html:83 templates/base.html:139
+#: templates/summarizer/shared_summary.html:33
+msgid "Toggle theme"
+msgstr "Toggle theme"
+
+#: templates/base.html:89
+msgid "Account menu"
+msgstr "Account menu"
+
+#: templates/base.html:98
+msgid "Django admin"
+msgstr "Django admin"
+
+#: templates/base.html:107
+msgid "Sign out"
+msgstr "Sign out"
+
+#: templates/base.html:142 templates/registration/login.html:21
+#: templates/registration/login.html:54
+#: templates/registration/register.html:21
+#: templates/summarizer/shared_summary.html:121
+msgid "Sign in"
+msgstr "Sign in"
+
+#: templates/base.html:143 templates/registration/login.html:22
+#: templates/registration/register.html:22
+#: templates/registration/register.html:50
+msgid "Create account"
+msgstr "Create account"
+
+#: templates/base.html:169 templates/summarizer/shared_summary.html:133
+msgid "All systems operational"
+msgstr "All systems operational"
+
+#: templates/base.html:175
+msgid "Source"
+msgstr "Source"
+
+#: templates/home.html:4
+msgid "Academic Summarizer — Read less. Understand more."
+msgstr "Academic Summarizer — Read less. Understand more."
+
+#: templates/home.html:12
+msgid "READY · groq llama-3.3-70b"
+msgstr "READY · groq llama-3.3-70b"
+
+#: templates/home.html:13
+msgid "No. 01 · Edition 2.0"
+msgstr "No. 01 · Edition 2.0"
+
+#: templates/home.html:19
+msgid ""
+"A reading room<br>\n"
+"          for <em>papers</em> you<br>\n"
+"          don&rsquo;t have time<br>\n"
+"          to read."
+msgstr ""
+"A reading room<br>\n"
+"          for <em>papers</em> you<br>\n"
+"          don&rsquo;t have time<br>\n"
+"          to read."
+
+#: templates/home.html:26
+msgid ""
+"Drop a PDF. Get back a five-section, academically faithful summary —\n"
+"          abstract, key points, methodology, results, and conclusion — typeset\n"
+"          like a magazine, ready in under thirty seconds."
+msgstr ""
+"Drop a PDF. Get back a five-section, academically faithful summary —\n"
+"          abstract, key points, methodology, results, and conclusion — typeset\n"
+"          like a magazine, ready in under thirty seconds."
+
+#: templates/home.html:34 templates/home.html:41
+msgid "Summarize a paper"
+msgstr "Summarize a paper"
+
+#: templates/home.html:37
+msgid "Open my library"
+msgstr "Open my library"
+
+#: templates/home.html:44
+msgid "Open a free account"
+msgstr "Open a free account"
+
+#: templates/home.html:47
+msgid "PDF · up to 50 MB · EN / RU / UZ"
+msgstr "PDF · up to 50 MB · EN / RU / UZ"
+
+#: templates/home.html:52
+msgid "From a reader"
+msgstr "From a reader"
+
+#: templates/home.html:54
+msgid ""
+"&ldquo;Cut my literature review from three weeks to four evenings.\n"
+"          The methodology section alone is worth it.&rdquo;"
+msgstr ""
+"&ldquo;Cut my literature review from three weeks to four evenings.\n"
+"          The methodology section alone is worth it.&rdquo;"
+
+#: templates/home.html:57
+msgid "— PhD candidate, computational linguistics"
+msgstr "— PhD candidate, computational linguistics"
+
+#: templates/home.html:63
+msgid "avg. inference"
+msgstr "avg. inference"
+
+#: templates/home.html:67
+msgid "languages"
+msgstr "languages"
+
+#: templates/home.html:71
+msgid "papers indexed"
+msgstr "papers indexed"
+
+#: templates/home.html:83
+msgid "How it works"
+msgstr "How it works"
+
+#: templates/home.html:84
+msgid "Three steps. One PDF in, one summary out."
+msgstr "Three steps. One PDF in, one summary out."
+
+#: templates/home.html:91
+msgid "[ 01 ] Drop"
+msgstr "[ 01 ] Drop"
+
+#: templates/home.html:92
+msgid "A PDF, up to 50 MB."
+msgstr "A PDF, up to 50 MB."
+
+#: templates/home.html:93
+msgid ""
+"English, Russian, or Uzbek. We extract the text, the figures' captions, and "
+"the reference list."
+msgstr ""
+"English, Russian, or Uzbek. We extract the text, the figures' captions, and "
+"the reference list."
+
+#: templates/home.html:96
+msgid "[ 02 ] Read"
+msgstr "[ 02 ] Read"
+
+#: templates/home.html:97
+msgid "Llama 3.3 70B reads the paper."
+msgstr "Llama 3.3 70B reads the paper."
+
+#: templates/home.html:98
+msgid ""
+"Served by Groq, the model returns a structured summary in roughly twenty "
+"seconds — not minutes."
+msgstr ""
+"Served by Groq, the model returns a structured summary in roughly twenty "
+"seconds — not minutes."
+
+#: templates/home.html:101
+msgid "[ 03 ] Use"
+msgstr "[ 03 ] Use"
+
+#: templates/home.html:102
+msgid "Read it, share it, export it."
+msgstr "Read it, share it, export it."
+
+#: templates/home.html:103
+msgid ""
+"Browse the five sections, copy a public link, or export to PDF or Word for "
+"your literature review."
+msgstr ""
+"Browse the five sections, copy a public link, or export to PDF or Word for "
+"your literature review."
+
+#: templates/home.html:114
+msgid "Every paper, the same shape"
+msgstr "Every paper, the same shape"
+
+#: templates/home.html:115
+msgid "Five sections. Always."
+msgstr "Five sections. Always."
+
+#: templates/home.html:123 templates/papers/detail.html:47
+#: templates/papers/detail.html:94 templates/summarizer/shared_summary.html:63
+msgid "Abstract"
+msgstr "Abstract"
+
+#: templates/home.html:124
+msgid "A two-paragraph distillation of the paper's core contribution."
+msgstr "A two-paragraph distillation of the paper's core contribution."
+
+#: templates/home.html:128
+msgid "Key Points"
+msgstr "Key Points"
+
+#: templates/home.html:129
+msgid "Five to eight takeaways, ranked by importance."
+msgstr "Five to eight takeaways, ranked by importance."
+
+#: templates/home.html:133 templates/papers/detail.html:49
+#: templates/papers/detail.html:119
+#: templates/summarizer/shared_summary.html:83
+msgid "Methodology"
+msgstr "Methodology"
+
+#: templates/home.html:134
+msgid "Setup, data, baselines, and the controls that matter."
+msgstr "Setup, data, baselines, and the controls that matter."
+
+#: templates/home.html:138 templates/papers/detail.html:50
+#: templates/papers/detail.html:127
+#: templates/summarizer/shared_summary.html:91
+msgid "Results"
+msgstr "Results"
+
+#: templates/home.html:139
+msgid "The numbers, with the deltas that earn them."
+msgstr "The numbers, with the deltas that earn them."
+
+#: templates/home.html:143 templates/papers/detail.html:51
+#: templates/papers/detail.html:135
+#: templates/summarizer/shared_summary.html:99
+msgid "Conclusion"
+msgstr "Conclusion"
+
+#: templates/home.html:144
+msgid "What it means, what it doesn't, and what's next."
+msgstr "What it means, what it doesn't, and what's next."
+
+#: templates/home.html:161
+msgid "Ready when you are"
+msgstr "Ready when you are"
+
+#: templates/home.html:162
+msgid "Summarize your first paper in under a minute."
+msgstr "Summarize your first paper in under a minute."
+
+#: templates/home.html:164
+msgid "Free while in beta. No credit card. Sign up takes thirty seconds."
+msgstr "Free while in beta. No credit card. Sign up takes thirty seconds."
+
+#: templates/home.html:168
+msgid "Create a free account"
+msgstr "Create a free account"
+
+#: templates/home.html:171
+msgid "Sign in instead"
+msgstr "Sign in instead"
+
+#: templates/papers/_citation_panel.html:15
+msgid "Cite this paper"
+msgstr "Cite this paper"
+
+#: templates/papers/_citation_panel.html:16
+msgid "apa · mla · ieee · bibtex · auto-generated"
+msgstr "apa · mla · ieee · bibtex · auto-generated"
+
+#: templates/papers/_citation_panel.html:28
+msgid "Loading citation…"
+msgstr "Loading citation…"
+
+#: templates/papers/_citation_panel.html:32
+msgid "Copy"
+msgstr "Copy"
+
+#: templates/papers/_citation_panel.html:36
+msgid "Download .bib"
+msgstr "Download .bib"
+
+#: templates/papers/_citation_panel.html:42
+msgid ""
+"Citations are generated from the paper's metadata. Verify before submission."
+msgstr ""
+"Citations are generated from the paper's metadata. Verify before submission."
+
+#: templates/papers/confirm_delete.html:4
+#: templates/papers/confirm_delete.html:28
+msgid "Delete paper"
+msgstr "Delete paper"
+
+#: templates/papers/confirm_delete.html:12
+msgid "destructive"
+msgstr "destructive"
+
+#: templates/papers/confirm_delete.html:13 templates/papers/detail.html:66
+#: templates/summarizer/shared_summary.html:49
+msgid "paper"
+msgstr "paper"
+
+#: templates/papers/confirm_delete.html:16
+msgid "Delete this paper?"
+msgstr "Delete this paper?"
+
+#: templates/papers/confirm_delete.html:21
+msgid ""
+"The PDF, its summary, and any share links will be removed permanently. This "
+"action cannot be undone."
+msgstr ""
+"The PDF, its summary, and any share links will be removed permanently. This "
+"action cannot be undone."
+
+#: templates/papers/confirm_delete.html:26
+msgid "Cancel"
+msgstr "Cancel"
+
+#: templates/papers/detail.html:20
+msgid "View summary"
+msgstr "View summary"
+
+#: templates/papers/detail.html:23 templates/summarizer/history.html:56
+msgid "PDF"
+msgstr "PDF"
+
+#: templates/papers/detail.html:26 templates/summarizer/history.html:57
+msgid "Word"
+msgstr "Word"
+
+#: templates/papers/detail.html:31
+msgid "Original PDF"
+msgstr "Original PDF"
+
+#: templates/papers/detail.html:43
+msgid "Sections"
+msgstr "Sections"
+
+#: templates/papers/detail.html:48 templates/papers/detail.html:103
+#: templates/summarizer/shared_summary.html:71
+msgid "Key points"
+msgstr "Key points"
+
+#: templates/papers/detail.html:52 templates/papers/detail.html:144
+#: templates/summarizer/shared_summary.html:107
+msgid "References"
+msgstr "References"
+
+#: templates/papers/detail.html:65
+msgid "summary ready"
+msgstr "summary ready"
+
+#: templates/papers/detail.html:68
+#, python-format
+msgid "detected · %(c)s%% confidence"
+msgstr "detected · %(c)s%% confidence"
+
+#: templates/papers/detail.html:70
+msgid "user-set"
+msgstr "user-set"
+
+#: templates/papers/detail.html:78 templates/papers/detail.html:181
+msgid "file"
+msgstr "file"
+
+#: templates/papers/detail.html:79 templates/papers/detail.html:182
+msgid "size"
+msgstr "size"
+
+#: templates/papers/detail.html:80 templates/summarizer/shared_summary.html:56
+msgid "model"
+msgstr "model"
+
+#: templates/papers/detail.html:81 templates/papers/detail.html:183
+msgid "uploaded"
+msgstr "uploaded"
+
+#: templates/papers/detail.html:95 templates/summarizer/shared_summary.html:64
+msgid "Summary of the paper."
+msgstr "Summary of the paper."
+
+#: templates/papers/detail.html:104
+#: templates/summarizer/shared_summary.html:72
+msgid "What the paper actually shows."
+msgstr "What the paper actually shows."
+
+#: templates/papers/detail.html:120
+#: templates/summarizer/shared_summary.html:84
+msgid "How the work was done."
+msgstr "How the work was done."
+
+#: templates/papers/detail.html:128
+#: templates/summarizer/shared_summary.html:92
+msgid "What the numbers say."
+msgstr "What the numbers say."
+
+#: templates/papers/detail.html:136
+#: templates/summarizer/shared_summary.html:100
+msgid "What it means."
+msgstr "What it means."
+
+#: templates/papers/detail.html:145
+#: templates/summarizer/shared_summary.html:108
+msgid "Extracted citation list"
+msgstr "Extracted citation list"
+
+#: templates/papers/detail.html:159
+msgid "Back to papers"
+msgstr "Back to papers"
+
+#: templates/papers/detail.html:165
+msgid "Re-run summary"
+msgstr "Re-run summary"
+
+#: templates/papers/detail.html:175
+msgid "not summarized"
+msgstr "not summarized"
+
+#: templates/papers/detail.html:176
+msgid "paper · pending"
+msgstr "paper · pending"
+
+#: templates/papers/detail.html:188
+msgid "No summary yet."
+msgstr "No summary yet."
+
+#: templates/papers/detail.html:190
+msgid ""
+"Send this PDF to Groq's Llama 3.3 70B for structured summarization. It "
+"usually takes 15–30 seconds."
+msgstr ""
+"Send this PDF to Groq's Llama 3.3 70B for structured summarization. It "
+"usually takes 15–30 seconds."
+
+#: templates/papers/detail.html:196
+msgid "Summarize this paper"
+msgstr "Summarize this paper"
+
+#: templates/papers/detail.html:206 templates/papers/list.html:54
+#: templates/summarizer/history.html:30
+msgid "Paper"
+msgstr "Paper"
+
+#: templates/papers/detail.html:208
+msgid "File"
+msgstr "File"
+
+#: templates/papers/detail.html:209
+msgid "Size"
+msgstr "Size"
+
+#: templates/papers/detail.html:210
+msgid "Uploaded"
+msgstr "Uploaded"
+
+#: templates/papers/detail.html:212
+msgid "Language"
+msgstr "Language"
+
+#: templates/papers/detail.html:214
+msgid "Uzbek"
+msgstr "Uzbek"
+
+#: templates/papers/detail.html:222
+msgid "Generation"
+msgstr "Generation"
+
+#: templates/papers/detail.html:224 templates/papers/upload.html:171
+msgid "Model"
+msgstr "Model"
+
+#: templates/papers/detail.html:225 templates/papers/upload.html:172
+msgid "Provider"
+msgstr "Provider"
+
+#: templates/papers/detail.html:226 templates/papers/upload.html:175
+msgid "Cost"
+msgstr "Cost"
+
+#: templates/papers/detail.html:226
+msgid "beta"
+msgstr "beta"
+
+#: templates/papers/detail.html:232
+msgid "Share"
+msgstr "Share"
+
+#: templates/papers/detail.html:234
+msgid "Create a public read-only link from the summary page."
+msgstr "Create a public read-only link from the summary page."
+
+#: templates/papers/detail.html:237
+msgid "Open share panel"
+msgstr "Open share panel"
+
+#: templates/papers/list.html:4
+msgid "Papers — Academic Summarizer"
+msgstr "Papers — Academic Summarizer"
+
+#: templates/papers/list.html:11
+msgid "Your library"
+msgstr "Your library"
+
+#: templates/papers/list.html:12
+msgid "Papers, summarized."
+msgstr "Papers, summarized."
+
+#: templates/papers/list.html:15
+msgid "paper · distilled into structured summaries."
+msgid_plural "papers · distilled into structured summaries."
+msgstr[0] "paper · distilled into structured summaries."
+msgstr[1] "papers · distilled into structured summaries."
+
+#: templates/papers/list.html:26
+msgid "Add paper"
+msgstr "Add paper"
+
+#: templates/papers/list.html:33
+msgid "Filter"
+msgstr "Filter"
+
+#: templates/papers/list.html:36 templates/papers/list.html:44
+msgid "clear"
+msgstr "clear"
+
+#: templates/papers/list.html:55 templates/papers/upload.html:123
+msgid "Tags"
+msgstr "Tags"
+
+#: templates/papers/list.html:56 templates/summarizer/history.html:31
+msgid "Lang"
+msgstr "Lang"
+
+#: templates/papers/list.html:57 templates/summarizer/history.html:32
+msgid "Date"
+msgstr "Date"
+
+#: templates/papers/list.html:68 templates/summarizer/history.html:43
+msgid "Unknown author"
+msgstr "Unknown author"
+
+#: templates/papers/list.html:97
+msgid "Open summary"
+msgstr "Open summary"
+
+#: templates/papers/list.html:100
+msgid "Export PDF"
+msgstr "Export PDF"
+
+#: templates/papers/list.html:104
+msgid "Delete"
+msgstr "Delete"
+
+#: templates/papers/list.html:146
+#, python-format
+msgid "%(n)s of %(total)s papers"
+msgstr "%(n)s of %(total)s papers"
+
+#: templates/papers/list.html:147 templates/summarizer/history.html:88
+#, python-format
+msgid "page %(n)s / %(total)s"
+msgstr "page %(n)s / %(total)s"
+
+#: templates/papers/list.html:152
+msgid "Empty library"
+msgstr "Empty library"
+
+#: templates/papers/list.html:154
+#, python-format
+msgid "No papers match \"%(query)s\"."
+msgstr "No papers match \"%(query)s\"."
+
+#: templates/papers/list.html:154
+msgid "No papers yet."
+msgstr "No papers yet."
+
+#: templates/papers/list.html:157
+msgid "Try a different search term, or clear the filter."
+msgstr "Try a different search term, or clear the filter."
+
+#: templates/papers/list.html:157
+msgid "Upload your first academic paper to get started."
+msgstr "Upload your first academic paper to get started."
+
+#: templates/papers/list.html:160
+msgid "Clear search"
+msgstr "Clear search"
+
+#: templates/papers/list.html:163
+msgid "Upload your first paper"
+msgstr "Upload your first paper"
+
+#: templates/papers/upload.html:4
+msgid "Upload — Academic Summarizer"
+msgstr "Upload — Academic Summarizer"
+
+#: templates/papers/upload.html:11
+msgid "Step 01 / 03 · Upload"
+msgstr "Step 01 / 03 · Upload"
+
+#: templates/papers/upload.html:12
+msgid "Add a paper to the queue."
+msgstr "Add a paper to the queue."
+
+#: templates/papers/upload.html:14
+msgid ""
+"PDF up to 50 MB. We extract the text, fix common encoding issues, and pass "
+"the result to Llama 3.3 70B for structured summarization."
+msgstr ""
+"PDF up to 50 MB. We extract the text, fix common encoding issues, and pass "
+"the result to Llama 3.3 70B for structured summarization."
+
+#: templates/papers/upload.html:18
+msgid "queue 0 / 3"
+msgstr "queue 0 / 3"
+
+#: templates/papers/upload.html:19
+msgid "credits ∞"
+msgstr "credits ∞"
+
+#: templates/papers/upload.html:35
+msgid "Drop a PDF, or click to browse."
+msgstr "Drop a PDF, or click to browse."
+
+#: templates/papers/upload.html:36
+msgid "English, Russian, or Uzbek · up to 50 MB · single file"
+msgstr "English, Russian, or Uzbek · up to 50 MB · single file"
+
+#: templates/papers/upload.html:39
+msgid "Choose PDF"
+msgstr "Choose PDF"
+
+#: templates/papers/upload.html:50
+msgid "Remove file"
+msgstr "Remove file"
+
+#: templates/papers/upload.html:69
+msgid "File analysis"
+msgstr "File analysis"
+
+#: templates/papers/upload.html:72
+msgid "Analyzing PDF…"
+msgstr "Analyzing PDF…"
+
+#: templates/papers/upload.html:76
+msgid "Pages"
+msgstr "Pages"
+
+#: templates/papers/upload.html:77
+msgid "Tokens (est.)"
+msgstr "Tokens (est.)"
+
+#: templates/papers/upload.html:78
+msgid "Limit"
+msgstr "Limit"
+
+#: templates/papers/upload.html:83
+msgid "Try anyway →"
+msgstr "Try anyway →"
+
+#: templates/papers/upload.html:89
+msgid "Paper metadata"
+msgstr "Paper metadata"
+
+#: templates/papers/upload.html:92
+msgid "Title"
+msgstr "Title"
+
+#: templates/papers/upload.html:100
+msgid "Author(s)"
+msgstr "Author(s)"
+
+#: templates/papers/upload.html:103
+msgid "Optional · separate multiple authors with commas"
+msgstr "Optional · separate multiple authors with commas"
+
+#: templates/papers/upload.html:108
+msgid "Paper language"
+msgstr "Paper language"
+
+#: templates/papers/upload.html:110
+msgid "Auto-detect from PDF text"
+msgstr "Auto-detect from PDF text"
+
+#: templates/papers/upload.html:113
+msgid "Uzbek (Latin)"
+msgstr "Uzbek (Latin)"
+
+#: templates/papers/upload.html:116
+msgid "The summary and chat replies will be generated in this language."
+msgstr "The summary and chat replies will be generated in this language."
+
+#: templates/papers/upload.html:123
+msgid "selected"
+msgstr "selected"
+
+#: templates/papers/upload.html:126
+msgid "AI analyzing…"
+msgstr "AI analyzing…"
+
+#: templates/papers/upload.html:133
+msgid "↑ auto-suggested by llama-3.3 · click to add"
+msgstr "↑ auto-suggested by llama-3.3 · click to add"
+
+#: templates/papers/upload.html:138
+msgid "Selected"
+msgstr "Selected"
+
+#: templates/papers/upload.html:140
+msgid "None yet"
+msgstr "None yet"
+
+#: templates/papers/upload.html:145
+msgid "Custom tag…"
+msgstr "Custom tag…"
+
+#: templates/papers/upload.html:147
+msgid "Add"
+msgstr "Add"
+
+#: templates/papers/upload.html:158
+msgid "Back"
+msgstr "Back"
+
+#: templates/papers/upload.html:161
+msgid "Upload & summarize"
+msgstr "Upload & summarize"
+
+#: templates/papers/upload.html:169
+msgid "Run plan"
+msgstr "Run plan"
+
+#: templates/papers/upload.html:173
+msgid "Output"
+msgstr "Output"
+
+#: templates/papers/upload.html:173
+msgid "5 sections + citations"
+msgstr "5 sections + citations"
+
+#: templates/papers/upload.html:174
+msgid "ETA"
+msgstr "ETA"
+
+#: templates/papers/upload.html:174
+msgid "~ 20 s"
+msgstr "~ 20 s"
+
+#: templates/papers/upload.html:175
+msgid "free · beta"
+msgstr "free · beta"
+
+#: templates/papers/upload.html:180
+msgid "What you'll get"
+msgstr "What you'll get"
+
+#: templates/papers/upload.html:182
+msgid "Abstract — 2 paragraphs"
+msgstr "Abstract — 2 paragraphs"
+
+#: templates/papers/upload.html:183
+msgid "Key points — 5 to 8 ranked"
+msgstr "Key points — 5 to 8 ranked"
+
+#: templates/papers/upload.html:184
+msgid "Methodology summary"
+msgstr "Methodology summary"
+
+#: templates/papers/upload.html:185
+msgid "Results, with deltas"
+msgstr "Results, with deltas"
+
+#: templates/papers/upload.html:186
+msgid "Conclusion and future work"
+msgstr "Conclusion and future work"
+
+#: templates/papers/upload.html:187
+msgid "Citation list, deduplicated"
+msgstr "Citation list, deduplicated"
+
+#: templates/papers/upload.html:192
+msgid "Privacy"
+msgstr "Privacy"
+
+#: templates/papers/upload.html:194
+msgid "Files are stored only in your account. We don't train on your uploads."
+msgstr ""
+"Files are stored only in your account. We don't train on your uploads."
+
+#: templates/registration/login.html:4
+msgid "Sign in — Academic Summarizer"
+msgstr "Sign in — Academic Summarizer"
+
+#: templates/registration/login.html:11
+#: templates/registration/register.html:11
+msgid "secure"
+msgstr "secure"
+
+#: templates/registration/login.html:15
+msgid "Welcome back."
+msgstr "Welcome back."
+
+#: templates/registration/login.html:17
+msgid "Sign in to read your saved summaries and continue your reviews."
+msgstr "Sign in to read your saved summaries and continue your reviews."
+
+#: templates/registration/login.html:37
+msgid "your username"
+msgstr "your username"
+
+#: templates/registration/login.html:58
+#: templates/registration/register.html:54
+msgid "or"
+msgstr "or"
+
+#: templates/registration/login.html:62
+#, python-format
+msgid "New here? <a href=\"%(register_url)s\">Create a free account</a>"
+msgstr "New here? <a href=\"%(register_url)s\">Create a free account</a>"
+
+#: templates/registration/register.html:4
+msgid "Create account — Academic Summarizer"
+msgstr "Create account — Academic Summarizer"
+
+#: templates/registration/register.html:15
+msgid "Open an account."
+msgstr "Open an account."
+
+#: templates/registration/register.html:17
+msgid "Free while in beta. We'll never share your reading list."
+msgstr "Free while in beta. We'll never share your reading list."
+
+#: templates/registration/register.html:37
+msgid "at least 8 characters"
+msgstr "at least 8 characters"
+
+#: templates/registration/register.html:37
+msgid "re-enter password"
+msgstr "re-enter password"
+
+#: templates/registration/register.html:58
+#, python-format
+msgid "Already have one? <a href=\"%(login_url)s\">Sign in</a>"
+msgstr "Already have one? <a href=\"%(login_url)s\">Sign in</a>"
+
+#: templates/summarizer/_chat_panel.html:18
+msgid "Chat with this paper"
+msgstr "Chat with this paper"
+
+#: templates/summarizer/_chat_panel.html:19
+msgid "groq · llama-3.3-70b · grounded in the summary above"
+msgstr "groq · llama-3.3-70b · grounded in the summary above"
+
+#: templates/summarizer/_chat_panel.html:22
+msgid "Clear history"
+msgstr "Clear history"
+
+#: templates/summarizer/_chat_panel.html:27
+msgid "Ask anything about this paper."
+msgstr "Ask anything about this paper."
+
+#: templates/summarizer/_chat_panel.html:28
+msgid "Try one of these prompts to get started, or type your own."
+msgstr "Try one of these prompts to get started, or type your own."
+
+#: templates/summarizer/_chat_panel.html:30
+msgid "What is the main contribution of this paper?"
+msgstr "What is the main contribution of this paper?"
+
+#: templates/summarizer/_chat_panel.html:31
+msgid "Main contribution?"
+msgstr "Main contribution?"
+
+#: templates/summarizer/_chat_panel.html:33
+msgid "Summarize the methodology in plain language."
+msgstr "Summarize the methodology in plain language."
+
+#: templates/summarizer/_chat_panel.html:34
+msgid "Methodology in plain language"
+msgstr "Methodology in plain language"
+
+#: templates/summarizer/_chat_panel.html:36
+msgid "What are the most important results, with numbers?"
+msgstr "What are the most important results, with numbers?"
+
+#: templates/summarizer/_chat_panel.html:37
+msgid "Most important results"
+msgstr "Most important results"
+
+#: templates/summarizer/_chat_panel.html:39
+msgid "What are the limitations or weaknesses?"
+msgstr "What are the limitations or weaknesses?"
+
+#: templates/summarizer/_chat_panel.html:40
+msgid "Limitations & weaknesses"
+msgstr "Limitations & weaknesses"
+
+#: templates/summarizer/_chat_panel.html:42
+msgid "Suggest three follow-up research questions."
+msgstr "Suggest three follow-up research questions."
+
+#: templates/summarizer/_chat_panel.html:43
+msgid "Follow-up questions"
+msgstr "Follow-up questions"
+
+#: templates/summarizer/_chat_panel.html:55
+msgid "Ask about this paper…"
+msgstr "Ask about this paper…"
+
+#: templates/summarizer/_chat_panel.html:58
+msgid "Your message"
+msgstr "Your message"
+
+#: templates/summarizer/_chat_panel.html:60
+msgid "Send"
+msgstr "Send"
+
+#: templates/summarizer/_chat_panel.html:64
+msgid "Enter to send · Shift+Enter for a new line · max 2,000 chars"
+msgstr "Enter to send · Shift+Enter for a new line · max 2,000 chars"
+
+#: templates/summarizer/history.html:4
+msgid "History — Academic Summarizer"
+msgstr "History — Academic Summarizer"
+
+#: templates/summarizer/history.html:11
+msgid "Summary history"
+msgstr "Summary history"
+
+#: templates/summarizer/history.html:12
+msgid "Your reading log."
+msgstr "Your reading log."
+
+#: templates/summarizer/history.html:15
+msgid "summary · ordered by recency."
+msgid_plural "summaries · ordered by recency."
+msgstr[0] "summary · ordered by recency."
+msgstr[1] "summaries · ordered by recency."
+
+#: templates/summarizer/history.html:20
+msgid "New paper"
+msgstr "New paper"
+
+#: templates/summarizer/history.html:55
+msgid "Open"
+msgstr "Open"
+
+#: templates/summarizer/history.html:87
+#, python-format
+msgid "%(n)s of %(total)s summaries"
+msgstr "%(n)s of %(total)s summaries"
+
+#: templates/summarizer/history.html:93
+msgid "Empty history"
+msgstr "Empty history"
+
+#: templates/summarizer/history.html:94
+msgid "No summaries yet."
+msgstr "No summaries yet."
+
+#: templates/summarizer/history.html:95
+msgid "Upload and summarize your first paper to see it here."
+msgstr "Upload and summarize your first paper to see it here."
+
+#: templates/summarizer/history.html:97
+msgid "Upload a paper"
+msgstr "Upload a paper"
+
+#: templates/summarizer/share_expired.html:4
+msgid "Link expired — Academic Summarizer"
+msgstr "Link expired — Academic Summarizer"
+
+#: templates/summarizer/share_expired.html:12
+msgid "expired"
+msgstr "expired"
+
+#: templates/summarizer/share_expired.html:16
+msgid "Link no longer valid."
+msgstr "Link no longer valid."
+
+#: templates/summarizer/share_expired.html:18
+msgid ""
+"This shared summary link has expired or been revoked by its owner. Please "
+"ask them for a fresh one."
+msgstr ""
+"This shared summary link has expired or been revoked by its owner. Please "
+"ask them for a fresh one."
+
+#: templates/summarizer/share_expired.html:22
+msgid "Go to home"
+msgstr "Go to home"
+
+#: templates/summarizer/shared_summary.html:7
+msgid "Shared summary"
+msgstr "Shared summary"
+
+#: templates/summarizer/shared_summary.html:32
+msgid "shared view"
+msgstr "shared view"
+
+#: templates/summarizer/shared_summary.html:48
+msgid "shared summary"
+msgstr "shared summary"
+
+#: templates/summarizer/shared_summary.html:49
+#, python-format
+msgid "%(counter)s view"
+msgid_plural "%(counter)s views"
+msgstr[0] "%(counter)s view"
+msgstr[1] "%(counter)s views"
+
+#: templates/summarizer/shared_summary.html:57
+msgid "generated"
+msgstr "generated"
+
+#: templates/summarizer/shared_summary.html:116
+msgid "Like this?"
+msgstr "Like this?"
+
+#: templates/summarizer/shared_summary.html:117
+msgid "Summarize your own papers."
+msgstr "Summarize your own papers."
+
+#: templates/summarizer/shared_summary.html:118
+msgid "Free while in beta · sign-up takes 30 seconds."
+msgstr "Free while in beta · sign-up takes 30 seconds."
+
+#: templates/summarizer/shared_summary.html:120
+msgid "Create free account"
+msgstr "Create free account"
+
+#: templates/summarizer/shared_summary.html:137
+msgid "Home"
+msgstr "Home"

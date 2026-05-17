@@ -1,21 +1,22 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Upload — Academic Summarizer{% endblock %}
+{% block title %}{% trans "Upload — Academic Summarizer" %}{% endblock %}
 
 {% block content %}
 <div class="container upload-page">
 
   <div class="h-row" style="justify-content: space-between; align-items: end; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
     <div>
-      <div class="eyebrow" style="margin-bottom: 8px;">Step 01 / 03 · Upload</div>
-      <h1 style="font-size: clamp(2rem, 4vw, 3rem);">Add a paper to the queue.</h1>
+      <div class="eyebrow" style="margin-bottom: 8px;">{% trans "Step 01 / 03 · Upload" %}</div>
+      <h1 style="font-size: clamp(2rem, 4vw, 3rem);">{% trans "Add a paper to the queue." %}</h1>
       <p class="dim" style="margin-top: 8px; max-width: 60ch;">
-        PDF up to 50 MB. We extract the text, fix common encoding issues, and pass the result to Llama 3.3 70B for structured summarization.
+        {% trans "PDF up to 50 MB. We extract the text, fix common encoding issues, and pass the result to Llama 3.3 70B for structured summarization." %}
       </p>
     </div>
     <div class="h-row" style="gap: 8px;">
-      <span class="pill"><span class="dot"></span>queue 0 / 3</span>
-      <span class="pill is-ok"><span class="dot"></span>credits ∞</span>
+      <span class="pill"><span class="dot"></span>{% trans "queue 0 / 3" %}</span>
+      <span class="pill is-ok"><span class="dot"></span>{% trans "credits ∞" %}</span>
     </div>
   </div>
 
@@ -31,11 +32,11 @@
         <div id="drop-zone" class="dropzone">
           <div id="drop-default">
             <div class="dropzone-icon"><i class="bi bi-cloud-upload" style="font-size: 1.4rem;"></i></div>
-            <h3>Drop a PDF, or click to browse.</h3>
-            <p>English, Russian, or Uzbek · up to 50 MB · single file</p>
+            <h3>{% trans "Drop a PDF, or click to browse." %}</h3>
+            <p>{% trans "English, Russian, or Uzbek · up to 50 MB · single file" %}</p>
             <div class="h-row" style="justify-content: center; margin-top: 22px; gap: 8px;">
               <span class="btn btn-primary">
-                <i class="bi bi-file-earmark"></i> Choose PDF
+                <i class="bi bi-file-earmark"></i> {% trans "Choose PDF" %}
               </span>
             </div>
           </div>
@@ -46,7 +47,7 @@
               <div id="file-preview-name" style="font-family: var(--serif); font-size: 17px; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"></div>
               <div id="file-preview-size" class="mono" style="font-size: 11px; color: var(--ink-3); letter-spacing: 0.06em;"></div>
             </div>
-            <button id="clear-file" type="button" class="icon-btn" aria-label="Remove file">
+            <button id="clear-file" type="button" class="icon-btn" aria-label="{% trans 'Remove file' %}">
               <i class="bi bi-x-lg"></i>
             </button>
           </div>
@@ -65,30 +66,30 @@
         <div id="file-analysis" class="card file-analysis" style="display: none;" aria-live="polite">
           <div class="file-analysis-head">
             <div>
-              <div class="eyebrow" style="margin-bottom: 6px;">File analysis</div>
+              <div class="eyebrow" style="margin-bottom: 6px;">{% trans "File analysis" %}</div>
               <span id="file-analysis-pill" class="pill">
                 <span class="dot"></span>
-                <span id="file-analysis-status">Analyzing PDF…</span>
+                <span id="file-analysis-status">{% trans "Analyzing PDF…" %}</span>
               </span>
             </div>
             <div class="kv file-analysis-metrics">
-              <div class="k">Pages</div>     <div class="v mono" id="fa-pages">—</div>
-              <div class="k">Tokens (est.)</div><div class="v mono" id="fa-tokens">—</div>
-              <div class="k">Limit</div>     <div class="v mono">8,000</div>
+              <div class="k">{% trans "Pages" %}</div>     <div class="v mono" id="fa-pages">—</div>
+              <div class="k">{% trans "Tokens (est.)" %}</div><div class="v mono" id="fa-tokens">—</div>
+              <div class="k">{% trans "Limit" %}</div>     <div class="v mono">8,000</div>
             </div>
           </div>
           <div id="file-analysis-message" class="file-analysis-message" style="display: none;"></div>
           <div id="file-analysis-actions" class="file-analysis-actions" style="display: none;">
-            <a href="#" id="fa-try-anyway" class="mono">Try anyway →</a>
+            <a href="#" id="fa-try-anyway" class="mono">{% trans "Try anyway →" %}</a>
           </div>
         </div>
 
         <!-- METADATA CARD -->
         <div class="card" style="padding: 24px;">
-          <h4 style="font-family: var(--serif); font-weight: 500; font-size: 1.15rem; margin-bottom: 16px;">Paper metadata</h4>
+          <h4 style="font-family: var(--serif); font-weight: 500; font-size: 1.15rem; margin-bottom: 16px;">{% trans "Paper metadata" %}</h4>
           <div class="stack stack-4">
             <div class="field">
-              <label for="{{ form.title.id_for_label }}">Title <span style="color: var(--err);">*</span></label>
+              <label for="{{ form.title.id_for_label }}">{% trans "Title" %} <span style="color: var(--err);">*</span></label>
               {{ form.title }}
               {% for e in form.title.errors %}
                 <div class="invalid-feedback" style="display:block; color: var(--err); font-size: 12px;">{{ e }}</div>
@@ -96,41 +97,54 @@
             </div>
 
             <div class="field">
-              <label for="{{ form.author.id_for_label }}">Author(s)</label>
+              <label for="{{ form.author.id_for_label }}">{% trans "Author(s)" %}</label>
               {{ form.author }}
               <div style="font-family: var(--mono); font-size: 11px; color: var(--ink-3); margin-top: 2px;">
-                Optional · separate multiple authors with commas
+                {% trans "Optional · separate multiple authors with commas" %}
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="language_override">{% trans "Paper language" %}</label>
+              <select name="language_override" id="language_override" class="input">
+                <option value="">{% trans "Auto-detect from PDF text" %}</option>
+                <option value="en">{% trans "English" %}</option>
+                <option value="ru">{% trans "Russian" %}</option>
+                <option value="uz">{% trans "Uzbek (Latin)" %}</option>
+              </select>
+              <div style="font-family: var(--mono); font-size: 11px; color: var(--ink-3); margin-top: 2px;">
+                {% trans "The summary and chat replies will be generated in this language." %}
               </div>
             </div>
 
             <!-- AI Tag suggestion (revealed after file selection) -->
             <div id="tag-section" class="field" style="display:none;">
               <label style="display:flex; justify-content: space-between;">
-                <span>Tags <span style="color: var(--ink-4); font-weight: 400;">· <span id="tag-count">0</span> selected</span></span>
+                <span>{% trans "Tags" %} <span style="color: var(--ink-4); font-weight: 400;">· <span id="tag-count">0</span> {% trans "selected" %}</span></span>
                 <span id="tag-status" class="mono" style="font-size: 11px; color: var(--ink-3);">
                   <span id="tag-status-spinner" class="spinner-border spinner-border-sm" style="width: 11px; height: 11px; border-width: 2px; vertical-align: -1px;" role="status" aria-hidden="true"></span>
-                  <span id="tag-status-text">AI analyzing…</span>
+                  <span id="tag-status-text">{% trans "AI analyzing…" %}</span>
                 </span>
               </label>
 
               <div id="suggested-tags-wrap" style="display:none; margin-top: 8px;">
                 <div class="suggested-tags" id="suggested-tags-list"></div>
                 <div class="mono" style="font-size: 10.5px; color: var(--ink-4); letter-spacing: 0.06em; margin-top: 8px;">
-                  ↑ auto-suggested by llama-3.3 · click to add
+                  {% trans "↑ auto-suggested by llama-3.3 · click to add" %}
                 </div>
               </div>
 
               <div style="margin-top: 12px;">
-                <div class="eyebrow" style="margin-bottom: 6px;">Selected</div>
+                <div class="eyebrow" style="margin-bottom: 6px;">{% trans "Selected" %}</div>
                 <div class="suggested-tags" id="selected-tags-list">
-                  <span class="dim mono" style="font-size: 11px; font-style: italic;">None yet</span>
+                  <span class="dim mono" style="font-size: 11px; font-style: italic;">{% trans "None yet" %}</span>
                 </div>
               </div>
 
               <div class="h-row" style="gap: 6px; margin-top: 12px;">
-                <input type="text" id="custom-tag-input" class="input" placeholder="Custom tag…" maxlength="50" style="font-size: 13px;">
+                <input type="text" id="custom-tag-input" class="input" placeholder="{% trans 'Custom tag…' %}" maxlength="50" style="font-size: 13px;">
                 <button type="button" id="add-custom-tag-btn" class="btn btn-secondary btn-sm">
-                  <i class="bi bi-plus"></i> Add
+                  <i class="bi bi-plus"></i> {% trans "Add" %}
                 </button>
               </div>
 
@@ -141,10 +155,10 @@
 
         <div class="h-row" style="justify-content: space-between; flex-wrap: wrap; gap: 12px;">
           <a href="{% url 'papers:list' %}" class="btn btn-ghost">
-            <i class="bi bi-arrow-left"></i> Back
+            <i class="bi bi-arrow-left"></i> {% trans "Back" %}
           </a>
           <button type="submit" class="btn btn-primary btn-lg" id="submit-btn">
-            <i class="bi bi-sparkle"></i> Upload &amp; summarize
+            <i class="bi bi-sparkle"></i> {% trans "Upload & summarize" %}
           </button>
         </div>
       </div>
@@ -152,32 +166,32 @@
       <!-- SIDE -->
       <aside class="stack stack-4">
         <div class="card side-card">
-          <h4>Run plan</h4>
+          <h4>{% trans "Run plan" %}</h4>
           <div class="kv">
-            <div class="k">Model</div><div class="v mono">llama-3.3-70b</div>
-            <div class="k">Provider</div><div class="v mono">groq · LPU</div>
-            <div class="k">Output</div><div class="v">5 sections + citations</div>
-            <div class="k">ETA</div><div class="v">~ 20 s</div>
-            <div class="k">Cost</div><div class="v">free · beta</div>
+            <div class="k">{% trans "Model" %}</div><div class="v mono">llama-3.3-70b</div>
+            <div class="k">{% trans "Provider" %}</div><div class="v mono">groq · LPU</div>
+            <div class="k">{% trans "Output" %}</div><div class="v">{% trans "5 sections + citations" %}</div>
+            <div class="k">{% trans "ETA" %}</div><div class="v">{% trans "~ 20 s" %}</div>
+            <div class="k">{% trans "Cost" %}</div><div class="v">{% trans "free · beta" %}</div>
           </div>
         </div>
 
         <div class="card side-card">
-          <h4>What you'll get</h4>
+          <h4>{% trans "What you'll get" %}</h4>
           <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; font-size: 14px;">
-            <li class="h-row" style="gap: 10px; align-items: flex-start;"><span style="color: var(--accent); margin-top: 2px;"><i class="bi bi-check"></i></span><span style="color: var(--ink-2);">Abstract — 2 paragraphs</span></li>
-            <li class="h-row" style="gap: 10px; align-items: flex-start;"><span style="color: var(--accent); margin-top: 2px;"><i class="bi bi-check"></i></span><span style="color: var(--ink-2);">Key points — 5 to 8 ranked</span></li>
-            <li class="h-row" style="gap: 10px; align-items: flex-start;"><span style="color: var(--accent); margin-top: 2px;"><i class="bi bi-check"></i></span><span style="color: var(--ink-2);">Methodology summary</span></li>
-            <li class="h-row" style="gap: 10px; align-items: flex-start;"><span style="color: var(--accent); margin-top: 2px;"><i class="bi bi-check"></i></span><span style="color: var(--ink-2);">Results, with deltas</span></li>
-            <li class="h-row" style="gap: 10px; align-items: flex-start;"><span style="color: var(--accent); margin-top: 2px;"><i class="bi bi-check"></i></span><span style="color: var(--ink-2);">Conclusion and future work</span></li>
-            <li class="h-row" style="gap: 10px; align-items: flex-start;"><span style="color: var(--accent); margin-top: 2px;"><i class="bi bi-check"></i></span><span style="color: var(--ink-2);">Citation list, deduplicated</span></li>
+            <li class="h-row" style="gap: 10px; align-items: flex-start;"><span style="color: var(--accent); margin-top: 2px;"><i class="bi bi-check"></i></span><span style="color: var(--ink-2);">{% trans "Abstract — 2 paragraphs" %}</span></li>
+            <li class="h-row" style="gap: 10px; align-items: flex-start;"><span style="color: var(--accent); margin-top: 2px;"><i class="bi bi-check"></i></span><span style="color: var(--ink-2);">{% trans "Key points — 5 to 8 ranked" %}</span></li>
+            <li class="h-row" style="gap: 10px; align-items: flex-start;"><span style="color: var(--accent); margin-top: 2px;"><i class="bi bi-check"></i></span><span style="color: var(--ink-2);">{% trans "Methodology summary" %}</span></li>
+            <li class="h-row" style="gap: 10px; align-items: flex-start;"><span style="color: var(--accent); margin-top: 2px;"><i class="bi bi-check"></i></span><span style="color: var(--ink-2);">{% trans "Results, with deltas" %}</span></li>
+            <li class="h-row" style="gap: 10px; align-items: flex-start;"><span style="color: var(--accent); margin-top: 2px;"><i class="bi bi-check"></i></span><span style="color: var(--ink-2);">{% trans "Conclusion and future work" %}</span></li>
+            <li class="h-row" style="gap: 10px; align-items: flex-start;"><span style="color: var(--accent); margin-top: 2px;"><i class="bi bi-check"></i></span><span style="color: var(--ink-2);">{% trans "Citation list, deduplicated" %}</span></li>
           </ul>
         </div>
 
         <div class="card side-card" style="background: var(--bg-sunk); border-style: dashed;">
-          <h4 style="margin-bottom: 6px;">Privacy</h4>
+          <h4 style="margin-bottom: 6px;">{% trans "Privacy" %}</h4>
           <p style="font-size: 13.5px; color: var(--ink-3); margin: 0;">
-            Files are stored only in your account. We don't train on your uploads.
+            {% trans "Files are stored only in your account. We don't train on your uploads." %}
           </p>
         </div>
       </aside>

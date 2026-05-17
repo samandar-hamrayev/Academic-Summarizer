@@ -1,24 +1,25 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Sign in — Academic Summarizer{% endblock %}
+{% block title %}{% trans "Sign in — Academic Summarizer" %}{% endblock %}
 
 {% block content %}
 <div class="container auth-wrap">
   <div class="auth-card">
 
     <div class="h-row" style="gap: 10px; margin-bottom: 18px;">
-      <span class="pill is-ok"><span class="dot"></span>secure</span>
+      <span class="pill is-ok"><span class="dot"></span>{% trans "secure" %}</span>
       <span class="eyebrow">auth · v2</span>
     </div>
 
-    <h1>Welcome back.</h1>
+    <h1>{% trans "Welcome back." %}</h1>
     <p class="dim" style="margin-bottom: 28px; font-size: 14.5px;">
-      Sign in to read your saved summaries and continue your reviews.
+      {% trans "Sign in to read your saved summaries and continue your reviews." %}
     </p>
 
     <div class="auth-tabs" role="tablist">
-      <a href="{% url 'login' %}" class="auth-tab is-on">Sign in</a>
-      <a href="{% url 'register' %}" class="auth-tab">Create account</a>
+      <a href="{% url 'login' %}" class="auth-tab is-on">{% trans "Sign in" %}</a>
+      <a href="{% url 'register' %}" class="auth-tab">{% trans "Create account" %}</a>
     </div>
 
     <form method="post" class="stack stack-4">
@@ -33,7 +34,7 @@
                  name="{{ field.html_name }}"
                  id="{{ field.id_for_label }}"
                  class="input {% if field.errors %}is-invalid{% endif %}"
-                 placeholder="{% if field.name == 'username' %}your username{% elif field.name == 'password' %}••••••••{% endif %}"
+                 placeholder="{% if field.name == 'username' %}{% trans 'your username' %}{% elif field.name == 'password' %}••••••••{% endif %}"
                  {% if field.value %}value="{{ field.value }}"{% endif %}
                  {% if field.field.required %}required{% endif %}>
           {% for error in field.errors %}
@@ -50,14 +51,15 @@
       {% endif %}
 
       <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; justify-content: center; margin-top: 8px;">
-        Sign in <i class="bi bi-arrow-right"></i>
+        {% trans "Sign in" %} <i class="bi bi-arrow-right"></i>
       </button>
     </form>
 
-    <div class="auth-divider">or</div>
+    <div class="auth-divider">{% trans "or" %}</div>
 
     <p style="text-align: center; margin: 0; font-size: 13px; color: var(--ink-3);">
-      New here? <a href="{% url 'register' %}">Create a free account</a>
+      {% url 'register' as register_url %}
+      {% blocktrans with register_url=register_url %}New here? <a href="{{ register_url }}">Create a free account</a>{% endblocktrans %}
     </p>
   </div>
 </div>

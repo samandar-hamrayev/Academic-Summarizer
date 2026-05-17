@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Academic Summarizer — Read less. Understand more.{% endblock %}
+{% block title %}{% trans "Academic Summarizer — Read less. Understand more." %}{% endblock %}
 
 {% block content %}
 
@@ -8,66 +9,66 @@
 <section class="hero">
   <div class="container">
     <div class="hero-eyebrow">
-      <span class="pill is-ok"><span class="dot"></span>READY · groq llama-3.3-70b</span>
-      <span class="eyebrow">No. 01 · Edition 2.0</span>
+      <span class="pill is-ok"><span class="dot"></span>{% trans "READY · groq llama-3.3-70b" %}</span>
+      <span class="eyebrow">{% trans "No. 01 · Edition 2.0" %}</span>
     </div>
 
     <div class="hero-grid">
       <div>
         <h1 class="hero-title">
-          A reading room<br>
+          {% blocktrans %}A reading room<br>
           for <em>papers</em> you<br>
           don&rsquo;t have time<br>
-          to read.
+          to read.{% endblocktrans %}
         </h1>
 
         <p class="lead" style="max-width: 52ch; margin-top: 28px;">
-          Drop a PDF. Get back a five-section, academically faithful summary —
+          {% blocktrans %}Drop a PDF. Get back a five-section, academically faithful summary —
           abstract, key points, methodology, results, and conclusion — typeset
-          like a magazine, ready in under thirty seconds.
+          like a magazine, ready in under thirty seconds.{% endblocktrans %}
         </p>
 
         <div class="cta-row">
           {% if user.is_authenticated %}
             <a href="{% url 'papers:upload' %}" class="btn btn-primary btn-lg">
-              <i class="bi bi-cloud-upload"></i> Summarize a paper
+              <i class="bi bi-cloud-upload"></i> {% trans "Summarize a paper" %}
             </a>
             <a href="{% url 'papers:list' %}" class="btn btn-secondary btn-lg">
-              Open my library
+              {% trans "Open my library" %}
             </a>
           {% else %}
             <a href="{% url 'register' %}" class="btn btn-primary btn-lg">
-              <i class="bi bi-cloud-upload"></i> Summarize a paper
+              <i class="bi bi-cloud-upload"></i> {% trans "Summarize a paper" %}
             </a>
             <a href="{% url 'login' %}" class="btn btn-secondary btn-lg">
-              Open a free account
+              {% trans "Open a free account" %}
             </a>
           {% endif %}
-          <span class="cta-hint">PDF · up to 50 MB · EN / RU / UZ</span>
+          <span class="cta-hint">{% trans "PDF · up to 50 MB · EN / RU / UZ" %}</span>
         </div>
       </div>
 
       <aside class="hero-side">
-        <div class="eyebrow" style="margin-bottom: 16px;">From a reader</div>
+        <div class="eyebrow" style="margin-bottom: 16px;">{% trans "From a reader" %}</div>
         <p class="quote">
-          &ldquo;Cut my literature review from three weeks to four evenings.
-          The methodology section alone is worth it.&rdquo;
+          {% blocktrans %}&ldquo;Cut my literature review from three weeks to four evenings.
+          The methodology section alone is worth it.&rdquo;{% endblocktrans %}
         </p>
-        <div class="cite">— PhD candidate, computational linguistics</div>
+        <div class="cite">{% trans "— PhD candidate, computational linguistics" %}</div>
       </aside>
     </div>
 
     <div class="hero-meta" style="margin-top: 64px;">
       <div class="cell">
-        <div class="k">avg. inference</div>
+        <div class="k">{% trans "avg. inference" %}</div>
         <div class="v">18.7s</div>
       </div>
       <div class="cell">
-        <div class="k">languages</div>
+        <div class="k">{% trans "languages" %}</div>
         <div class="v">EN · RU · UZ</div>
       </div>
       <div class="cell">
-        <div class="k">papers indexed</div>
+        <div class="k">{% trans "papers indexed" %}</div>
         <div class="v">1,247</div>
       </div>
     </div>
@@ -79,27 +80,27 @@
   <div class="container">
     <div class="section-head">
       <div>
-        <div class="eyebrow" style="margin-bottom: 8px;">How it works</div>
-        <h2>Three steps. One PDF in, one summary out.</h2>
+        <div class="eyebrow" style="margin-bottom: 8px;">{% trans "How it works" %}</div>
+        <h2>{% trans "Three steps. One PDF in, one summary out." %}</h2>
       </div>
       <span class="section-num">§ 01 / 02</span>
     </div>
 
     <div class="steps">
       <div class="step">
-        <div class="step-num">[ 01 ] Drop</div>
-        <h3>A PDF, up to 50 MB.</h3>
-        <p>English, Russian, or Uzbek. We extract the text, the figures' captions, and the reference list.</p>
+        <div class="step-num">{% trans "[ 01 ] Drop" %}</div>
+        <h3>{% trans "A PDF, up to 50 MB." %}</h3>
+        <p>{% trans "English, Russian, or Uzbek. We extract the text, the figures' captions, and the reference list." %}</p>
       </div>
       <div class="step">
-        <div class="step-num">[ 02 ] Read</div>
-        <h3>Llama 3.3 70B reads the paper.</h3>
-        <p>Served by Groq, the model returns a structured summary in roughly twenty seconds — not minutes.</p>
+        <div class="step-num">{% trans "[ 02 ] Read" %}</div>
+        <h3>{% trans "Llama 3.3 70B reads the paper." %}</h3>
+        <p>{% trans "Served by Groq, the model returns a structured summary in roughly twenty seconds — not minutes." %}</p>
       </div>
       <div class="step">
-        <div class="step-num">[ 03 ] Use</div>
-        <h3>Read it, share it, export it.</h3>
-        <p>Browse the five sections, copy a public link, or export to PDF or Word for your literature review.</p>
+        <div class="step-num">{% trans "[ 03 ] Use" %}</div>
+        <h3>{% trans "Read it, share it, export it." %}</h3>
+        <p>{% trans "Browse the five sections, copy a public link, or export to PDF or Word for your literature review." %}</p>
       </div>
     </div>
   </div>
@@ -110,8 +111,8 @@
   <div class="container">
     <div class="section-head">
       <div>
-        <div class="eyebrow" style="margin-bottom: 8px;">Every paper, the same shape</div>
-        <h2>Five sections. Always.</h2>
+        <div class="eyebrow" style="margin-bottom: 8px;">{% trans "Every paper, the same shape" %}</div>
+        <h2>{% trans "Five sections. Always." %}</h2>
       </div>
       <span class="section-num">§ 02 / 02</span>
     </div>
@@ -119,28 +120,28 @@
     <div class="section-cards">
       <div class="sc-cell">
         <div class="sc-num">[ 01 ]</div>
-        <div class="sc-label">Abstract</div>
-        <div class="sc-desc">A two-paragraph distillation of the paper's core contribution.</div>
+        <div class="sc-label">{% trans "Abstract" %}</div>
+        <div class="sc-desc">{% trans "A two-paragraph distillation of the paper's core contribution." %}</div>
       </div>
       <div class="sc-cell">
         <div class="sc-num">[ 02 ]</div>
-        <div class="sc-label">Key Points</div>
-        <div class="sc-desc">Five to eight takeaways, ranked by importance.</div>
+        <div class="sc-label">{% trans "Key Points" %}</div>
+        <div class="sc-desc">{% trans "Five to eight takeaways, ranked by importance." %}</div>
       </div>
       <div class="sc-cell">
         <div class="sc-num">[ 03 ]</div>
-        <div class="sc-label">Methodology</div>
-        <div class="sc-desc">Setup, data, baselines, and the controls that matter.</div>
+        <div class="sc-label">{% trans "Methodology" %}</div>
+        <div class="sc-desc">{% trans "Setup, data, baselines, and the controls that matter." %}</div>
       </div>
       <div class="sc-cell">
         <div class="sc-num">[ 04 ]</div>
-        <div class="sc-label">Results</div>
-        <div class="sc-desc">The numbers, with the deltas that earn them.</div>
+        <div class="sc-label">{% trans "Results" %}</div>
+        <div class="sc-desc">{% trans "The numbers, with the deltas that earn them." %}</div>
       </div>
       <div class="sc-cell">
         <div class="sc-num">[ 05 ]</div>
-        <div class="sc-label">Conclusion</div>
-        <div class="sc-desc">What it means, what it doesn't, and what's next.</div>
+        <div class="sc-label">{% trans "Conclusion" %}</div>
+        <div class="sc-desc">{% trans "What it means, what it doesn't, and what's next." %}</div>
       </div>
     </div>
   </div>
@@ -157,17 +158,17 @@
       text-align: center;
       background: var(--bg-elev);
     ">
-      <div class="eyebrow" style="margin-bottom: 14px;">Ready when you are</div>
-      <h2 style="margin-bottom: 14px;">Summarize your first paper in under a minute.</h2>
+      <div class="eyebrow" style="margin-bottom: 14px;">{% trans "Ready when you are" %}</div>
+      <h2 style="margin-bottom: 14px;">{% trans "Summarize your first paper in under a minute." %}</h2>
       <p class="lead" style="max-width: 52ch; margin: 0 auto 28px;">
-        Free while in beta. No credit card. Sign up takes thirty seconds.
+        {% trans "Free while in beta. No credit card. Sign up takes thirty seconds." %}
       </p>
       <div class="h-row" style="justify-content: center;">
         <a href="{% url 'register' %}" class="btn btn-primary btn-lg">
-          Create a free account <i class="bi bi-arrow-right"></i>
+          {% trans "Create a free account" %} <i class="bi bi-arrow-right"></i>
         </a>
         <a href="{% url 'login' %}" class="btn btn-ghost btn-lg">
-          Sign in instead
+          {% trans "Sign in instead" %}
         </a>
       </div>
     </div>
