@@ -101,16 +101,6 @@
     <h2 class="text-center fw-bold mb-2">Five-section structured summary</h2>
     <p class="text-center text-muted mb-5">Every summary covers the complete research narrative</p>
     <div class="row g-3">
-      {% for icon, label, desc in sections_preview %}
-      <div class="col-sm-6 col-lg">
-        <div class="card border-0 bg-body-secondary h-100 p-3">
-          <i class="bi bi-{{ icon }} fs-3 text-primary mb-2"></i>
-          <h6 class="fw-semibold mb-1">{{ label }}</h6>
-          <p class="small text-muted mb-0">{{ desc }}</p>
-        </div>
-      </div>
-      {% empty %}
-      {% with sections="abstract,Abstract,The paper's core contribution in plain language|bullseye,Key Points,5–8 essential takeaways|gear,Methodology,How the research was designed and conducted|graph-up,Results,Key quantitative and qualitative findings|flag,Conclusion,Main implications and future directions" %}
       <div class="col-sm-6 col-lg">
         <div class="card border-0 bg-body-secondary h-100 p-3">
           <i class="bi bi-file-text fs-3 text-primary mb-2"></i>
@@ -146,8 +136,6 @@
           <p class="small text-muted mb-0">Main implications and future directions</p>
         </div>
       </div>
-      {% endwith %}
-      {% endfor %}
     </div>
   </div>
 </section>
