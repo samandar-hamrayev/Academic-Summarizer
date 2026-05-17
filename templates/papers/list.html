@@ -16,12 +16,6 @@
       </p>
     </div>
     <div class="h-row">
-      <form method="get" style="display:flex; gap: 8px; align-items: center;">
-        {{ search_form.query }}
-        <button type="submit" class="btn btn-secondary">
-          <i class="bi bi-search"></i> {% trans "Search" %}
-        </button>
-      </form>
       <a href="{% url 'papers:upload' %}" class="btn btn-primary">
         <i class="bi bi-plus-lg"></i> {% trans "Add paper" %}
       </a>
@@ -51,11 +45,11 @@
       <table class="history-table">
         <thead>
           <tr>
-            <th style="width: 55%;">{% trans "Paper" %}</th>
+            <th style="width: 33%;">{% trans "Paper" %}</th>
             <th>{% trans "Tags" %}</th>
-            <th>{% trans "Lang" %}</th>
-            <th>{% trans "Date" %}</th>
-            <th></th>
+            <th style="width: 7%;">{% trans "Lang" %}</th>
+            <th style="width: 10%;">{% trans "Date" %}</th>
+            <th style="width: 1%;"></th>
           </tr>
         </thead>
         <tbody>
@@ -91,8 +85,8 @@
             <td>
               <span class="history-date">{{ paper.uploaded_at|date:"Y-m-d" }}</span>
             </td>
-            <td>
-              <div class="row-actions h-row" onclick="event.stopPropagation();">
+            <td style="white-space: nowrap; text-align: right;">
+              <div class="row-actions" onclick="event.stopPropagation();">
                 {% if paper.has_summary %}
                   <a href="{% url 'papers:detail' paper.pk %}" class="icon-btn" title="{% trans 'Open summary' %}">
                     <i class="bi bi-eye"></i>

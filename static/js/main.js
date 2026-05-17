@@ -42,6 +42,32 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => bootstrap.Alert.getOrCreateInstance(el)?.close(), 6000);
   });
 
+  /* ---- Navbar search: debounce-and-submit (300 ms) ---- */
+  document.querySelectorAll('form[data-debounce-search]').forEach(form => {
+    const input = form.querySelector('input[name="query"]');
+    if (!input) return;
+    let timer = null;
+    let last = input.value;
+    input.addEventListener('input', () => {
+      const cur = input.value;
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        if (cur === last) return;
+        last = cur;
+        form.submit();
+      }, 300);
+    });
+    // Enter still submits immediately (native form behavior preserved)
+  });
+
+  /* ---- ⌘K / Ctrl+K → focus navbar search ---- */
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      const input = document.getElementById('nav-search-input');
+      if (input) { e.preventDefault(); input.focus(); input.select(); }
+    }
+  });
+
   /* ---- Drag & Drop Upload ---- */
   const dropZone      = document.getElementById('drop-zone');
   const fileInput     = document.getElementById('pdf-file-input');

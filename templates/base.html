@@ -40,11 +40,17 @@
     </a>
 
     {% if user.is_authenticated %}
-      <div class="nav-search" role="search" aria-label="{% trans 'Search papers' %}">
+      <form class="nav-search" role="search" method="get"
+            action="{% url 'papers:list' %}" data-debounce-search
+            aria-label="{% trans 'Search papers' %}">
         <i class="bi bi-search"></i>
-        <input type="text" placeholder="{% trans 'Search papers, tags, authors…' %}" aria-label="{% trans 'Search' %}">
+        <input type="text" name="query" id="nav-search-input"
+               value="{{ request.GET.query|default:'' }}"
+               placeholder="{% trans 'Search papers, tags, authors…' %}"
+               aria-label="{% trans 'Search' %}"
+               autocomplete="off">
         <span class="kbd">⌘K</span>
-      </div>
+      </form>
     {% endif %}
 
     <nav class="nav-links">
