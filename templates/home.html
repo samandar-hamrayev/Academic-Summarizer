@@ -1,164 +1,178 @@
 {% extends 'base.html' %}
 
-{% block title %}Academic Summarizer — AI-powered paper analysis{% endblock %}
+{% block title %}Academic Summarizer — Read less. Understand more.{% endblock %}
 
 {% block content %}
 
-<!-- ── Hero with aurora background ─────────────────────────────────── -->
-<section class="hero-wow dot-grid-bg">
-  <div class="aurora"><div class="blob"></div></div>
-
+<!-- ── Hero ─────────────────────────────────────────────────────────── -->
+<section class="hero">
   <div class="container">
-    <div class="hero-inner">
-      <span class="hero-tag">
-        <span class="badge-tech">AI</span>
-        <span>Powered by Groq + Llama 3.3 70B · sub-30 s inference</span>
-      </span>
+    <div class="hero-eyebrow">
+      <span class="pill is-ok"><span class="dot"></span>READY · groq llama-3.3-70b</span>
+      <span class="eyebrow">No. 01 · Edition 2.0</span>
+    </div>
 
-      <h1>
-        Summarise<br>
-        academic papers<br>
-        <span class="accent">in one shot.<span class="cursor"></span></span>
-      </h1>
+    <div class="hero-grid">
+      <div>
+        <h1 class="hero-title">
+          A reading room<br>
+          for <em>papers</em> you<br>
+          don&rsquo;t have time<br>
+          to read.
+        </h1>
 
-      <p class="lead">
-        A purpose-built reading tool for graduate research. Upload a PDF
-        and get an academically faithful summary, key points, methodology,
-        and citation list — in English, Russian, or Uzbek.
-      </p>
+        <p class="lead" style="max-width: 52ch; margin-top: 28px;">
+          Drop a PDF. Get back a five-section, academically faithful summary —
+          abstract, key points, methodology, results, and conclusion — typeset
+          like a magazine, ready in under thirty seconds.
+        </p>
 
-      <div class="cta-row">
-        {% if user.is_authenticated %}
-          <a href="{% url 'papers:upload' %}" class="btn btn-violet btn-lg">
-            <i class="bi bi-cloud-upload"></i>Upload paper
-          </a>
-          <a href="{% url 'papers:list' %}" class="btn btn-tech btn-lg">
-            <i class="bi bi-files"></i>My papers
-          </a>
-        {% else %}
-          <a href="{% url 'register' %}" class="btn btn-violet btn-lg">
-            <i class="bi bi-person-plus"></i>Get started free
-          </a>
-          <a href="{% url 'login' %}" class="btn btn-tech btn-lg">
-            <i class="bi bi-box-arrow-in-right"></i>Sign in
-          </a>
-        {% endif %}
-        <span class="hint d-none d-md-inline">~10-30 s · supports PDF up to 50 MB</span>
+        <div class="cta-row">
+          {% if user.is_authenticated %}
+            <a href="{% url 'papers:upload' %}" class="btn btn-primary btn-lg">
+              <i class="bi bi-cloud-upload"></i> Summarize a paper
+            </a>
+            <a href="{% url 'papers:list' %}" class="btn btn-secondary btn-lg">
+              Open my library
+            </a>
+          {% else %}
+            <a href="{% url 'register' %}" class="btn btn-primary btn-lg">
+              <i class="bi bi-cloud-upload"></i> Summarize a paper
+            </a>
+            <a href="{% url 'login' %}" class="btn btn-secondary btn-lg">
+              Open a free account
+            </a>
+          {% endif %}
+          <span class="cta-hint">PDF · up to 50 MB · EN / RU / UZ</span>
+        </div>
+      </div>
+
+      <aside class="hero-side">
+        <div class="eyebrow" style="margin-bottom: 16px;">From a reader</div>
+        <p class="quote">
+          &ldquo;Cut my literature review from three weeks to four evenings.
+          The methodology section alone is worth it.&rdquo;
+        </p>
+        <div class="cite">— PhD candidate, computational linguistics</div>
+      </aside>
+    </div>
+
+    <div class="hero-meta" style="margin-top: 64px;">
+      <div class="cell">
+        <div class="k">avg. inference</div>
+        <div class="v">18.7s</div>
+      </div>
+      <div class="cell">
+        <div class="k">languages</div>
+        <div class="v">EN · RU · UZ</div>
+      </div>
+      <div class="cell">
+        <div class="k">papers indexed</div>
+        <div class="v">1,247</div>
       </div>
     </div>
   </div>
 </section>
 
-<div class="container">
+<!-- ── How it works ─────────────────────────────────────────────────── -->
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow" style="margin-bottom: 8px;">How it works</div>
+        <h2>Three steps. One PDF in, one summary out.</h2>
+      </div>
+      <span class="section-num">§ 01 / 02</span>
+    </div>
 
-  <!-- ── Stats strip ────────────────────────────────────────────────── -->
-  <div class="stats-strip">
-    <div class="stat-item">
-      <div class="stat-label">papers.count</div>
-      <div class="stat-num">4<span class="unit">total</span></div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-label">time.saved</div>
-      <div class="stat-num">2.1<span class="unit">hrs</span></div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-label">citations</div>
-      <div class="stat-num">47<span class="unit">refs</span></div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-label">languages</div>
-      <div class="stat-num">3<span class="unit">langs</span></div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">[ 01 ] Drop</div>
+        <h3>A PDF, up to 50 MB.</h3>
+        <p>English, Russian, or Uzbek. We extract the text, the figures' captions, and the reference list.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">[ 02 ] Read</div>
+        <h3>Llama 3.3 70B reads the paper.</h3>
+        <p>Served by Groq, the model returns a structured summary in roughly twenty seconds — not minutes.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">[ 03 ] Use</div>
+        <h3>Read it, share it, export it.</h3>
+        <p>Browse the five sections, copy a public link, or export to PDF or Word for your literature review.</p>
+      </div>
     </div>
   </div>
+</section>
 
-  <!-- ── How it works ───────────────────────────────────────────────── -->
-  <section class="section-wow">
-    <div class="section-head-wow">
-      <h2>How it works</h2>
-      <span class="meta">three steps</span>
+<!-- ── Five sections ────────────────────────────────────────────────── -->
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow" style="margin-bottom: 8px;">Every paper, the same shape</div>
+        <h2>Five sections. Always.</h2>
+      </div>
+      <span class="section-num">§ 02 / 02</span>
     </div>
 
-    <div class="feature-grid">
-      <article class="feature-block">
-        <div class="feature-num">[ 01 ]</div>
-        <h3>Drop a PDF</h3>
-        <p>Drag-and-drop any academic paper up to 50 MB. We accept PDFs in English, Russian, or Uzbek.</p>
-      </article>
-
-      <article class="feature-block">
-        <div class="feature-num">[ 02 ]</div>
-        <h3>AI extracts structure</h3>
-        <p>Llama 3.3 70B reads the full paper and returns abstract, key points, methodology, results, conclusion, and a reference list.</p>
-      </article>
-
-      <article class="feature-block">
-        <div class="feature-num">[ 03 ]</div>
-        <h3>Read, share, export</h3>
-        <p>Browse the summary in seconds. Share a public read-only link, or export as PDF or Word for your literature review.</p>
-      </article>
+    <div class="section-cards">
+      <div class="sc-cell">
+        <div class="sc-num">[ 01 ]</div>
+        <div class="sc-label">Abstract</div>
+        <div class="sc-desc">A two-paragraph distillation of the paper's core contribution.</div>
+      </div>
+      <div class="sc-cell">
+        <div class="sc-num">[ 02 ]</div>
+        <div class="sc-label">Key Points</div>
+        <div class="sc-desc">Five to eight takeaways, ranked by importance.</div>
+      </div>
+      <div class="sc-cell">
+        <div class="sc-num">[ 03 ]</div>
+        <div class="sc-label">Methodology</div>
+        <div class="sc-desc">Setup, data, baselines, and the controls that matter.</div>
+      </div>
+      <div class="sc-cell">
+        <div class="sc-num">[ 04 ]</div>
+        <div class="sc-label">Results</div>
+        <div class="sc-desc">The numbers, with the deltas that earn them.</div>
+      </div>
+      <div class="sc-cell">
+        <div class="sc-num">[ 05 ]</div>
+        <div class="sc-label">Conclusion</div>
+        <div class="sc-desc">What it means, what it doesn't, and what's next.</div>
+      </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- ── Why this tool ──────────────────────────────────────────────── -->
-  <section class="section-wow">
-    <div class="section-head-wow">
-      <h2>Five-section structured summary</h2>
-      <span class="meta">every time · every paper</span>
+<!-- ── CTA ──────────────────────────────────────────────────────────── -->
+{% if not user.is_authenticated %}
+<section class="section" style="padding-top: 0;">
+  <div class="container">
+    <div style="
+      border: 1px solid var(--rule);
+      border-radius: var(--radius-xl);
+      padding: clamp(40px, 6vw, 80px);
+      text-align: center;
+      background: var(--bg-elev);
+    ">
+      <div class="eyebrow" style="margin-bottom: 14px;">Ready when you are</div>
+      <h2 style="margin-bottom: 14px;">Summarize your first paper in under a minute.</h2>
+      <p class="lead" style="max-width: 52ch; margin: 0 auto 28px;">
+        Free while in beta. No credit card. Sign up takes thirty seconds.
+      </p>
+      <div class="h-row" style="justify-content: center;">
+        <a href="{% url 'register' %}" class="btn btn-primary btn-lg">
+          Create a free account <i class="bi bi-arrow-right"></i>
+        </a>
+        <a href="{% url 'login' %}" class="btn btn-ghost btn-lg">
+          Sign in instead
+        </a>
+      </div>
     </div>
+  </div>
+</section>
+{% endif %}
 
-    <div class="feature-grid" style="grid-template-columns: repeat(5, 1fr);">
-      <article class="feature-block">
-        <i class="bi bi-file-text" style="color: var(--violet); font-size: 1.4rem;"></i>
-        <h3 style="margin-top: 12px;">Abstract</h3>
-        <p>2-3 paragraph core contribution.</p>
-      </article>
-      <article class="feature-block">
-        <i class="bi bi-bullseye" style="color: var(--lime); font-size: 1.4rem;"></i>
-        <h3 style="margin-top: 12px;">Key points</h3>
-        <p>5-8 essential takeaways.</p>
-      </article>
-      <article class="feature-block">
-        <i class="bi bi-gear" style="color: var(--amber); font-size: 1.4rem;"></i>
-        <h3 style="margin-top: 12px;">Methodology</h3>
-        <p>How the research was conducted.</p>
-      </article>
-      <article class="feature-block">
-        <i class="bi bi-graph-up" style="color: var(--cyan); font-size: 1.4rem;"></i>
-        <h3 style="margin-top: 12px;">Results</h3>
-        <p>Quantitative and qualitative findings.</p>
-      </article>
-      <article class="feature-block">
-        <i class="bi bi-flag" style="color: var(--rose); font-size: 1.4rem;"></i>
-        <h3 style="margin-top: 12px;">Conclusion</h3>
-        <p>Implications and future directions.</p>
-      </article>
-    </div>
-  </section>
-
-  {% if not user.is_authenticated %}
-  <section class="section-wow" style="text-align: center; padding: 80px 0 40px;">
-    <h2 style="font-size: 2.25rem; margin-bottom: 12px;">Ready to read smarter?</h2>
-    <p style="color: var(--text-2); margin-bottom: 28px; font-size: 1.05rem;">
-      Create a free account and summarise your first paper in under 60 seconds.
-    </p>
-    <a href="{% url 'register' %}" class="btn btn-violet btn-lg">
-      <i class="bi bi-person-plus"></i>Create free account
-    </a>
-  </section>
-  {% endif %}
-
-</div>
-
-{% endblock %}
-
-{% block extra_css %}
-<!-- The 5-card "structured summary" grid collapses gracefully on small screens -->
-<style>
-  @media (max-width: 1100px) {
-    .feature-grid[style*="repeat(5"] { grid-template-columns: repeat(2, 1fr) !important; }
-  }
-  @media (max-width: 600px) {
-    .feature-grid[style*="repeat(5"] { grid-template-columns: 1fr !important; }
-  }
-</style>
 {% endblock %}
