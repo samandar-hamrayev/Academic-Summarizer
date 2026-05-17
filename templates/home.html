@@ -1,154 +1,164 @@
 {% extends 'base.html' %}
 
-{% block title %}Academic Summarizer — AI-Powered Paper Analysis{% endblock %}
+{% block title %}Academic Summarizer — AI-powered paper analysis{% endblock %}
 
 {% block content %}
-<!-- Hero -->
-<section class="hero-section py-5">
+
+<!-- ── Hero with aurora background ─────────────────────────────────── -->
+<section class="hero-wow dot-grid-bg">
+  <div class="aurora"><div class="blob"></div></div>
+
   <div class="container">
-    <div class="row align-items-center g-5">
-      <div class="col-lg-6">
-        <h1 class="display-4 fw-bold mb-4">
-          Summarize Academic Papers with <span class="text-gradient">AI Precision</span>
-        </h1>
-        <p class="lead text-muted mb-4">
-          Upload any PDF and get a structured summary in seconds — abstract,
-          key points, methodology, results, and conclusions — all powered by Groq + Llama 3.3.
-        </p>
+    <div class="hero-inner">
+      <span class="hero-tag">
+        <span class="badge-tech">AI</span>
+        <span>Powered by Groq + Llama 3.3 70B · sub-30 s inference</span>
+      </span>
+
+      <h1>
+        Summarise<br>
+        academic papers<br>
+        <span class="accent">in one shot.<span class="cursor"></span></span>
+      </h1>
+
+      <p class="lead">
+        A purpose-built reading tool for graduate research. Upload a PDF
+        and get an academically faithful summary, key points, methodology,
+        and citation list — in English, Russian, or Uzbek.
+      </p>
+
+      <div class="cta-row">
         {% if user.is_authenticated %}
-          <a href="{% url 'papers:upload' %}" class="btn btn-primary btn-lg me-3">
-            <i class="bi bi-cloud-upload me-2"></i>Upload a Paper
+          <a href="{% url 'papers:upload' %}" class="btn btn-violet btn-lg">
+            <i class="bi bi-cloud-upload"></i>Upload paper
           </a>
-          <a href="{% url 'papers:list' %}" class="btn btn-outline-secondary btn-lg">
-            <i class="bi bi-files me-2"></i>My Papers
+          <a href="{% url 'papers:list' %}" class="btn btn-tech btn-lg">
+            <i class="bi bi-files"></i>My papers
           </a>
         {% else %}
-          <a href="{% url 'register' %}" class="btn btn-primary btn-lg me-3">
-            <i class="bi bi-person-plus me-2"></i>Get Started Free
+          <a href="{% url 'register' %}" class="btn btn-violet btn-lg">
+            <i class="bi bi-person-plus"></i>Get started free
           </a>
-          <a href="{% url 'login' %}" class="btn btn-outline-secondary btn-lg">
-            Sign In
+          <a href="{% url 'login' %}" class="btn btn-tech btn-lg">
+            <i class="bi bi-box-arrow-in-right"></i>Sign in
           </a>
         {% endif %}
-      </div>
-      <div class="col-lg-6">
-        <div class="feature-card p-4 rounded-4 shadow-lg">
-          <div class="d-flex align-items-center mb-3">
-            <div class="feature-icon me-3"><i class="bi bi-file-earmark-pdf-fill fs-3"></i></div>
-            <div>
-              <div class="fw-semibold">Neural Plasticity in Adult Brains.pdf</div>
-              <small class="text-muted">Processing complete</small>
-            </div>
-            <span class="badge bg-success ms-auto">Done</span>
-          </div>
-          <div class="section-preview mb-2">
-            <span class="badge bg-primary-subtle text-primary me-1">Abstract</span>
-            <span class="badge bg-success-subtle text-success me-1">Key Points</span>
-            <span class="badge bg-warning-subtle text-warning me-1">Methodology</span>
-            <span class="badge bg-info-subtle text-info me-1">Results</span>
-            <span class="badge bg-secondary-subtle text-secondary">Conclusion</span>
-          </div>
-          <div class="text-muted small">
-            "This study demonstrates that adult neurogenesis in the hippocampus
-            plays a critical role in pattern separation, with a 47% improvement
-            in memory consolidation observed in experimental groups..."
-          </div>
-        </div>
+        <span class="hint d-none d-md-inline">~10-30 s · supports PDF up to 50 MB</span>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Features -->
-<section class="py-5 bg-body-secondary">
-  <div class="container">
-    <h2 class="text-center fw-bold mb-5">Everything you need to understand research faster</h2>
-    <div class="row g-4">
-      <div class="col-md-4">
-        <div class="card h-100 border-0 shadow-sm p-2">
-          <div class="card-body text-center">
-            <div class="feature-icon-lg mb-3"><i class="bi bi-cloud-upload fs-1"></i></div>
-            <h5 class="fw-semibold">Drag & Drop Upload</h5>
-            <p class="text-muted">Upload any PDF with a simple drag and drop. We support papers up to 50 MB.</p>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card h-100 border-0 shadow-sm p-2">
-          <div class="card-body text-center">
-            <div class="feature-icon-lg mb-3"><i class="bi bi-robot fs-1"></i></div>
-            <h5 class="fw-semibold">AI-Powered Analysis</h5>
-            <p class="text-muted">Llama 3.3 70B (via Groq) extracts and structures the most important information from any paper.</p>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card h-100 border-0 shadow-sm p-2">
-          <div class="card-body text-center">
-            <div class="feature-icon-lg mb-3"><i class="bi bi-download fs-1"></i></div>
-            <h5 class="fw-semibold">Export Anywhere</h5>
-            <p class="text-muted">Download your summary as a polished PDF or Word document with one click.</p>
-          </div>
-        </div>
-      </div>
+<div class="container">
+
+  <!-- ── Stats strip ────────────────────────────────────────────────── -->
+  <div class="stats-strip">
+    <div class="stat-item">
+      <div class="stat-label">papers.count</div>
+      <div class="stat-num">4<span class="unit">total</span></div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-label">time.saved</div>
+      <div class="stat-num">2.1<span class="unit">hrs</span></div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-label">citations</div>
+      <div class="stat-num">47<span class="unit">refs</span></div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-label">languages</div>
+      <div class="stat-num">3<span class="unit">langs</span></div>
     </div>
   </div>
-</section>
 
-<!-- Summary Sections Preview -->
-<section class="py-5">
-  <div class="container">
-    <h2 class="text-center fw-bold mb-2">Five-section structured summary</h2>
-    <p class="text-center text-muted mb-5">Every summary covers the complete research narrative</p>
-    <div class="row g-3">
-      <div class="col-sm-6 col-lg">
-        <div class="card border-0 bg-body-secondary h-100 p-3">
-          <i class="bi bi-file-text fs-3 text-primary mb-2"></i>
-          <h6 class="fw-semibold mb-1">Abstract</h6>
-          <p class="small text-muted mb-0">The paper's core contribution in plain language</p>
-        </div>
-      </div>
-      <div class="col-sm-6 col-lg">
-        <div class="card border-0 bg-body-secondary h-100 p-3">
-          <i class="bi bi-bullseye fs-3 text-success mb-2"></i>
-          <h6 class="fw-semibold mb-1">Key Points</h6>
-          <p class="small text-muted mb-0">5–8 essential takeaways from the paper</p>
-        </div>
-      </div>
-      <div class="col-sm-6 col-lg">
-        <div class="card border-0 bg-body-secondary h-100 p-3">
-          <i class="bi bi-gear fs-3 text-warning mb-2"></i>
-          <h6 class="fw-semibold mb-1">Methodology</h6>
-          <p class="small text-muted mb-0">How the research was designed and conducted</p>
-        </div>
-      </div>
-      <div class="col-sm-6 col-lg">
-        <div class="card border-0 bg-body-secondary h-100 p-3">
-          <i class="bi bi-graph-up fs-3 text-info mb-2"></i>
-          <h6 class="fw-semibold mb-1">Results</h6>
-          <p class="small text-muted mb-0">Key quantitative and qualitative findings</p>
-        </div>
-      </div>
-      <div class="col-sm-6 col-lg">
-        <div class="card border-0 bg-body-secondary h-100 p-3">
-          <i class="bi bi-flag fs-3 text-danger mb-2"></i>
-          <h6 class="fw-semibold mb-1">Conclusion</h6>
-          <p class="small text-muted mb-0">Main implications and future directions</p>
-        </div>
-      </div>
+  <!-- ── How it works ───────────────────────────────────────────────── -->
+  <section class="section-wow">
+    <div class="section-head-wow">
+      <h2>How it works</h2>
+      <span class="meta">three steps</span>
     </div>
-  </div>
-</section>
 
-{% if not user.is_authenticated %}
-<section class="py-5 bg-primary text-white">
-  <div class="container text-center">
-    <h2 class="fw-bold mb-3">Ready to read smarter?</h2>
-    <p class="lead mb-4 opacity-75">Create a free account and summarize your first paper in under 60 seconds.</p>
-    <a href="{% url 'register' %}" class="btn btn-light btn-lg px-5">
-      <i class="bi bi-person-plus me-2"></i>Create Free Account
+    <div class="feature-grid">
+      <article class="feature-block">
+        <div class="feature-num">[ 01 ]</div>
+        <h3>Drop a PDF</h3>
+        <p>Drag-and-drop any academic paper up to 50 MB. We accept PDFs in English, Russian, or Uzbek.</p>
+      </article>
+
+      <article class="feature-block">
+        <div class="feature-num">[ 02 ]</div>
+        <h3>AI extracts structure</h3>
+        <p>Llama 3.3 70B reads the full paper and returns abstract, key points, methodology, results, conclusion, and a reference list.</p>
+      </article>
+
+      <article class="feature-block">
+        <div class="feature-num">[ 03 ]</div>
+        <h3>Read, share, export</h3>
+        <p>Browse the summary in seconds. Share a public read-only link, or export as PDF or Word for your literature review.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ── Why this tool ──────────────────────────────────────────────── -->
+  <section class="section-wow">
+    <div class="section-head-wow">
+      <h2>Five-section structured summary</h2>
+      <span class="meta">every time · every paper</span>
+    </div>
+
+    <div class="feature-grid" style="grid-template-columns: repeat(5, 1fr);">
+      <article class="feature-block">
+        <i class="bi bi-file-text" style="color: var(--violet); font-size: 1.4rem;"></i>
+        <h3 style="margin-top: 12px;">Abstract</h3>
+        <p>2-3 paragraph core contribution.</p>
+      </article>
+      <article class="feature-block">
+        <i class="bi bi-bullseye" style="color: var(--lime); font-size: 1.4rem;"></i>
+        <h3 style="margin-top: 12px;">Key points</h3>
+        <p>5-8 essential takeaways.</p>
+      </article>
+      <article class="feature-block">
+        <i class="bi bi-gear" style="color: var(--amber); font-size: 1.4rem;"></i>
+        <h3 style="margin-top: 12px;">Methodology</h3>
+        <p>How the research was conducted.</p>
+      </article>
+      <article class="feature-block">
+        <i class="bi bi-graph-up" style="color: var(--cyan); font-size: 1.4rem;"></i>
+        <h3 style="margin-top: 12px;">Results</h3>
+        <p>Quantitative and qualitative findings.</p>
+      </article>
+      <article class="feature-block">
+        <i class="bi bi-flag" style="color: var(--rose); font-size: 1.4rem;"></i>
+        <h3 style="margin-top: 12px;">Conclusion</h3>
+        <p>Implications and future directions.</p>
+      </article>
+    </div>
+  </section>
+
+  {% if not user.is_authenticated %}
+  <section class="section-wow" style="text-align: center; padding: 80px 0 40px;">
+    <h2 style="font-size: 2.25rem; margin-bottom: 12px;">Ready to read smarter?</h2>
+    <p style="color: var(--text-2); margin-bottom: 28px; font-size: 1.05rem;">
+      Create a free account and summarise your first paper in under 60 seconds.
+    </p>
+    <a href="{% url 'register' %}" class="btn btn-violet btn-lg">
+      <i class="bi bi-person-plus"></i>Create free account
     </a>
-  </div>
-</section>
-{% endif %}
+  </section>
+  {% endif %}
+
+</div>
+
+{% endblock %}
+
+{% block extra_css %}
+<!-- The 5-card "structured summary" grid collapses gracefully on small screens -->
+<style>
+  @media (max-width: 1100px) {
+    .feature-grid[style*="repeat(5"] { grid-template-columns: repeat(2, 1fr) !important; }
+  }
+  @media (max-width: 600px) {
+    .feature-grid[style*="repeat(5"] { grid-template-columns: 1fr !important; }
+  }
+</style>
 {% endblock %}
