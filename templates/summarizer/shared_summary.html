@@ -10,148 +10,132 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,300..700&family=Geist:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,500&family=Geist:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'css/wow-theme.css' %}">
 
   <script>
     (function () {
-      var t = localStorage.getItem('as-theme') ||
-        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      var t = localStorage.getItem('as-theme'); if (!t) t = 'light';
       document.documentElement.setAttribute('data-theme', t);
     })();
   </script>
 </head>
 <body>
 
-<header class="navbar-wow">
-  <div class="container">
-    <div class="navbar-inner">
-      <a href="{% url 'home' %}" class="brand">
-        <span class="brand-mark">S</span>
-        <span class="brand-name">summarizer<span class="domain">.hamrayev.me</span></span>
-      </a>
-      <nav class="nav-links">
-        <span class="filter-pill">
-          <i class="bi bi-share"></i>shared view
-        </span>
-        <button class="icon-btn" id="theme-toggle" type="button" aria-label="Toggle theme">
-          <i id="theme-icon" class="bi bi-moon-fill"></i>
-        </button>
-      </nav>
-    </div>
+<header class="nav">
+  <div class="container nav-inner">
+    <a href="{% url 'home' %}" class="nav-brand">
+      <span>Academic Summarizer</span>
+      <span class="brand-sub">v2.0</span>
+    </a>
+    <nav class="nav-links">
+      <span class="pill"><span class="dot"></span>shared view</span>
+      <button class="icon-btn" id="theme-toggle" type="button" aria-label="Toggle theme">
+        <i id="theme-icon" class="bi bi-moon"></i>
+      </button>
+    </nav>
   </div>
 </header>
 
 <main>
-<div class="container" style="max-width: 900px;">
+<div class="container summary-page" style="max-width: 920px;">
 
-  <div class="page-header" style="margin-top: 24px;">
-    <div>
-      <div style="display:flex; align-items:center; gap: 10px; flex-wrap: wrap; margin-bottom: 6px;">
-        <h1>{{ summary.paper.title }}</h1>
-        <span class="lang-badge">
-          <i class="bi bi-translate"></i>
-          {% if summary.language == 'ru' %}Russian
-          {% elif summary.language == 'uz' %}Uzbek
-          {% else %}English{% endif %}
-        </span>
-      </div>
-      {% if summary.paper.author %}
-        <div class="sub" style="color: var(--text-2);">
-          <i class="bi bi-person"></i> {{ summary.paper.author }}
+  <div class="summary-grid" style="grid-template-columns: 1fr;">
+    <article class="summary-body" style="max-width: 65ch; margin: 0 auto;">
+
+      <header class="summary-header">
+        <div class="h-row" style="gap: 10px; margin-bottom: 8px;">
+          <span class="pill is-ok"><span class="dot"></span>shared summary</span>
+          <span class="eyebrow">paper · {{ summary.language|upper }} · {{ link.access_count }} view{{ link.access_count|pluralize }}</span>
         </div>
+        <h1>{{ summary.paper.title }}</h1>
+        {% if summary.paper.author %}
+          <div class="summary-author">{{ summary.paper.author }}</div>
+        {% endif %}
+        <div class="summary-mono-row">
+          <span><span class="k">model:</span><span class="v">llama-3.3-70b</span></span>
+          <span><span class="k">generated:</span><span class="v">{{ summary.created_at|date:"Y-m-d" }}</span></span>
+        </div>
+      </header>
+
+      {% if summary.abstract %}
+        <section class="sec has-dropcap">
+          <div class="sec-eyebrow"><span class="num">§ 01</span><span class="label">Abstract</span><span class="rule"></span></div>
+          <h2>Summary of the paper.</h2>
+          <p>{{ summary.abstract }}</p>
+        </section>
       {% endif %}
-      <div class="meta" style="margin-top: 8px;">
-        <i class="bi bi-clock"></i> Summarized {{ summary.created_at|date:"F d, Y" }}
-        &nbsp;·&nbsp;
-        <i class="bi bi-eye"></i> {{ link.access_count }} view{{ link.access_count|pluralize }}
+
+      {% if key_points %}
+        <section class="sec">
+          <div class="sec-eyebrow"><span class="num">§ 02</span><span class="label">Key points</span><span class="rule"></span></div>
+          <h2>What the paper actually shows.</h2>
+          <ol class="key-points">
+            {% for point in key_points %}
+              <li><span class="k-num">[{{ forloop.counter|stringformat:"02d" }}]</span><span>{{ point }}</span></li>
+            {% endfor %}
+          </ol>
+        </section>
+      {% endif %}
+
+      {% if summary.methodology %}
+        <section class="sec has-dropcap">
+          <div class="sec-eyebrow"><span class="num">§ 03</span><span class="label">Methodology</span><span class="rule"></span></div>
+          <h2>How the work was done.</h2>
+          <p>{{ summary.methodology }}</p>
+        </section>
+      {% endif %}
+
+      {% if summary.results %}
+        <section class="sec has-dropcap">
+          <div class="sec-eyebrow"><span class="num">§ 04</span><span class="label">Results</span><span class="rule"></span></div>
+          <h2>What the numbers say.</h2>
+          <p>{{ summary.results }}</p>
+        </section>
+      {% endif %}
+
+      {% if summary.conclusion %}
+        <section class="sec has-dropcap">
+          <div class="sec-eyebrow"><span class="num">§ 05</span><span class="label">Conclusion</span><span class="rule"></span></div>
+          <h2>What it means.</h2>
+          <p>{{ summary.conclusion }}</p>
+        </section>
+      {% endif %}
+
+      {% if citations %}
+        <section class="sec">
+          <div class="sec-eyebrow"><span class="num">§ 06</span><span class="label">References</span><span class="rule"></span></div>
+          <h2>Extracted citation list</h2>
+          <ol class="fn-list">
+            {% for cite in citations %}<li>{{ cite }}</li>{% endfor %}
+          </ol>
+        </section>
+      {% endif %}
+
+      <div style="text-align: center; padding: 48px 0 0; margin-top: 32px; border-top: 1px solid var(--rule-strong);">
+        <div class="eyebrow" style="margin-bottom: 10px;">Like this?</div>
+        <h2 style="margin-bottom: 12px;">Summarize your own papers.</h2>
+        <p class="dim" style="margin-bottom: 24px;">Free while in beta · sign-up takes 30 seconds.</p>
+        <div class="h-row" style="justify-content: center;">
+          <a href="{% url 'register' %}" class="btn btn-primary">Create free account</a>
+          <a href="{% url 'login' %}" class="btn btn-ghost">Sign in</a>
+        </div>
       </div>
-    </div>
-  </div>
-
-  {% if summary.abstract %}
-    <section class="section-card">
-      <h3>
-        <span class="section-badge"><i class="bi bi-file-text"></i></span>
-        Abstract
-      </h3>
-      <p>{{ summary.abstract }}</p>
-    </section>
-  {% endif %}
-
-  {% if key_points %}
-    <section class="section-card">
-      <h3>
-        <span class="section-badge" style="background: var(--lime-bg); color: var(--lime); border-color: color-mix(in srgb, var(--lime) 22%, transparent);"><i class="bi bi-bullseye"></i></span>
-        Key points
-      </h3>
-      <ol>
-        {% for point in key_points %}
-          <li>{{ point }}</li>
-        {% endfor %}
-      </ol>
-    </section>
-  {% endif %}
-
-  {% if summary.methodology %}
-    <section class="section-card">
-      <h3>
-        <span class="section-badge" style="background: var(--amber-bg); color: var(--amber); border-color: color-mix(in srgb, var(--amber) 22%, transparent);"><i class="bi bi-gear"></i></span>
-        Methodology
-      </h3>
-      <p>{{ summary.methodology }}</p>
-    </section>
-  {% endif %}
-
-  {% if summary.results %}
-    <section class="section-card">
-      <h3>
-        <span class="section-badge" style="background: var(--cyan-bg); color: var(--cyan); border-color: color-mix(in srgb, var(--cyan) 22%, transparent);"><i class="bi bi-graph-up"></i></span>
-        Results
-      </h3>
-      <p>{{ summary.results }}</p>
-    </section>
-  {% endif %}
-
-  {% if summary.conclusion %}
-    <section class="section-card">
-      <h3>
-        <span class="section-badge" style="background: var(--rose-bg); color: var(--rose); border-color: color-mix(in srgb, var(--rose) 22%, transparent);"><i class="bi bi-flag"></i></span>
-        Conclusion
-      </h3>
-      <p>{{ summary.conclusion }}</p>
-    </section>
-  {% endif %}
-
-  {% if citations %}
-    <section class="section-card">
-      <h3>
-        <span class="section-badge" style="background: var(--bg-2); color: var(--text-1); border-color: var(--border-2);"><i class="bi bi-journal-bookmark"></i></span>
-        References
-        <span class="badge bg-secondary-subtle" style="margin-left: auto;">{{ citations|length }}</span>
-      </h3>
-      {% for cite in citations %}
-        <div class="citation-item">[{{ forloop.counter }}] {{ cite }}</div>
-      {% endfor %}
-    </section>
-  {% endif %}
-
-  <div style="text-align:center; padding: 40px 16px; margin-top: 24px; border-top: 1px solid var(--border-1);">
-    <p class="meta" style="margin-bottom: 16px;">Want to summarize your own academic papers?</p>
-    <a href="{% url 'register' %}" class="btn btn-violet">
-      <i class="bi bi-person-plus"></i>Create free account
-    </a>
-    <a href="{% url 'login' %}" class="btn btn-tech" style="margin-left: 6px;">Sign in</a>
+    </article>
   </div>
 
 </div>
 </main>
 
-<footer class="footer-wow" style="margin-top: 32px;">
+<footer class="footer">
   <div class="container footer-inner">
-    <div class="footer-meta">
-      <span class="status pulse"><span class="dot"></span></span>
-      summarizer.hamrayev.me · groq llama-3.3-70b
+    <div class="h-row" style="gap: 14px;">
+      <span class="pill is-ok"><span class="dot"></span>All systems operational</span>
+      <span>summarizer.hamrayev.me · groq · llama-3.3-70b</span>
+    </div>
+    <div class="h-row" style="gap: 18px;">
+      <a href="{% url 'home' %}">Home</a>
+      <span>© 2026 Hamrayev S.</span>
     </div>
   </div>
 </footer>

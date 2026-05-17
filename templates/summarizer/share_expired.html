@@ -3,19 +3,24 @@
 {% block title %}Link expired — Academic Summarizer{% endblock %}
 
 {% block content %}
-<div class="container">
-  <div class="row justify-content-center" style="margin-top: 64px;">
-    <div class="col-md-6 col-lg-5">
-      <div class="section-card" style="text-align: center;">
-        <i class="bi bi-link-45deg" style="font-size: 2.4rem; color: var(--text-3); display:block; margin-bottom: 16px;"></i>
-        <h2>Link no longer valid</h2>
-        <p style="color: var(--text-2); margin-bottom: 24px;">
-          This shared summary link has expired or been revoked by its owner.
-        </p>
-        <a href="{% url 'home' %}" class="btn btn-violet">
-          <i class="bi bi-house"></i>Go to home
-        </a>
+<div class="container" style="padding: 80px 0;">
+  <div style="max-width: 480px; margin: 0 auto;">
+    <div class="auth-card" style="box-shadow: none; text-align: center;">
+
+      <div class="h-row" style="gap: 10px; justify-content: center; margin-bottom: 18px;">
+        <span class="pill is-warn"><span class="dot"></span>expired</span>
+        <span class="eyebrow">share · 410</span>
       </div>
+
+      <h1 style="margin-bottom: 12px;">Link no longer valid.</h1>
+      <p class="dim" style="margin-bottom: 28px;">
+        This shared summary link has expired or been revoked by its owner.
+        Please ask them for a fresh one.
+      </p>
+
+      <a href="{% url 'home' %}" class="btn btn-primary">
+        <i class="bi bi-house"></i> Go to home
+      </a>
     </div>
   </div>
 </div>

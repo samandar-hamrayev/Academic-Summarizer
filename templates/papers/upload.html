@@ -1,156 +1,174 @@
 {% extends 'base.html' %}
 
-{% block title %}Upload paper — Academic Summarizer{% endblock %}
+{% block title %}Upload — Academic Summarizer{% endblock %}
 
 {% block content %}
-<div class="container">
-  <div class="row justify-content-center">
-    <div class="col-lg-8 col-xl-7">
+<div class="container upload-page">
 
-      <div class="page-header">
-        <div style="display:flex; align-items:center; gap: 12px;">
-          <a href="{% url 'papers:list' %}" class="icon-btn" aria-label="Back to papers">
-            <i class="bi bi-arrow-left"></i>
-          </a>
-          <div>
-            <h1 style="margin:0;">Upload paper</h1>
-            <div class="sub">PDF · max 50 MB · EN / RU / UZ</div>
-          </div>
-        </div>
-      </div>
+  <div class="h-row" style="justify-content: space-between; align-items: end; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
+    <div>
+      <div class="eyebrow" style="margin-bottom: 8px;">Step 01 / 03 · Upload</div>
+      <h1 style="font-size: clamp(2rem, 4vw, 3rem);">Add a paper to the queue.</h1>
+      <p class="dim" style="margin-top: 8px; max-width: 60ch;">
+        PDF up to 50 MB. We extract the text, fix common encoding issues, and pass the result to Llama 3.3 70B for structured summarization.
+      </p>
+    </div>
+    <div class="h-row" style="gap: 8px;">
+      <span class="pill"><span class="dot"></span>queue 0 / 3</span>
+      <span class="pill is-ok"><span class="dot"></span>credits ∞</span>
+    </div>
+  </div>
 
-      <div class="section-card">
-        <form method="post" enctype="multipart/form-data" id="upload-form"
-              class="js-summarize-form" data-confirm-loading>
-          {% csrf_token %}
+  <form method="post" enctype="multipart/form-data" id="upload-form"
+        class="js-summarize-form" data-confirm-loading>
+    {% csrf_token %}
 
-          <!-- Drop zone -->
-          <div id="drop-zone" class="drop-zone" style="margin-bottom: 16px;">
-            <div id="drop-default">
-              <i class="bi bi-cloud-upload drop-icon" style="display:block; margin-bottom: 12px;"></i>
-              <h4 style="font-size: 1.1rem; margin: 0 0 6px;">Drag &amp; drop your PDF here</h4>
-              <p style="font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--text-3); margin: 0;">
-                or click to browse — max 50 MB
-              </p>
-            </div>
+    <div class="upload-grid">
+      <!-- MAIN FORM -->
+      <div class="stack stack-4">
 
-            <div id="file-preview" class="file-preview" style="margin-top: 14px;">
-              <i class="bi bi-file-earmark-pdf-fill" style="font-size:1.6rem; color: var(--rose); flex-shrink:0;"></i>
-              <div style="flex-grow:1; text-align:left; overflow: hidden;">
-                <div id="file-preview-name" class="mono" style="font-weight: 500; color: var(--text-0); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"></div>
-                <small id="file-preview-size" class="mono" style="color: var(--text-3);"></small>
-              </div>
-              <button id="clear-file" type="button" class="icon-btn" aria-label="Remove file">
-                <i class="bi bi-x-lg"></i>
-              </button>
-            </div>
-
-            <input type="file" name="file" id="pdf-file-input" accept=".pdf" class="d-none">
-          </div>
-
-          {% if form.file.errors %}
-            <div class="alert alert-danger" style="margin-bottom: 14px;">
-              {% for e in form.file.errors %}<div>{{ e }}</div>{% endfor %}
-            </div>
-          {% endif %}
-
-          <!-- Title -->
-          <div style="margin-bottom: 14px;">
-            <label for="{{ form.title.id_for_label }}" class="form-label">
-              Paper title <span style="color: var(--rose);">*</span>
-            </label>
-            {{ form.title }}
-            {% for e in form.title.errors %}
-              <div class="invalid-feedback d-block">{{ e }}</div>
-            {% endfor %}
-          </div>
-
-          <!-- Author -->
-          <div style="margin-bottom: 20px;">
-            <label for="{{ form.author.id_for_label }}" class="form-label">
-              Author(s)
-            </label>
-            {{ form.author }}
-            <div class="form-text" style="margin-top: 4px;">
-              Optional · separate multiple authors with commas
-            </div>
-          </div>
-
-          <!-- AI Tag Section (revealed after file selection) -->
-          <div id="tag-section" style="display:none; margin-bottom: 20px; padding: 16px; background: var(--bg-2); border-radius: var(--radius-sm); border: 1px solid var(--border-1);">
-            <div style="display:flex; align-items:center; gap: 8px; margin-bottom: 10px;">
-              <span class="form-label" style="margin: 0;">Tags</span>
-              <span id="tag-status" class="filter-pill" style="font-size: 0.7rem;">
-                <span id="tag-status-spinner"
-                      class="spinner-border spinner-border-sm me-1"
-                      role="status" aria-hidden="true"
-                      style="width: 12px; height: 12px; border-width: 2px;"></span>
-                <span id="tag-status-text">AI analyzing…</span>
+        <!-- DROP ZONE -->
+        <div id="drop-zone" class="dropzone">
+          <div id="drop-default">
+            <div class="dropzone-icon"><i class="bi bi-cloud-upload" style="font-size: 1.4rem;"></i></div>
+            <h3>Drop a PDF, or click to browse.</h3>
+            <p>English, Russian, or Uzbek · up to 50 MB · single file</p>
+            <div class="h-row" style="justify-content: center; margin-top: 22px; gap: 8px;">
+              <span class="btn btn-primary">
+                <i class="bi bi-file-earmark"></i> Choose PDF
               </span>
             </div>
-
-            <div id="suggested-tags-wrap" style="display:none; margin-bottom: 12px;">
-              <p class="meta" style="margin-bottom: 8px;">
-                <i class="bi bi-stars" style="color: var(--amber);"></i> AI suggestions — click to add
-              </p>
-              <div id="suggested-tags-list" style="display:flex; flex-wrap:wrap; gap: 6px;"></div>
-            </div>
-
-            <div style="margin-bottom: 10px;">
-              <p class="meta" style="margin-bottom: 8px;">
-                <i class="bi bi-tags"></i> Selected tags
-              </p>
-              <div id="selected-tags-list" style="display:flex; flex-wrap:wrap; gap: 6px;">
-                <span class="meta" style="color: var(--text-3); font-style: italic;">None yet</span>
-              </div>
-            </div>
-
-            <div style="display:flex; gap:6px;">
-              <input type="text" id="custom-tag-input"
-                     placeholder="Custom tag…" maxlength="50"
-                     class="form-control" style="font-size: 0.82rem; padding: 6px 10px;">
-              <button type="button" id="add-custom-tag-btn" class="btn btn-tech btn-sm">
-                <i class="bi bi-plus-lg"></i>Add
-              </button>
-            </div>
-
-            <input type="hidden" name="tags_json" id="tags-json-input" value="[]">
           </div>
 
-          <div style="display: grid;">
-            <button type="submit" class="btn btn-violet btn-lg" id="submit-btn">
-              <i class="bi bi-magic"></i>Upload &amp; summarize
+          <div id="file-preview" class="file-preview">
+            <div class="file-thumb"><span class="ext">PDF</span></div>
+            <div style="flex: 1; min-width: 0;">
+              <div id="file-preview-name" style="font-family: var(--serif); font-size: 17px; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"></div>
+              <div id="file-preview-size" class="mono" style="font-size: 11px; color: var(--ink-3); letter-spacing: 0.06em;"></div>
+            </div>
+            <button id="clear-file" type="button" class="icon-btn" aria-label="Remove file">
+              <i class="bi bi-x-lg"></i>
             </button>
           </div>
 
-          {% if form.non_field_errors %}
-            <div class="alert alert-danger" style="margin-top: 14px;">
-              {% for e in form.non_field_errors %}{{ e }}{% endfor %}
-            </div>
-          {% endif %}
-        </form>
-      </div>
+          <input type="file" name="file" id="pdf-file-input" accept=".pdf" style="display: none;">
+        </div>
 
-      <!-- Info row -->
-      <div class="section-card" style="background: var(--bg-2); padding: 16px;">
-        <div class="row g-3 text-center">
-          <div class="col-4">
-            <i class="bi bi-lightning-charge" style="color: var(--violet); font-size: 1.1rem; display:block; margin-bottom: 4px;"></i>
-            <small class="meta">~10-30 s</small>
+        {% if form.file.errors %}
+          <div class="alert alert-danger">
+            <i class="bi bi-exclamation-circle"></i>
+            <span style="flex: 1;">{% for e in form.file.errors %}{{ e }}{% endfor %}</span>
           </div>
-          <div class="col-4">
-            <i class="bi bi-translate" style="color: var(--lime); font-size: 1.1rem; display:block; margin-bottom: 4px;"></i>
-            <small class="meta">EN · RU · UZ</small>
+        {% endif %}
+
+        <!-- METADATA CARD -->
+        <div class="card" style="padding: 24px;">
+          <h4 style="font-family: var(--serif); font-weight: 500; font-size: 1.15rem; margin-bottom: 16px;">Paper metadata</h4>
+          <div class="stack stack-4">
+            <div class="field">
+              <label for="{{ form.title.id_for_label }}">Title <span style="color: var(--err);">*</span></label>
+              {{ form.title }}
+              {% for e in form.title.errors %}
+                <div class="invalid-feedback" style="display:block; color: var(--err); font-size: 12px;">{{ e }}</div>
+              {% endfor %}
+            </div>
+
+            <div class="field">
+              <label for="{{ form.author.id_for_label }}">Author(s)</label>
+              {{ form.author }}
+              <div style="font-family: var(--mono); font-size: 11px; color: var(--ink-3); margin-top: 2px;">
+                Optional · separate multiple authors with commas
+              </div>
+            </div>
+
+            <!-- AI Tag suggestion (revealed after file selection) -->
+            <div id="tag-section" class="field" style="display:none;">
+              <label style="display:flex; justify-content: space-between;">
+                <span>Tags <span style="color: var(--ink-4); font-weight: 400;">· <span id="tag-count">0</span> selected</span></span>
+                <span id="tag-status" class="mono" style="font-size: 11px; color: var(--ink-3);">
+                  <span id="tag-status-spinner" class="spinner-border spinner-border-sm" style="width: 11px; height: 11px; border-width: 2px; vertical-align: -1px;" role="status" aria-hidden="true"></span>
+                  <span id="tag-status-text">AI analyzing…</span>
+                </span>
+              </label>
+
+              <div id="suggested-tags-wrap" style="display:none; margin-top: 8px;">
+                <div class="suggested-tags" id="suggested-tags-list"></div>
+                <div class="mono" style="font-size: 10.5px; color: var(--ink-4); letter-spacing: 0.06em; margin-top: 8px;">
+                  ↑ auto-suggested by llama-3.3 · click to add
+                </div>
+              </div>
+
+              <div style="margin-top: 12px;">
+                <div class="eyebrow" style="margin-bottom: 6px;">Selected</div>
+                <div class="suggested-tags" id="selected-tags-list">
+                  <span class="dim mono" style="font-size: 11px; font-style: italic;">None yet</span>
+                </div>
+              </div>
+
+              <div class="h-row" style="gap: 6px; margin-top: 12px;">
+                <input type="text" id="custom-tag-input" class="input" placeholder="Custom tag…" maxlength="50" style="font-size: 13px;">
+                <button type="button" id="add-custom-tag-btn" class="btn btn-secondary btn-sm">
+                  <i class="bi bi-plus"></i> Add
+                </button>
+              </div>
+
+              <input type="hidden" name="tags_json" id="tags-json-input" value="[]">
+            </div>
           </div>
-          <div class="col-4">
-            <i class="bi bi-download" style="color: var(--cyan); font-size: 1.1rem; display:block; margin-bottom: 4px;"></i>
-            <small class="meta">PDF &amp; Word</small>
-          </div>
+        </div>
+
+        <div class="h-row" style="justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+          <a href="{% url 'papers:list' %}" class="btn btn-ghost">
+            <i class="bi bi-arrow-left"></i> Back
+          </a>
+          <button type="submit" class="btn btn-primary btn-lg" id="submit-btn">
+            <i class="bi bi-sparkle"></i> Upload &amp; summarize
+          </button>
         </div>
       </div>
 
+      <!-- SIDE -->
+      <aside class="stack stack-4">
+        <div class="card side-card">
+          <h4>Run plan</h4>
+          <div class="kv">
+            <div class="k">Model</div><div class="v mono">llama-3.3-70b</div>
+            <div class="k">Provider</div><div class="v mono">groq · LPU</div>
+            <div class="k">Output</div><div class="v">5 sections + citations</div>
+            <div class="k">ETA</div><div class="v">~ 20 s</div>
+            <div class="k">Cost</div><div class="v">free · beta</div>
+          </div>
+        </div>
+
+        <div class="card side-card">
+          <h4>What you'll get</h4>
+          <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; font-size: 14px;">
+            <li class="h-row" style="gap: 10px; align-items: flex-start;"><span style="color: var(--accent); margin-top: 2px;"><i class="bi bi-check"></i></span><span style="color: var(--ink-2);">Abstract — 2 paragraphs</span></li>
+            <li class="h-row" style="gap: 10px; align-items: flex-start;"><span style="color: var(--accent); margin-top: 2px;"><i class="bi bi-check"></i></span><span style="color: var(--ink-2);">Key points — 5 to 8 ranked</span></li>
+            <li class="h-row" style="gap: 10px; align-items: flex-start;"><span style="color: var(--accent); margin-top: 2px;"><i class="bi bi-check"></i></span><span style="color: var(--ink-2);">Methodology summary</span></li>
+            <li class="h-row" style="gap: 10px; align-items: flex-start;"><span style="color: var(--accent); margin-top: 2px;"><i class="bi bi-check"></i></span><span style="color: var(--ink-2);">Results, with deltas</span></li>
+            <li class="h-row" style="gap: 10px; align-items: flex-start;"><span style="color: var(--accent); margin-top: 2px;"><i class="bi bi-check"></i></span><span style="color: var(--ink-2);">Conclusion and future work</span></li>
+            <li class="h-row" style="gap: 10px; align-items: flex-start;"><span style="color: var(--accent); margin-top: 2px;"><i class="bi bi-check"></i></span><span style="color: var(--ink-2);">Citation list, deduplicated</span></li>
+          </ul>
+        </div>
+
+        <div class="card side-card" style="background: var(--bg-sunk); border-style: dashed;">
+          <h4 style="margin-bottom: 6px;">Privacy</h4>
+          <p style="font-size: 13.5px; color: var(--ink-3); margin: 0;">
+            Files are stored only in your account. We don't train on your uploads.
+          </p>
+        </div>
+      </aside>
     </div>
-  </div>
+
+    {% if form.non_field_errors %}
+      <div class="alert alert-danger" style="margin-top: 16px;">
+        <i class="bi bi-exclamation-circle"></i>
+        <span style="flex:1;">{% for e in form.non_field_errors %}{{ e }}{% endfor %}</span>
+      </div>
+    {% endif %}
+  </form>
+
 </div>
 {% endblock %}
 
@@ -168,6 +186,7 @@
   const suggestedWrap    = document.getElementById('suggested-tags-wrap');
   const suggestedList    = document.getElementById('suggested-tags-list');
   const selectedList     = document.getElementById('selected-tags-list');
+  const tagCountEl       = document.getElementById('tag-count');
   const customInput      = document.getElementById('custom-tag-input');
   const addCustomBtn     = document.getElementById('add-custom-tag-btn');
   const tagsJsonInput    = document.getElementById('tags-json-input');
@@ -180,17 +199,19 @@
   function setStatus(text, variant, showSpinner) {
     tagStatusText.textContent = text;
     tagStatus.style.color =
-      variant === 'success' ? 'var(--lime)' :
-      variant === 'warning' ? 'var(--amber)' :
-      variant === 'danger'  ? 'var(--rose)'  : 'var(--violet)';
+      variant === 'success' ? 'var(--ok)' :
+      variant === 'warning' ? 'var(--warn)' :
+      variant === 'danger'  ? 'var(--err)' :
+      'var(--ink-3)';
     tagStatusSpinner.style.display = showSpinner ? 'inline-block' : 'none';
   }
 
   function makeSuggestedChip(name) {
     const chip = document.createElement('button');
     chip.type = 'button';
-    chip.className = 'tag-chip tag-chip--suggested';
-    chip.innerHTML = `<i class="bi bi-plus-circle"></i>${escHtml(name)}`;
+    chip.className = 'chip';
+    chip.dataset.name = name;
+    chip.innerHTML = `<i class="bi bi-plus"></i>${escHtml(name)}`;
     chip.title = 'Click to add this tag';
     chip.addEventListener('click', () => addTag(name));
     return chip;
@@ -198,10 +219,12 @@
 
   function makeSelectedChip(name) {
     const chip = document.createElement('span');
-    chip.className = 'tag-chip tag-chip--selected';
+    chip.className = 'chip is-on';
+    chip.dataset.name = name;
     chip.innerHTML =
-      `${escHtml(name)}<button type="button" class="tag-chip__remove" aria-label="Remove ${escHtml(name)}">` +
-      `<i class="bi bi-x-lg"></i></button>`;
+      `<i class="bi bi-check"></i>${escHtml(name)}` +
+      `<button type="button" class="tag-chip__remove" aria-label="Remove ${escHtml(name)}" style="margin-left:4px;">` +
+      `<i class="bi bi-x"></i></button>`;
     chip.querySelector('.tag-chip__remove').addEventListener('click', () => removeTag(name));
     return chip;
   }
@@ -211,26 +234,27 @@
     if (!name || selectedTags.has(name)) return;
     selectedTags.add(name);
     renderSelectedTags();
-    suggestedList.querySelectorAll('.tag-chip--suggested').forEach(chip => {
-      if (chip.dataset.name === name) { chip.classList.add('tag-chip--added'); chip.disabled = true; }
+    suggestedList.querySelectorAll('.chip').forEach(chip => {
+      if (chip.dataset.name === name) { chip.classList.add('is-on'); chip.disabled = true; chip.style.opacity = '0.4'; }
     });
   }
 
   function removeTag(name) {
     selectedTags.delete(name);
     renderSelectedTags();
-    suggestedList.querySelectorAll('.tag-chip--suggested').forEach(chip => {
-      if (chip.dataset.name === name) { chip.classList.remove('tag-chip--added'); chip.disabled = false; }
+    suggestedList.querySelectorAll('.chip').forEach(chip => {
+      if (chip.dataset.name === name) { chip.classList.remove('is-on'); chip.disabled = false; chip.style.opacity = '1'; }
     });
   }
 
   function renderSelectedTags() {
     selectedList.innerHTML = '';
     if (selectedTags.size === 0) {
-      selectedList.innerHTML = '<span class="meta" style="color: var(--text-3); font-style: italic;">None yet</span>';
+      selectedList.innerHTML = '<span class="dim mono" style="font-size: 11px; font-style: italic;">None yet</span>';
     } else {
       selectedTags.forEach(name => selectedList.appendChild(makeSelectedChip(name)));
     }
+    if (tagCountEl) tagCountEl.textContent = selectedTags.size;
     tagsJsonInput.value = JSON.stringify([...selectedTags]);
   }
 
@@ -265,7 +289,6 @@
     suggestedList.innerHTML = '';
     tags.forEach(t => {
       const chip = makeSuggestedChip(t);
-      chip.dataset.name = t;
       suggestedList.appendChild(chip);
     });
     suggestedWrap.style.display = 'block';
@@ -280,8 +303,8 @@
     const val = customInput.value.trim();
     if (val) { addTag(val); customInput.value = ''; customInput.focus(); }
   }
-  addCustomBtn.addEventListener('click', handleCustomAdd);
-  customInput.addEventListener('keydown', e => {
+  if (addCustomBtn) addCustomBtn.addEventListener('click', handleCustomAdd);
+  if (customInput) customInput.addEventListener('keydown', e => {
     if (e.key === 'Enter') { e.preventDefault(); handleCustomAdd(); }
   });
 

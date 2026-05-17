@@ -1,103 +1,119 @@
 {% extends 'base.html' %}
 
-{% block title %}My papers — Academic Summarizer{% endblock %}
+{% block title %}Papers — Academic Summarizer{% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="container history-page">
 
-  <!-- Header -->
-  <div class="page-header">
+  <div class="history-head">
     <div>
-      <h1>My papers</h1>
-      <div class="sub">papers.count = {{ page_obj.paginator.count }}</div>
+      <div class="eyebrow" style="margin-bottom: 8px;">Your library</div>
+      <h1 style="font-size: clamp(2rem, 4vw, 2.8rem);">Papers, summarized.</h1>
+      <p class="dim" style="margin-top: 8px;">
+        <span class="mono">{{ page_obj.paginator.count }}</span>
+        paper{{ page_obj.paginator.count|pluralize }} ·
+        distilled into structured summaries.
+      </p>
     </div>
-    <a href="{% url 'papers:upload' %}" class="btn btn-violet">
-      <i class="bi bi-cloud-upload"></i>Upload paper
-    </a>
+    <div class="h-row">
+      <form method="get" style="display:flex; gap: 8px; align-items: center;">
+        {{ search_form.query }}
+        <button type="submit" class="btn btn-secondary">
+          <i class="bi bi-search"></i> Search
+        </button>
+      </form>
+      <a href="{% url 'papers:upload' %}" class="btn btn-primary">
+        <i class="bi bi-plus-lg"></i> Add paper
+      </a>
+    </div>
   </div>
 
-  <!-- Search -->
-  <form method="get" style="margin-bottom: 20px;">
-    <div style="display:flex; gap:8px;">
-      {{ search_form.query }}
-      <button type="submit" class="btn btn-tech">
-        <i class="bi bi-search"></i>
-      </button>
-      {% if query %}
-        <a href="{% url 'papers:list' %}" class="btn btn-outline-danger" aria-label="Clear search">
-          <i class="bi bi-x-lg"></i>
-        </a>
-      {% endif %}
-    </div>
-  </form>
-
   {% if filter_tag %}
-    <div class="filter-bar">
-      <span class="filter-pill">
-        <i class="bi bi-tag-fill"></i>{{ filter_tag.name }}
-      </span>
-      <span class="meta">{{ page_obj.paginator.count }} paper{{ page_obj.paginator.count|pluralize }}</span>
-      <a href="{% url 'papers:list' %}" class="btn btn-tech btn-sm">
-        <i class="bi bi-x-lg"></i>Clear
+    <div class="history-filters" style="margin-bottom: 18px;">
+      <span class="eyebrow" style="margin-right: 4px;">Filter</span>
+      <span class="chip is-on"><i class="bi bi-tag"></i> {{ filter_tag.name }}</span>
+      <a href="{% url 'papers:list' %}" class="chip">
+        <i class="bi bi-x-lg"></i> clear
       </a>
     </div>
   {% elif query %}
-    <div class="meta" style="margin-bottom: 16px;">
-      results for "<span style="color: var(--violet);">{{ query }}</span>"
+    <div class="history-filters" style="margin-bottom: 18px;">
+      <span class="eyebrow" style="margin-right: 4px;">Search</span>
+      <span class="chip is-on">"{{ query }}"</span>
+      <a href="{% url 'papers:list' %}" class="chip">
+        <i class="bi bi-x-lg"></i> clear
+      </a>
     </div>
   {% endif %}
 
   {% if papers %}
-    <div class="paper-grid-wow">
-      {% for paper in papers %}
-        <article class="paper-card">
-          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom: 14px;">
-            <span class="meta">
-              <span style="color: var(--violet);">#</span>{{ paper.pk|stringformat:"04d" }}
-            </span>
-            {% if paper.processed %}
-              <span class="status"><span class="dot"></span>READY</span>
-            {% else %}
-              <span class="meta" style="color: var(--text-3);">
-                <i class="bi bi-clock"></i> PENDING
-              </span>
-            {% endif %}
-          </div>
-
-          <h3 class="paper-title" style="margin: 0 0 6px;">
-            <a href="{% url 'papers:detail' paper.pk %}"
-               class="stretched-link"
-               style="color: var(--text-0); text-decoration: none;">
-              {{ paper.title }}
-            </a>
-          </h3>
-
-          {% if paper.author %}
-            <div style="color: var(--text-2); font-size: 0.85rem; margin-bottom: 14px;">
-              <i class="bi bi-person"></i> {{ paper.author }}
-            </div>
-          {% endif %}
-
-          {% with tags=paper.tags.all %}
-            {% if tags %}
-              <div style="display:flex; flex-wrap:wrap; gap:4px; margin-bottom: 14px; position: relative; z-index: 2;">
-                {% for tag in tags %}
-                  <a href="{% url 'papers:by_tag' tag.slug %}" class="tag-badge">{{ tag.name }}</a>
+    <div class="history-shell">
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th style="width: 55%;">Paper</th>
+            <th>Tags</th>
+            <th>Lang</th>
+            <th>Date</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for paper in papers %}
+          <tr onclick="window.location='{% url 'papers:detail' paper.pk %}'">
+            <td>
+              <a href="{% url 'papers:detail' paper.pk %}" class="history-title">
+                {{ paper.title }}
+              </a>
+              <span class="history-author">{{ paper.author|default:"Unknown author" }}</span>
+            </td>
+            <td>
+              <div class="h-row" style="gap: 4px;">
+                {% for tag in paper.tags.all|slice:":2" %}
+                  <span class="chip" style="font-size: 11px;">{{ tag.name }}</span>
                 {% endfor %}
+                {% if paper.tags.all|length > 2 %}
+                  <span class="dim" style="font-size: 11px;">+{{ paper.tags.all|length|add:'-2' }}</span>
+                {% endif %}
               </div>
-            {% endif %}
-          {% endwith %}
-
-          <div style="display:flex; justify-content:space-between; align-items:center; padding-top: 12px; border-top: 1px solid var(--border-1); font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--text-3);">
-            <span>{{ paper.uploaded_at|date:"M d, Y" }}</span>
-            <span>{{ paper.file_size_display }}</span>
-          </div>
-        </article>
-      {% endfor %}
+            </td>
+            <td>
+              {% if paper.has_summary %}
+                <span class="history-lang">
+                  {% if paper.summary.language == 'ru' %}RU
+                  {% elif paper.summary.language == 'uz' %}UZ
+                  {% else %}EN{% endif %}
+                </span>
+              {% else %}
+                <span class="dim mono" style="font-size: 11px;">—</span>
+              {% endif %}
+            </td>
+            <td>
+              <span class="history-date">{{ paper.uploaded_at|date:"Y-m-d" }}</span>
+            </td>
+            <td>
+              <div class="row-actions h-row" onclick="event.stopPropagation();">
+                {% if paper.has_summary %}
+                  <a href="{% url 'summarizer:detail' paper.summary.pk %}" class="icon-btn" title="Open summary">
+                    <i class="bi bi-eye"></i>
+                  </a>
+                  <a href="{% url 'summarizer:export_pdf' paper.summary.pk %}" class="icon-btn" title="Export PDF">
+                    <i class="bi bi-download"></i>
+                  </a>
+                {% endif %}
+                <a href="{% url 'papers:delete' paper.pk %}" class="icon-btn" title="Delete">
+                  <i class="bi bi-trash"></i>
+                </a>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
 
     {% if is_paginated %}
-      <nav style="margin-top: 32px; display:flex; justify-content:center;">
+      <nav style="margin-top: 24px; display:flex; justify-content:center;">
         <ul class="pagination">
           {% if page_obj.has_previous %}
             <li class="page-item">
@@ -126,18 +142,25 @@
       </nav>
     {% endif %}
 
+    <div class="h-row" style="justify-content: space-between; margin-top: 22px; color: var(--ink-3); font-size: 12px;">
+      <span class="mono">{{ papers|length }} of {{ page_obj.paginator.count }} papers</span>
+      <span class="mono">page {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+    </div>
+
   {% else %}
-    <div style="text-align:center; padding: 80px 16px;">
-      <i class="bi bi-journal-x" style="font-size: 2.4rem; color: var(--text-3); display:block; margin-bottom: 16px;"></i>
-      <h3 style="color: var(--text-1); font-weight: 500;">
-        {% if query %}No papers match "{{ query }}"{% else %}No papers yet{% endif %}
-      </h3>
-      <p style="color: var(--text-2); margin-bottom: 24px;">
-        {% if query %}Try a different search term.{% else %}Upload your first academic paper to get started.{% endif %}
+    <div style="text-align:center; padding: 80px 16px; color: var(--ink-3);">
+      <div class="eyebrow" style="margin-bottom: 10px;">Empty library</div>
+      <h2 style="font-family: var(--serif); margin-bottom: 10px;">
+        {% if query %}No papers match "{{ query }}".{% else %}No papers yet.{% endif %}
+      </h2>
+      <p style="margin-bottom: 24px;">
+        {% if query %}Try a different search term, or clear the filter.{% else %}Upload your first academic paper to get started.{% endif %}
       </p>
-      {% if not query %}
-        <a href="{% url 'papers:upload' %}" class="btn btn-violet">
-          <i class="bi bi-cloud-upload"></i>Upload your first paper
+      {% if query %}
+        <a href="{% url 'papers:list' %}" class="btn btn-ghost">Clear search</a>
+      {% else %}
+        <a href="{% url 'papers:upload' %}" class="btn btn-primary">
+          <i class="bi bi-cloud-upload"></i> Upload your first paper
         </a>
       {% endif %}
     </div>

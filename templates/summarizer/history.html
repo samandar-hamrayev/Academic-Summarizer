@@ -3,61 +3,58 @@
 {% block title %}History — Academic Summarizer{% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="container history-page">
 
-  <div class="page-header">
+  <div class="history-head">
     <div>
-      <h1>Summary history</h1>
-      <div class="sub">summaries.count = {{ page_obj.paginator.count }}</div>
+      <div class="eyebrow" style="margin-bottom: 8px;">Summary history</div>
+      <h1 style="font-size: clamp(2rem, 4vw, 2.8rem);">Your reading log.</h1>
+      <p class="dim" style="margin-top: 8px;">
+        <span class="mono">{{ page_obj.paginator.count }}</span>
+        summar{{ page_obj.paginator.count|pluralize:"y,ies" }} ·
+        ordered by recency.
+      </p>
     </div>
-    <a href="{% url 'papers:upload' %}" class="btn btn-violet">
-      <i class="bi bi-plus-lg"></i>New paper
-    </a>
+    <div class="h-row">
+      <a href="{% url 'papers:upload' %}" class="btn btn-primary">
+        <i class="bi bi-plus-lg"></i> New paper
+      </a>
+    </div>
   </div>
 
   {% if summaries %}
-    <div class="table-responsive">
-      <table class="table table-hover">
+    <div class="history-shell">
+      <table class="history-table">
         <thead>
           <tr>
-            <th>Paper</th>
-            <th class="d-none d-md-table-cell">Author</th>
-            <th class="d-none d-sm-table-cell">Lang</th>
-            <th class="d-none d-md-table-cell">Date</th>
-            <th style="text-align: right;">Actions</th>
+            <th style="width: 55%;">Paper</th>
+            <th>Lang</th>
+            <th>Date</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
           {% for summary in summaries %}
-          <tr>
+          <tr onclick="window.location='{% url 'summarizer:detail' summary.pk %}'">
             <td>
-              <a href="{% url 'summarizer:detail' summary.pk %}"
-                 style="color: var(--text-0); font-weight: 500; text-decoration: none;">
-                {{ summary.paper.title|truncatechars:55 }}
+              <a href="{% url 'summarizer:detail' summary.pk %}" class="history-title">
+                {{ summary.paper.title }}
               </a>
+              <span class="history-author">{{ summary.paper.author|default:"Unknown author" }}</span>
             </td>
-            <td class="d-none d-md-table-cell" style="color: var(--text-2); font-size: 0.85rem;">
-              {{ summary.paper.author|default:"—" }}
-            </td>
-            <td class="d-none d-sm-table-cell">
-              <span class="lang-badge">
-                {% if summary.language == 'ru' %}RU{% elif summary.language == 'uz' %}UZ{% else %}EN{% endif %}
+            <td>
+              <span class="history-lang">
+                {% if summary.language == 'ru' %}RU
+                {% elif summary.language == 'uz' %}UZ
+                {% else %}EN{% endif %}
               </span>
             </td>
-            <td class="d-none d-md-table-cell mono" style="font-size: 0.78rem; color: var(--text-3);">
-              {{ summary.created_at|date:"M d, Y" }}
-            </td>
-            <td style="text-align: right;">
-              <div style="display:inline-flex; gap: 4px;">
-                <a href="{% url 'summarizer:detail' summary.pk %}" class="icon-btn" title="View">
-                  <i class="bi bi-eye"></i>
-                </a>
-                <a href="{% url 'summarizer:export_pdf' summary.pk %}" class="icon-btn" title="Export PDF">
-                  <i class="bi bi-filetype-pdf"></i>
-                </a>
-                <a href="{% url 'summarizer:export_word' summary.pk %}" class="icon-btn" title="Export Word">
-                  <i class="bi bi-filetype-docx"></i>
-                </a>
+            <td><span class="history-date">{{ summary.created_at|date:"Y-m-d" }}</span></td>
+            <td>
+              <div class="row-actions h-row" onclick="event.stopPropagation();">
+                <a href="{% url 'summarizer:detail' summary.pk %}" class="icon-btn" title="Open"><i class="bi bi-eye"></i></a>
+                <a href="{% url 'summarizer:export_pdf' summary.pk %}" class="icon-btn" title="PDF"><i class="bi bi-filetype-pdf"></i></a>
+                <a href="{% url 'summarizer:export_word' summary.pk %}" class="icon-btn" title="Word"><i class="bi bi-filetype-docx"></i></a>
               </div>
             </td>
           </tr>
@@ -70,41 +67,34 @@
       <nav style="margin-top: 24px; display:flex; justify-content:center;">
         <ul class="pagination">
           {% if page_obj.has_previous %}
-            <li class="page-item">
-              <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
-                <i class="bi bi-chevron-left"></i>
-              </a>
-            </li>
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}"><i class="bi bi-chevron-left"></i></a></li>
           {% endif %}
           {% for num in page_obj.paginator.page_range %}
             {% if page_obj.number == num %}
               <li class="page-item active"><span class="page-link">{{ num }}</span></li>
             {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-              <li class="page-item">
-                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
-              </li>
+              <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
             {% endif %}
           {% endfor %}
           {% if page_obj.has_next %}
-            <li class="page-item">
-              <a class="page-link" href="?page={{ page_obj.next_page_number }}">
-                <i class="bi bi-chevron-right"></i>
-              </a>
-            </li>
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}"><i class="bi bi-chevron-right"></i></a></li>
           {% endif %}
         </ul>
       </nav>
     {% endif %}
 
+    <div class="h-row" style="justify-content: space-between; margin-top: 22px; color: var(--ink-3); font-size: 12px;">
+      <span class="mono">{{ summaries|length }} of {{ page_obj.paginator.count }} summaries</span>
+      <span class="mono">page {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+    </div>
+
   {% else %}
-    <div style="text-align:center; padding: 80px 16px;">
-      <i class="bi bi-clock-history" style="font-size: 2.4rem; color: var(--text-3); display:block; margin-bottom: 16px;"></i>
-      <h3 style="color: var(--text-1); font-weight: 500;">No summaries yet</h3>
-      <p style="color: var(--text-2); margin-bottom: 24px;">
-        Upload and summarize your first paper to see it here.
-      </p>
-      <a href="{% url 'papers:upload' %}" class="btn btn-violet">
-        <i class="bi bi-cloud-upload"></i>Upload a paper
+    <div style="text-align:center; padding: 80px 16px; color: var(--ink-3);">
+      <div class="eyebrow" style="margin-bottom: 10px;">Empty history</div>
+      <h2 style="font-family: var(--serif); margin-bottom: 10px;">No summaries yet.</h2>
+      <p style="margin-bottom: 24px;">Upload and summarize your first paper to see it here.</p>
+      <a href="{% url 'papers:upload' %}" class="btn btn-primary">
+        <i class="bi bi-cloud-upload"></i> Upload a paper
       </a>
     </div>
   {% endif %}
