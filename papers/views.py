@@ -96,7 +96,9 @@ class PaperUploadView(LoginRequiredMixin, CreateView):
                 for name in tag_names[:10]:
                     name = str(name).strip()[:50]
                     if name:
-                        tag, _ = Tag.objects.get_or_create(name=name)
+                        # Don't unpack into _ — that shadows the gettext_lazy
+                        # import and breaks every later message in this view.
+                        tag, _created = Tag.objects.get_or_create(name=name)
                         paper.tags.add(tag)
         except (json.JSONDecodeError, ValueError):
             pass  # Malformed input — skip tags silently

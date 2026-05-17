@@ -217,7 +217,7 @@ def chat_send(request, pk):
 def chat_clear(request, pk):
     """Wipe the chat history for this paper for this user."""
     paper = get_object_or_404(Paper, pk=pk, uploaded_by=request.user)
-    deleted, _ = ChatMessage.objects.filter(paper=paper, user=request.user).delete()
+    deleted, _by_type = ChatMessage.objects.filter(paper=paper, user=request.user).delete()
     return JsonResponse({'deleted': deleted})
 
 
