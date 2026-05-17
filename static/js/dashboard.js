@@ -15,7 +15,11 @@
     catch (e) { console.warn('dashboard: bad chart data', e); return null; }
   }
 
-  // Pull live values from the CSS theme so chart colors track --bg / --ink / --accent
+  // Pull live values from the CSS theme so chart colors track --bg / --ink / --accent.
+  // Note: --accent et al. are OKLCH in this theme — fine as solid stroke/fill,
+  // but you cannot concatenate a hex-alpha suffix onto them. Use the explicit
+  // rgba() fills below (ACCENT_FILL / ACCENT_FILL_STRONG) for any transparent
+  // overlay so the same value reads on both light and dark backgrounds.
   function readTheme() {
     const css = getComputedStyle(document.documentElement);
     const v = (name, fb) => (css.getPropertyValue(name).trim() || fb);
@@ -31,6 +35,10 @@
       bgElev: v('--bg-elev', '#fff'),
     };
   }
+
+  // Soft violet at ~15% opacity — readable area fill in both themes
+  const ACCENT_FILL        = 'rgba(124, 58, 237, 0.15)';
+  const ACCENT_FILL_STRONG = 'rgba(124, 58, 237, 0.80)';
 
   // Apply our defaults to Chart.js once per render cycle
   function applyGlobalDefaults(theme) {
@@ -56,7 +64,7 @@
           label: 'Papers',
           data: data.activity_30d.map(d => d.count),
           borderColor: theme.accent,
-          backgroundColor: theme.accent + '22',
+          backgroundColor: ACCENT_FILL,
           borderWidth: 2,
           tension: 0.35,
           fill: true,
@@ -159,7 +167,7 @@
         datasets: [{
           label: 'Papers',
           data: values,
-          backgroundColor: theme.accent + 'cc',
+          backgroundColor: ACCENT_FILL_STRONG,
           borderColor: theme.accent,
           borderWidth: 1,
           borderRadius: 4,

@@ -6,9 +6,7 @@
 {% block content %}
 
 {% if is_dashboard %}
-{# ────────────────────────────────────────────────────────────────────
-   AUTHENTICATED DASHBOARD
-──────────────────────────────────────────────────────────────────── #}
+{% comment %}AUTHENTICATED DASHBOARD{% endcomment %}
 <section class="container dash-page">
 
   {# ── Header ─────────────────────────────────────────────────────── #}
@@ -179,9 +177,7 @@
 </section>
 
 {% else %}
-{# ────────────────────────────────────────────────────────────────────
-   ANONYMOUS — MARKETING LANDING (unchanged)
-──────────────────────────────────────────────────────────────────── #}
+{% comment %}ANONYMOUS MARKETING LANDING{% endcomment %}
 
 <!-- ── Hero ─────────────────────────────────────────────────────────── -->
 <section class="hero">
