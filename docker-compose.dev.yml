@@ -18,7 +18,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      # Mount source for live reload
+      # Mount source for live reload — includes locale/*/LC_MESSAGES/django.mo
       - .:/app
       - /app/staticfiles   # exclude staticfiles dir from the bind mount
       - /app/media         # exclude media dir from the bind mount
