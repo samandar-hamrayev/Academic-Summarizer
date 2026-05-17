@@ -61,6 +61,28 @@
           </div>
         {% endif %}
 
+        <!-- FILE ANALYSIS (client-side token estimate) -->
+        <div id="file-analysis" class="card file-analysis" style="display: none;" aria-live="polite">
+          <div class="file-analysis-head">
+            <div>
+              <div class="eyebrow" style="margin-bottom: 6px;">File analysis</div>
+              <span id="file-analysis-pill" class="pill">
+                <span class="dot"></span>
+                <span id="file-analysis-status">Analyzing PDF…</span>
+              </span>
+            </div>
+            <div class="kv file-analysis-metrics">
+              <div class="k">Pages</div>     <div class="v mono" id="fa-pages">—</div>
+              <div class="k">Tokens (est.)</div><div class="v mono" id="fa-tokens">—</div>
+              <div class="k">Limit</div>     <div class="v mono">8,000</div>
+            </div>
+          </div>
+          <div id="file-analysis-message" class="file-analysis-message" style="display: none;"></div>
+          <div id="file-analysis-actions" class="file-analysis-actions" style="display: none;">
+            <a href="#" id="fa-try-anyway" class="mono">Try anyway →</a>
+          </div>
+        </div>
+
         <!-- METADATA CARD -->
         <div class="card" style="padding: 24px;">
           <h4 style="font-family: var(--serif); font-weight: 500; font-size: 1.15rem; margin-bottom: 16px;">Paper metadata</h4>
@@ -173,6 +195,14 @@
 {% endblock %}
 
 {% block extra_js %}
+<!-- pdf.js for client-side text extraction (token estimation) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+  if (window.pdfjsLib) {
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  }
+</script>
 <script>
 (function () {
   'use strict';
@@ -311,6 +341,149 @@
   function escHtml(str) {
     return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
               .replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+  }
+
+
+  // ── Client-side file analysis (token estimate via pdf.js) ─────────────
+  const TOKEN_LIMIT = 8000;
+
+  const faPanel    = document.getElementById('file-analysis');
+  const faPill     = document.getElementById('file-analysis-pill');
+  const faStatus   = document.getElementById('file-analysis-status');
+  const faPages    = document.getElementById('fa-pages');
+  const faTokens   = document.getElementById('fa-tokens');
+  const faMessage  = document.getElementById('file-analysis-message');
+  const faActions  = document.getElementById('file-analysis-actions');
+  const faTryAny   = document.getElementById('fa-try-anyway');
+  const submitBtn  = document.getElementById('submit-btn');
+
+  let userOverride = false;   // set when user clicks "Try anyway"
+  let analysisToken = 0;      // increments per-run to ignore stale promises
+
+  function setPillState(text, variant) {
+    faStatus.textContent = text;
+    faPill.classList.remove('is-ok', 'is-warn', 'is-err', 'is-run');
+    if (variant) faPill.classList.add(variant);
+  }
+
+  function setSubmitEnabled(enabled, reason) {
+    if (!submitBtn) return;
+    submitBtn.disabled = !enabled;
+    submitBtn.title = enabled ? '' : (reason || '');
+  }
+
+  function resetAnalysis() {
+    userOverride = false;
+    faPanel.style.display = 'none';
+    faMessage.style.display = 'none';
+    faActions.style.display = 'none';
+    faPages.textContent = '—';
+    faTokens.textContent = '—';
+    setPillState('Analyzing PDF…', 'is-run');
+    setSubmitEnabled(true);
+  }
+
+  function showReady(tokens, pages) {
+    setPillState(`Ready to summarize (${tokens.toLocaleString()} tokens, ${pages} page${pages === 1 ? '' : 's'})`, 'is-ok');
+    faMessage.style.display = 'none';
+    faActions.style.display = 'none';
+    setSubmitEnabled(true);
+    if (submitBtn) submitBtn.innerHTML = '<i class="bi bi-sparkle"></i> Upload &amp; summarize';
+  }
+
+  function showTooLarge(tokens, pages) {
+    setPillState(`File too large (${tokens.toLocaleString()} tokens > ${TOKEN_LIMIT.toLocaleString()})`, 'is-err');
+    faMessage.textContent = `This paper is estimated at ${tokens.toLocaleString()} tokens across ${pages} page${pages === 1 ? '' : 's'}. The current plan's per-request limit is ${TOKEN_LIMIT.toLocaleString()} tokens. Try a shorter paper, or proceed anyway if you want to attempt it.`;
+    faMessage.style.display = 'block';
+    faActions.style.display = 'block';
+    if (!userOverride) {
+      setSubmitEnabled(false, 'File exceeds the 8,000-token limit.');
+    }
+  }
+
+  function showAnalysisError(msg) {
+    setPillState('Could not analyze PDF', 'is-warn');
+    faMessage.textContent = `${msg}. You can still attempt to upload — the server-side extractor may handle it.`;
+    faMessage.style.display = 'block';
+    faActions.style.display = 'none';
+    setSubmitEnabled(true);
+  }
+
+  async function analyzeFile(file) {
+    if (!file || !file.name.toLowerCase().endsWith('.pdf')) {
+      faPanel.style.display = 'none';
+      setSubmitEnabled(true);
+      return;
+    }
+    if (!window.pdfjsLib) {
+      faPanel.style.display = 'block';
+      showAnalysisError('PDF analysis library unavailable');
+      return;
+    }
+    resetAnalysis();
+    faPanel.style.display = 'block';
+
+    const myToken = ++analysisToken;
+    let pageCount = 0;
+    let fullText = '';
+    try {
+      const buf = await file.arrayBuffer();
+      if (myToken !== analysisToken) return;
+      const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+      if (myToken !== analysisToken) return;
+
+      pageCount = pdf.numPages;
+      faPages.textContent = pageCount.toLocaleString();
+
+      const textParts = [];
+      for (let i = 1; i <= pageCount; i++) {
+        const page = await pdf.getPage(i);
+        const content = await page.getTextContent();
+        if (myToken !== analysisToken) return;
+        textParts.push(content.items.map(it => it.str || '').join(' '));
+      }
+      fullText = textParts.join('\n\n');
+    } catch (e) {
+      if (myToken !== analysisToken) return;
+      showAnalysisError('Extraction failed: ' + (e.message || 'unknown error'));
+      return;
+    }
+
+    if (myToken !== analysisToken) return;
+
+    const tokens = Math.ceil(fullText.length / 4);
+    faTokens.textContent = tokens.toLocaleString();
+
+    if (tokens > TOKEN_LIMIT) showTooLarge(tokens, pageCount);
+    else                      showReady(tokens, pageCount);
+  }
+
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files.length) analyzeFile(fileInput.files[0]);
+    else { faPanel.style.display = 'none'; setSubmitEnabled(true); }
+  });
+
+  if (faTryAny) {
+    faTryAny.addEventListener('click', (e) => {
+      e.preventDefault();
+      userOverride = true;
+      setSubmitEnabled(true);
+      setPillState('Override active — attempting upload', 'is-warn');
+      faActions.style.display = 'none';
+    });
+  }
+
+  // Reset analysis when the file is cleared
+  const clearBtn = document.getElementById('clear-file');
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      analysisToken++;          // invalidate any in-flight analysis
+      faPanel.style.display = 'none';
+      faMessage.style.display = 'none';
+      faActions.style.display = 'none';
+      setSubmitEnabled(true);
+      userOverride = false;
+    });
   }
 })();
 </script>

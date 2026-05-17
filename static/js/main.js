@@ -82,6 +82,9 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
       assignFile(file);
+      // Programmatic .files assignment doesn't fire a native change event,
+      // so notify other listeners (AI tag preview, file analyzer) explicitly.
+      fileInput.dispatchEvent(new Event('change', { bubbles: true }));
     });
 
     fileInput.addEventListener('change', () => {
