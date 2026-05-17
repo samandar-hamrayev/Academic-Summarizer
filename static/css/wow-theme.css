@@ -1860,6 +1860,65 @@ tr:hover .row-actions { opacity: 1; }
 }
 
 
+/* ── 18d.  Language switcher (navbar dropdown) ──────────────────────── */
+
+.lang-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  width: auto !important;
+  padding: 0 10px 0 8px;
+}
+.lang-btn .lang-code {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--ink-2);
+}
+.lang-btn:hover .lang-code { color: var(--ink); }
+
+.lang-menu {
+  min-width: 220px;
+  padding: 6px;
+}
+.lang-menu .dropdown-item {
+  display: inline-flex; align-items: center;
+  padding: 8px 10px;
+  border-radius: var(--radius);
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--ink);
+}
+.lang-menu .dropdown-item:hover,
+.lang-menu .dropdown-item:focus {
+  background: var(--bg-hover);
+}
+.lang-menu .dropdown-item.active {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+}
+[data-theme="dark"] .lang-menu .dropdown-item.active { color: var(--accent); }
+.lang-code-tag {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--ink-3);
+  background: var(--bg-sunk);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  padding: 2px 6px;
+  margin-right: 10px;
+  min-width: 30px;
+  text-align: center;
+}
+.lang-menu .dropdown-item.active .lang-code-tag {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+
 /* ── 19.  Reduced motion ────────────────────────────────────────────── */
 
 @media (prefers-reduced-motion: reduce) {

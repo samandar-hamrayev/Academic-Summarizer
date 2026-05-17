@@ -58,12 +58,13 @@
         {% get_current_language as CUR_LANG %}
         {% get_available_languages as LANGS %}
         <div class="dropdown">
-          <button class="icon-btn" type="button" id="langMenu"
+          <button class="icon-btn lang-btn" type="button"
                   data-bs-toggle="dropdown" aria-expanded="false"
                   aria-label="{% trans 'Switch language' %}" title="{% trans 'Switch language' %}">
-            <span class="mono" style="font-size: 11px; font-weight: 600; letter-spacing: 0.06em;">{{ CUR_LANG|upper }}</span>
+            <i class="bi bi-globe"></i>
+            <span class="lang-code">{{ CUR_LANG|upper }}</span>
           </button>
-          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="langMenu">
+          <ul class="dropdown-menu dropdown-menu-end lang-menu">
             {% for code, name in LANGS %}
               <li>
                 <form action="{% url 'set_language' %}" method="post" style="margin:0;">
@@ -71,7 +72,7 @@
                   <input type="hidden" name="next" value="{{ request.get_full_path }}">
                   <input type="hidden" name="language" value="{{ code }}">
                   <button type="submit" class="dropdown-item {% if code == CUR_LANG %}active{% endif %}">
-                    <span class="mono" style="font-size: 10px; letter-spacing: 0.08em; color: var(--ink-3); margin-right: 8px;">{{ code|upper }}</span>{{ name }}
+                    <span class="lang-code-tag">{{ code|upper }}</span>{{ name }}
                   </button>
                 </form>
               </li>
