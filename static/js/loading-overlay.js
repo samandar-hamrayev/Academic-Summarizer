@@ -1,100 +1,162 @@
 /* ─────────────────────────────────────────────────────────────────────────
-   Loading overlay (Wave 6)
+   Loading overlay — editorial-tech (Wave 6)
 
-   Activates on submit of any <form data-confirm-loading>.
-   Used by upload + summarize forms, where Groq inference is synchronous
-   inside the request thread (~10–30 s). Shows a full-screen blurred
-   overlay with three progress steps and an indeterminate violet bar.
+   Triggered on submit of any <form data-confirm-loading>. The Groq inference
+   call is synchronous on the server (~10–30 s); this overlay keeps the user
+   engaged with a 3-stage stepped progress display in the editorial style.
 
-   Visible until the navigation completes (page reload / redirect from
-   form_valid → success page).
+   Each step has a primary label (Uzbek, user's preference from earlier
+   spec) and a mono detail subtitle in the design's voice.
    ───────────────────────────────────────────────────────────────────────── */
 
 (function () {
   'use strict';
 
   const STEPS = [
-    { id: 'step-1', text: 'Matn ajratilmoqda…',     hold: 2500 },
-    { id: 'step-2', text: 'AI tahlil qilmoqda…',    hold: 18000 },
-    { id: 'step-3', text: 'Xulosa yaratilmoqda…',   hold: null  }, // stays until response
+    { label: 'Matn ajratilmoqda…',  detail: 'parsing pdf · pdfplumber',     hold: 2400  },
+    { label: 'AI tahlil qilmoqda…', detail: 'groq lpu · llama-3.3-70b',     hold: 18000 },
+    { label: 'Xulosa yaratilmoqda…',detail: 'validating · serializing',     hold: null  }, // sticks until response
   ];
+
+  let timers = [];
+  let tickTimer = null;
+  let startedAt = 0;
 
   function buildOverlay() {
     if (document.getElementById('wow-loading-overlay')) return;
     const ov = document.createElement('div');
     ov.id = 'wow-loading-overlay';
-    ov.className = 'wow-overlay';
+    ov.className = 'loading-overlay';
+    ov.setAttribute('role', 'status');
+    ov.setAttribute('aria-live', 'polite');
+    ov.style.display = 'none';
     ov.innerHTML = `
-      <div class="wow-overlay-inner" role="status" aria-live="polite">
-        <h3>Summarising your paper</h3>
-        <p class="ov-sub">groq · llama-3.3-70b · usually 10–30 s</p>
-        <div class="wow-progress" aria-hidden="true"></div>
-        <ul class="wow-steps" id="wow-loading-steps">
-          <li data-step="step-1"><span class="step-dot">1</span><span>Matn ajratilmoqda…</span></li>
-          <li data-step="step-2"><span class="step-dot">2</span><span>AI tahlil qilmoqda…</span></li>
-          <li data-step="step-3"><span class="step-dot">3</span><span>Xulosa yaratilmoqda…</span></li>
-        </ul>
+      <div class="loading-card">
+        <div class="h-row" style="gap: 10px; margin-bottom: 22px;">
+          <span class="pill is-run"><span class="dot"></span>processing</span>
+          <span class="eyebrow" id="wow-elapsed">elapsed · 0.0s</span>
+        </div>
+
+        <div class="loading-title">Summarizing your paper…</div>
+        <p class="loading-sub">Don't close this tab. Most jobs finish in 15–25 seconds.</p>
+
+        <div class="loading-steps" id="wow-loading-steps">
+          ${STEPS.map((s, i) => `
+            <div class="loading-step" data-idx="${i}">
+              <span class="step-bullet">${(i + 1).toString().padStart(2, '0')}</span>
+              <div>
+                <div class="step-label">${s.label}</div>
+                <div class="step-detail">${s.detail}</div>
+              </div>
+              <span class="step-state">QUEUED</span>
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="progress-track"><div class="progress-fill" id="wow-progress" style="width: 4%;"></div></div>
+        <div class="progress-meta">
+          <span id="wow-pct">4% · 0.0s elapsed</span>
+          <span>llama-3.3-70b · groq lpu</span>
+        </div>
       </div>
     `;
     document.body.appendChild(ov);
   }
 
-  function advance(stepIdx) {
-    const items = document.querySelectorAll('#wow-loading-steps li');
+  function setStep(idx, done = false) {
+    const items = document.querySelectorAll('#wow-loading-steps .loading-step');
     items.forEach((el, i) => {
+      const state = el.querySelector('.step-state');
+      const bullet = el.querySelector('.step-bullet');
       el.classList.remove('is-active', 'is-done');
-      if (i < stepIdx) el.classList.add('is-done');
-      if (i === stepIdx) el.classList.add('is-active');
+      if (i < idx || (i === idx && done)) {
+        el.classList.add('is-done');
+        if (state) state.textContent = 'DONE';
+        if (bullet) bullet.innerHTML = '<i class="bi bi-check" style="font-size: 12px;"></i>';
+      } else if (i === idx) {
+        el.classList.add('is-active');
+        if (state) state.textContent = 'RUNNING';
+        if (bullet) bullet.textContent = (i + 1).toString().padStart(2, '0');
+      } else {
+        if (state) state.textContent = 'QUEUED';
+        if (bullet) bullet.textContent = (i + 1).toString().padStart(2, '0');
+      }
     });
+  }
+
+  function setProgress(pct) {
+    const fill = document.getElementById('wow-progress');
+    const pctEl = document.getElementById('wow-pct');
+    if (fill) fill.style.width = pct + '%';
+    const elapsed = ((Date.now() - startedAt) / 1000).toFixed(1);
+    if (pctEl) pctEl.textContent = `${pct}% · ${elapsed}s elapsed`;
+  }
+
+  function startTicker() {
+    if (tickTimer) clearInterval(tickTimer);
+    tickTimer = setInterval(() => {
+      const el = document.getElementById('wow-elapsed');
+      const elapsed = ((Date.now() - startedAt) / 1000).toFixed(1);
+      if (el) el.textContent = `elapsed · ${elapsed}s`;
+    }, 100);
   }
 
   function show() {
     buildOverlay();
     const ov = document.getElementById('wow-loading-overlay');
-    ov.classList.add('is-active');
+    if (!ov) return;
+    ov.style.display = 'grid';
     document.body.style.overflow = 'hidden';
 
-    advance(0);
-    let t1 = setTimeout(() => advance(1), STEPS[0].hold);
-    let t2 = setTimeout(() => advance(2), STEPS[0].hold + STEPS[1].hold);
-    ov._timers = [t1, t2];
+    startedAt = Date.now();
+    startTicker();
+    setStep(0);
+    setProgress(4);
+
+    // Scheduled progression mimicking the design prototype
+    timers.forEach(clearTimeout);
+    timers = [
+      setTimeout(() => { setProgress(12); },                           400),
+      setTimeout(() => { setStep(1); setProgress(34); },               STEPS[0].hold),
+      setTimeout(() => { setProgress(62); },                           STEPS[0].hold + 6000),
+      setTimeout(() => { setStep(2); setProgress(86); },               STEPS[0].hold + STEPS[1].hold),
+      setTimeout(() => { setProgress(94); },                           STEPS[0].hold + STEPS[1].hold + 2000),
+    ];
+  }
+
+  function hide() {
+    const ov = document.getElementById('wow-loading-overlay');
+    if (ov) ov.style.display = 'none';
+    document.body.style.overflow = '';
+    timers.forEach(clearTimeout); timers = [];
+    if (tickTimer) { clearInterval(tickTimer); tickTimer = null; }
   }
 
   function attach() {
     document.querySelectorAll('form[data-confirm-loading]').forEach(form => {
-      // Avoid double-binding (Bootstrap re-render etc.)
       if (form.dataset.confirmLoadingBound) return;
       form.dataset.confirmLoadingBound = '1';
 
-      form.addEventListener('submit', (e) => {
-        // Don't trigger overlay if form is invalid (HTML5 validation will block submit)
+      form.addEventListener('submit', () => {
         if (form.checkValidity && !form.checkValidity()) return;
 
-        // Disable the submit button to prevent double-submission
+        // Lock the submit button to prevent double-fires
         const btn = form.querySelector('[type="submit"]');
         if (btn) {
           btn.disabled = true;
           btn.dataset.origHtml = btn.innerHTML;
-          btn.innerHTML = '<span style="display:inline-flex; align-items:center; gap:6px;"><span class="spinner-border spinner-border-sm" role="status" style="width:12px; height:12px; border-width:2px;"></span> Working…</span>';
+          btn.innerHTML = '<span style="display:inline-flex; align-items:center; gap:8px;"><span class="spinner-border spinner-border-sm" role="status" style="width:12px; height:12px; border-width:2px;"></span> Working…</span>';
         }
 
         show();
-        // Keep the overlay visible through the navigation.
-        // window.pageshow on the next page will clean up if bfcache restores.
       });
     });
   }
 
-  // Hide overlay if user comes back via back/forward cache
+  // Restore on back/forward cache
   window.addEventListener('pageshow', (e) => {
     if (e.persisted) {
-      const ov = document.getElementById('wow-loading-overlay');
-      if (ov) {
-        ov.classList.remove('is-active');
-        (ov._timers || []).forEach(clearTimeout);
-        document.body.style.overflow = '';
-      }
-      // Restore any disabled submit buttons
+      hide();
       document.querySelectorAll('form[data-confirm-loading] [type="submit"][data-orig-html]').forEach(btn => {
         btn.disabled = false;
         btn.innerHTML = btn.dataset.origHtml;
