@@ -11,7 +11,7 @@ from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_POST
-from django.views.generic import DetailView, ListView
+from django.views.generic import ListView
 
 from papers.models import Paper
 
@@ -72,20 +72,20 @@ class SummaryHistoryView(LoginRequiredMixin, ListView):
         )
 
 
-class SummaryDetailView(LoginRequiredMixin, DetailView):
-    model = Summary
-    template_name = 'summarizer/summary_detail.html'
-    context_object_name = 'summary'
+@login_required
+def summary_detail_redirect(request, pk):
+    """
+    Legacy URL: /summarizer/<summary_pk>/ → 301 to /papers/<paper_pk>/.
 
-    def get_queryset(self):
-        return Summary.objects.filter(paper__uploaded_by=self.request.user).select_related('paper')
-
-    def get_context_data(self, **kwargs):
-        ctx = super().get_context_data(**kwargs)
-        ctx['key_points'] = self.object.get_key_points_list()
-        ctx['citations']  = self.object.get_citations_list()
-        ctx['share_links'] = self.object.share_links.filter(is_active=True).order_by('-created_at')
-        return ctx
+    The summary detail page was consolidated into the paper detail page;
+    this view keeps existing bookmarks and external links working.
+    Returns 404 if the summary doesn't belong to the requesting user.
+    """
+    from django.shortcuts import redirect
+    summary = get_object_or_404(
+        Summary, pk=pk, paper__uploaded_by=request.user,
+    )
+    return redirect('papers:detail', pk=summary.paper_id, permanent=True)
 
 
 # ---- Share Links ---------------------------------------------------------
@@ -103,9 +103,9 @@ def create_share_link(request, pk):
 
         link = ShareLink.objects.create(summary=summary, expires_at=expires_at)
         messages.success(request, _('Share link created successfully.'))
-        return redirect('summarizer:detail', pk=pk)
+        return redirect('papers:detail', pk=summary.paper_id)
 
-    return redirect('summarizer:detail', pk=pk)
+    return redirect('papers:detail', pk=summary.paper_id)
 
 
 @login_required
@@ -115,7 +115,7 @@ def revoke_share_link(request, link_pk):
     link.is_active = False
     link.save(update_fields=['is_active'])
     messages.success(request, _('Share link revoked.'))
-    return redirect('summarizer:detail', pk=link.summary_id)
+    return redirect('papers:detail', pk=link.summary.paper_id)
 
 
 def shared_summary_view(request, token):

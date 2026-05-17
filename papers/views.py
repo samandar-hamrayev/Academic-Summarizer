@@ -145,6 +145,18 @@ class PaperDetailView(LoginRequiredMixin, DetailView):
     def get_queryset(self):
         return Paper.objects.filter(uploaded_by=self.request.user)
 
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        # Share-link management lives on this page after the consolidation
+        # of /summarizer/<pk>/ into /papers/<pk>/.
+        if hasattr(self.object, 'summary'):
+            ctx['share_links'] = (
+                self.object.summary.share_links
+                .filter(is_active=True)
+                .order_by('-created_at')
+            )
+        return ctx
+
 
 class PaperDeleteView(LoginRequiredMixin, DeleteView):
     model = Paper

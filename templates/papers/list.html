@@ -94,7 +94,7 @@
             <td>
               <div class="row-actions h-row" onclick="event.stopPropagation();">
                 {% if paper.has_summary %}
-                  <a href="{% url 'summarizer:detail' paper.summary.pk %}" class="icon-btn" title="{% trans 'Open summary' %}">
+                  <a href="{% url 'papers:detail' paper.pk %}" class="icon-btn" title="{% trans 'Open summary' %}">
                     <i class="bi bi-eye"></i>
                   </a>
                   <a href="{% url 'summarizer:export_pdf' paper.summary.pk %}" class="icon-btn" title="{% trans 'Export PDF' %}">

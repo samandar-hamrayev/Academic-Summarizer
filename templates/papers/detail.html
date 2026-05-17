@@ -16,9 +16,9 @@
     <span class="spacer"></span>
     <div class="h-row-tight">
       {% if paper.has_summary %}
-        <a href="{% url 'summarizer:detail' paper.summary.pk %}" class="btn btn-ghost btn-sm">
-          <i class="bi bi-eye"></i> {% trans "View summary" %}
-        </a>
+        <button class="btn btn-ghost btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#share-panel" aria-expanded="false">
+          <i class="bi bi-share"></i> {% trans "Share" %}
+        </button>
         <a href="{% url 'summarizer:export_pdf' paper.summary.pk %}" class="btn btn-secondary btn-sm">
           <i class="bi bi-download"></i> {% trans "PDF" %}
         </a>
@@ -35,6 +35,76 @@
       </a>
     </div>
   </div>
+
+  {# ── Share panel (collapsible) ── #}
+  {% if paper.has_summary %}
+    <div class="collapse" id="share-panel">
+      <div class="card" style="padding: 24px; margin-bottom: 18px;">
+        <h4 style="font-family: var(--serif); margin-bottom: 14px;">{% trans "Share this summary" %}</h4>
+
+        <form method="post" action="{% url 'summarizer:create_share' paper.summary.pk %}"
+              class="h-row" style="gap: 10px; align-items: end; margin-bottom: 18px;">
+          {% csrf_token %}
+          <div class="field" style="flex: 0 0 auto;">
+            <label>{% trans "Expires after" %}</label>
+            <select name="expiry_days" class="input" style="padding: 8px 12px; font-size: 13px;">
+              <option value="1">{% trans "1 day" %}</option>
+              <option value="7" selected>{% trans "7 days" %}</option>
+              <option value="30">{% trans "30 days" %}</option>
+              <option value="0">{% trans "Never" %}</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary btn-sm">
+            <i class="bi bi-plus"></i> {% trans "Create link" %}
+          </button>
+        </form>
+
+        {% if share_links %}
+          <table class="history-table" style="font-size: 13px;">
+            <thead>
+              <tr>
+                <th style="width: 60%;">{% trans "Link" %}</th>
+                <th>{% trans "Expires" %}</th>
+                <th>{% trans "Visits" %}</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for lnk in share_links %}
+              <tr>
+                <td>
+                  <div class="h-row" style="gap: 6px;">
+                    <input type="text"
+                           class="share-link-input share-link-input-row input"
+                           value="{{ request.scheme }}://{{ request.get_host }}{% url 'summarizer:shared' lnk.token %}"
+                           readonly
+                           style="font-size: 11.5px; padding: 6px 10px;">
+                    <button class="btn btn-ghost btn-sm copy-share-link" type="button" data-target=".share-link-input-row" style="padding: 6px 10px;">
+                      {% trans "Copy" %}
+                    </button>
+                  </div>
+                </td>
+                <td><span class="mono" style="font-size: 11.5px; color: var(--ink-3);">{% if lnk.expires_at %}{{ lnk.expires_at|date:"Y-m-d" }}{% else %}—{% endif %}</span></td>
+                <td><span class="mono" style="font-size: 11.5px; color: var(--ink-3);">{{ lnk.access_count }}</span></td>
+                <td style="text-align: right;">
+                  <form method="post" action="{% url 'summarizer:revoke_share' lnk.pk %}" style="display: inline; margin: 0;">
+                    {% csrf_token %}
+                    <button type="submit" class="icon-btn" style="color: var(--err);"
+                            title="{% trans 'Revoke' %}" onclick="return confirm('{% trans "Revoke this link?" %}')">
+                      <i class="bi bi-x-lg"></i>
+                    </button>
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <p class="mono" style="font-size: 11.5px; color: var(--ink-3); margin: 0;">{% trans "No active share links yet." %}</p>
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
 
   <div class="summary-grid">
 
@@ -53,6 +123,14 @@
           {% endwith %}
         {% endif %}
       </div>
+
+      {% if paper.has_summary %}
+        <div class="shortcuts-row" style="margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--rule); flex-direction: column; align-items: flex-start; gap: 8px;">
+          <div class="eyebrow">{% trans "Shortcuts" %}</div>
+          <div class="sc"><span class="kbd">J</span><span>{% trans "next section" %}</span></div>
+          <div class="sc"><span class="kbd">K</span><span>{% trans "previous" %}</span></div>
+        </div>
+      {% endif %}
     </aside>
 
     <!-- CENTER: body -->
@@ -231,15 +309,78 @@
         <div class="card side-card" style="margin-top: 18px;">
           <h4>{% trans "Share" %}</h4>
           <p style="font-size: 13px; color: var(--ink-3); margin: 0 0 12px;">
-            {% trans "Create a public read-only link from the summary page." %}
+            {% trans "Public read-only link. Choose expiry when creating." %}
           </p>
-          <a href="{% url 'summarizer:detail' paper.summary.pk %}" class="btn btn-secondary btn-sm" style="width: 100%;">
+          <button class="btn btn-secondary btn-sm" type="button"
+                  data-bs-toggle="collapse" data-bs-target="#share-panel"
+                  style="width: 100%;">
             <i class="bi bi-share"></i> {% trans "Open share panel" %}
-          </a>
+          </button>
         </div>
       {% endif %}
     </aside>
 
   </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Scroll-spy on the TOC
+  (function () {
+    const links = document.querySelectorAll('.summary-aside .toc-item');
+    if (!links.length) return;
+    const sections = [...links].map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+    const linkFor = id => document.querySelector('.summary-aside .toc-item[href="#' + id + '"]');
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          links.forEach(l => l.classList.remove('is-on'));
+          const link = linkFor(e.target.id);
+          if (link) link.classList.add('is-on');
+        }
+      });
+    }, { rootMargin: '-30% 0px -55% 0px' });
+    sections.forEach(s => obs.observe(s));
+  })();
+
+  // J/K to navigate sections
+  (function () {
+    const sections = [...document.querySelectorAll('.sec')];
+    if (!sections.length) return;
+    document.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      if (e.key !== 'j' && e.key !== 'k') return;
+      let idx = 0;
+      const offset = 100;
+      for (let i = 0; i < sections.length; i++) {
+        const r = sections[i].getBoundingClientRect();
+        if (r.top <= offset) idx = i;
+      }
+      const next = e.key === 'j' ? Math.min(idx + 1, sections.length - 1) : Math.max(idx - 1, 0);
+      sections[next].scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  })();
+
+  // Per-row copy-link — uses shared window.copyToClipboard helper from main.js
+  document.querySelectorAll('.copy-share-link').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const input = btn.parentElement.querySelector('.share-link-input');
+      if (!input) return;
+      const ok = window.copyToClipboard
+        ? await window.copyToClipboard(input.value)
+        : false;
+      if (ok) {
+        const orig = btn.innerHTML;
+        btn.innerHTML = '<i class="bi bi-check2"></i>';
+        if (typeof window.showToast === 'function') {
+          window.showToast('{% trans "Share link copied to clipboard." %}', 'success');
+        }
+        setTimeout(() => { btn.innerHTML = orig; }, 1800);
+      } else if (typeof window.showToast === 'function') {
+        window.showToast('{% trans "Could not copy — please copy manually." %}', 'danger');
+      }
+    });
+  });
+</script>
 {% endblock %}

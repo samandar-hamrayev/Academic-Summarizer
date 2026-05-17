@@ -35,9 +35,9 @@
         </thead>
         <tbody>
           {% for summary in summaries %}
-          <tr onclick="window.location='{% url 'summarizer:detail' summary.pk %}'">
+          <tr onclick="window.location='{% url 'papers:detail' summary.paper.pk %}'">
             <td>
-              <a href="{% url 'summarizer:detail' summary.pk %}" class="history-title">
+              <a href="{% url 'papers:detail' summary.paper.pk %}" class="history-title">
                 {{ summary.paper.title }}
               </a>
               <span class="history-author">{{ summary.paper.author|default:_("Unknown author") }}</span>
@@ -52,7 +52,7 @@
             <td><span class="history-date">{{ summary.created_at|date:"Y-m-d" }}</span></td>
             <td>
               <div class="row-actions h-row" onclick="event.stopPropagation();">
-                <a href="{% url 'summarizer:detail' summary.pk %}" class="icon-btn" title="{% trans 'Open' %}"><i class="bi bi-eye"></i></a>
+                <a href="{% url 'papers:detail' summary.paper.pk %}" class="icon-btn" title="{% trans 'Open' %}"><i class="bi bi-eye"></i></a>
                 <a href="{% url 'summarizer:export_pdf' summary.pk %}" class="icon-btn" title="{% trans 'PDF' %}"><i class="bi bi-filetype-pdf"></i></a>
                 <a href="{% url 'summarizer:export_word' summary.pk %}" class="icon-btn" title="{% trans 'Word' %}"><i class="bi bi-filetype-docx"></i></a>
               </div>
