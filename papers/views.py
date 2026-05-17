@@ -100,11 +100,22 @@ class PaperUploadView(LoginRequiredMixin, CreateView):
         except (json.JSONDecodeError, ValueError):
             pass  # Malformed input — skip tags silently
 
-        # Extract text and trigger summarization
+        # Extract text, detect language, and trigger summarization
         try:
             text = extract_text_from_pdf(paper.file)
             if text.strip():
-                from summarizer.services import summarize_paper_task
+                from summarizer.services import detect_language, summarize_paper_task
+                # User can override on the upload form; otherwise auto-detect
+                user_lang = (self.request.POST.get('language_override') or '').strip()
+                if user_lang in {'en', 'ru', 'uz'}:
+                    paper.language = user_lang
+                    paper.language_confidence = 0.0   # 0.0 ⇒ user-provided
+                else:
+                    lang, conf = detect_language(text)
+                    paper.language = lang
+                    paper.language_confidence = conf
+                paper.save(update_fields=['language', 'language_confidence'])
+
                 summarize_paper_task(paper, text)
                 messages.success(
                     self.request,

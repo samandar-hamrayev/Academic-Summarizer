@@ -86,24 +86,93 @@ SYSTEM_PROMPTS = {'en': _PROMPT_EN, 'ru': _PROMPT_RU, 'uz': _PROMPT_UZ}
 
 # ---- Language detection --------------------------------------------------
 
-def detect_language(text: str) -> str:
-    """Heuristic language detection from character frequencies."""
+# Uzbek-Latin "smoking gun" markers — words and digraphs that almost never
+# appear together in English, Turkish, Azerbaijani or other Latin scripts.
+_UZBEK_LATIN_WORDS = {
+    'va', 'uchun', 'bilan', 'lekin', 'ammo', 'ham', 'yoki', 'qilish',
+    "bo'lib", "bo'yicha", "bo'lgan", 'ushbu', 'mazkur', 'qilingan',
+    'tadqiqot', 'ishlab', 'natijalar', 'maqola', 'kerak', 'kerakli',
+    'maxsus', "ko'rib", 'birinchi', 'asosiy', 'haqida', 'orqali',
+    'tomonidan', 'ekanligini', 'foydalanib', "o'rganish",
+}
+# o' and g' apostrophe digraphs are unique to Uzbek-Latin orthography
+_UZBEK_LATIN_DIGRAPHS = ("o'", "g'", "o‘", "g‘", "o’", "g’")
+
+# Uzbek-Cyrillic characters that don't appear in standard Russian
+_UZBEK_CYRILLIC = set('ғқҳў')
+
+_TOKEN_RE = re.compile(r"[A-Za-zÀ-ſЀ-ӿ'’‘]+", re.UNICODE)
+
+
+def _uzbek_latin_score(sample: str) -> float:
+    """
+    Return 0.0–1.0 likelihood that a Latin-script sample is Uzbek.
+    Combines apostrophe digraph density with stop-word coverage.
+    """
+    lower = sample.lower()
+    digraph_hits = sum(lower.count(d) for d in _UZBEK_LATIN_DIGRAPHS)
+    tokens = _TOKEN_RE.findall(lower)
+    if not tokens:
+        return 0.0
+    word_hits = sum(1 for t in tokens if t in _UZBEK_LATIN_WORDS)
+    # Each signal is normalized then combined (heuristic but resilient)
+    digraph_density = min(digraph_hits / max(len(tokens), 1) * 8, 1.0)
+    word_density    = min(word_hits / max(len(tokens), 1) * 12, 1.0)
+    return 0.6 * digraph_density + 0.4 * word_density
+
+
+def detect_language(text: str) -> tuple[str, float]:
+    """
+    Detect document language. Returns (code, confidence) where code ∈
+    {'en','ru','uz'} and confidence ∈ [0.0, 1.0].
+
+    Pipeline:
+      1. Reject empty / tiny inputs → ('en', 0.0).
+      2. Cyrillic majority → Russian vs Uzbek-Cyrillic by distinguishing letters.
+      3. Latin majority → run Uzbek-Latin heuristic first (langdetect has no
+         Uzbek model and tends to misfire as Somali/Turkish/Azerbaijani).
+      4. Otherwise fall back to langdetect for English vs anything else.
+    """
+    if not text or not text.strip():
+        return ('en', 0.0)
+
     sample = text[:8000]
     total_alpha = sum(1 for c in sample if c.isalpha())
-    if total_alpha == 0:
-        return 'en'
+    if total_alpha < 20:
+        return ('en', 0.0)
 
     cyrillic = sum(1 for c in sample if 'Ѐ' <= c <= 'ӿ')
-    ratio = cyrillic / total_alpha
+    cyr_ratio = cyrillic / total_alpha
 
-    if ratio > 0.25:
-        # Distinguish Uzbek Cyrillic from Russian by unique characters
-        uzbek_cyrillic = set('ғқҳ')
-        if any(c in uzbek_cyrillic for c in sample.lower()):
-            return 'uz'
-        return 'ru'
+    # ── Cyrillic-dominant ────────────────────────────────────────────────
+    if cyr_ratio > 0.25:
+        if any(c in _UZBEK_CYRILLIC for c in sample.lower()):
+            return ('uz', round(min(0.6 + cyr_ratio * 0.4, 0.95), 2))
+        return ('ru', round(min(0.7 + cyr_ratio * 0.3, 0.99), 2))
 
-    return 'en'
+    # ── Latin-dominant: Uzbek heuristic before langdetect ────────────────
+    uz_score = _uzbek_latin_score(sample)
+    if uz_score >= 0.35:
+        return ('uz', round(min(0.55 + uz_score * 0.4, 0.95), 2))
+
+    # ── Default: langdetect for English (or anything Latin) ──────────────
+    try:
+        from langdetect import detect_langs, DetectorFactory, LangDetectException
+        DetectorFactory.seed = 0
+        results = detect_langs(sample)
+    except Exception as exc:
+        logger.warning('langdetect failed: %s — defaulting to English.', exc)
+        return ('en', 0.3)
+
+    top = results[0] if results else None
+    if top and top.lang == 'en':
+        return ('en', round(top.prob, 2))
+    if top and top.lang == 'ru':
+        return ('ru', round(top.prob, 2))
+    # Anything else (so/sq/tr/az) — Uzbek-Latin with low text density is
+    # plausible, but without supporting signals we honestly don't know,
+    # so report English with low confidence and let the user override.
+    return ('en', 0.3)
 
 
 # ---- Groq client ---------------------------------------------------------
@@ -128,7 +197,10 @@ def summarize_paper_text(text: str, title: str = '', language: str | None = None
     """
     client = _get_client()
 
-    detected = language or detect_language(text)
+    if language:
+        detected = language
+    else:
+        detected, _conf = detect_language(text)
     system_prompt = SYSTEM_PROMPTS.get(detected, _PROMPT_EN)
 
     truncated = text[:MAX_TEXT_CHARS]

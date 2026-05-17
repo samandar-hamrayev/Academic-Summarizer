@@ -25,6 +25,12 @@ class Tag(models.Model):
 
 
 class Paper(models.Model):
+    LANGUAGE_CHOICES = [
+        ('en', 'English'),
+        ('ru', 'Russian'),
+        ('uz', "Uzbek (Lotin)"),
+    ]
+
     title       = models.CharField(max_length=500)
     author      = models.CharField(max_length=300, blank=True)
     file        = models.FileField(upload_to=paper_upload_path)
@@ -33,6 +39,15 @@ class Paper(models.Model):
     processed   = models.BooleanField(default=False)
     file_size   = models.PositiveIntegerField(default=0, help_text='Size in bytes')
     tags        = models.ManyToManyField(Tag, blank=True, related_name='papers')
+    language    = models.CharField(
+        max_length=5, choices=LANGUAGE_CHOICES, default='en',
+        help_text='Detected (or user-overridden) language of the paper text. '
+                  'Summaries and chat replies are generated in this language.',
+    )
+    language_confidence = models.FloatField(
+        default=0.0,
+        help_text='Detector confidence 0.0–1.0. 0.0 means user-provided or unknown.',
+    )
 
     class Meta:
         ordering = ['-uploaded_at']
