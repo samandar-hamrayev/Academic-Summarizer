@@ -3,44 +3,57 @@
 {% block title %}Create account — Academic Summarizer{% endblock %}
 
 {% block content %}
-<div class="auth-shell">
-  <div class="aurora" style="opacity: 0.55;"><div class="blob"></div></div>
-
+<div class="container auth-wrap">
   <div class="auth-card">
-    <div class="auth-mark"><i class="bi bi-person-plus"></i></div>
-    <h1>Create account</h1>
-    <p class="auth-sub">Start summarizing academic papers today</p>
 
-    <form method="post">
+    <div class="h-row" style="gap: 10px; margin-bottom: 18px;">
+      <span class="pill is-ok"><span class="dot"></span>secure</span>
+      <span class="eyebrow">auth · v2</span>
+    </div>
+
+    <h1>Open an account.</h1>
+    <p class="dim" style="margin-bottom: 28px; font-size: 14.5px;">
+      Free while in beta. We'll never share your reading list.
+    </p>
+
+    <div class="auth-tabs" role="tablist">
+      <a href="{% url 'login' %}" class="auth-tab">Sign in</a>
+      <a href="{% url 'register' %}" class="auth-tab is-on">Create account</a>
+    </div>
+
+    <form method="post" class="stack stack-4">
       {% csrf_token %}
       {% for field in form %}
-        <div class="mb-3">
-          <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+        <div class="field">
+          <label for="{{ field.id_for_label }}">
+            {{ field.label }}
+            {% if field.field.required %}<span style="color: var(--err);">*</span>{% endif %}
+          </label>
           <input type="{{ field.field.widget.input_type }}"
                  name="{{ field.html_name }}"
                  id="{{ field.id_for_label }}"
-                 class="form-control {% if field.errors %}is-invalid{% endif %}"
+                 class="input {% if field.errors %}is-invalid{% endif %}"
+                 placeholder="{% if field.name == 'username' %}samandar{% elif field.name == 'email' %}you@university.edu{% elif field.name == 'password1' %}at least 8 characters{% elif field.name == 'password2' %}re-enter password{% endif %}"
                  {% if field.value %}value="{{ field.value }}"{% endif %}
                  {% if field.field.required %}required{% endif %}>
           {% if field.help_text %}
-            <div class="form-text">{{ field.help_text }}</div>
+            <div style="font-family: var(--mono); font-size: 11px; color: var(--ink-3); margin-top: 2px;">{{ field.help_text|safe }}</div>
           {% endif %}
           {% for error in field.errors %}
-            <div class="invalid-feedback">{{ error }}</div>
+            <div style="color: var(--err); font-size: 12px;">{{ error }}</div>
           {% endfor %}
         </div>
       {% endfor %}
 
-      <button type="submit" class="btn btn-violet btn-lg" style="width: 100%; margin-top: 8px;">
-        <i class="bi bi-person-check"></i>Create account
+      <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; justify-content: center; margin-top: 8px;">
+        Create account <i class="bi bi-arrow-right"></i>
       </button>
     </form>
 
-    <div class="form-divider">or</div>
+    <div class="auth-divider">or</div>
 
-    <p style="text-align: center; color: var(--text-2); font-size: 0.875rem; margin: 0;">
-      Already have an account?
-      <a href="{% url 'login' %}" style="color: var(--violet); font-weight: 500;">Sign in</a>
+    <p style="text-align: center; margin: 0; font-size: 13px; color: var(--ink-3);">
+      Already have one? <a href="{% url 'login' %}">Sign in</a>
     </p>
   </div>
 </div>
