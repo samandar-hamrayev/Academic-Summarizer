@@ -30,17 +30,17 @@ msgstr "Ruscha"
 
 #: academic_summarizer/settings.py:95
 msgid "Uzbek (Lotin)"
-msgstr "O'zbek (Lotin)"
+msgstr "O’zbek (lotin)"
 
 #: papers/views.py:123
 #, python-format
 msgid "\"%(title)s\" uploaded and summarized successfully!"
-msgstr "«%(title)s» muvaffaqiyatli yuklandi va xulosalandi!"
+msgstr "«%(title)s» muvaffaqiyatli yuklandi va xulosa tayyorlandi!"
 
 #: papers/views.py:128
 #, python-format
 msgid "\"%(title)s\" uploaded, but no text could be extracted from the PDF."
-msgstr "«%(title)s» yuklandi, ammo PDF dan matn olib bo'lmadi."
+msgstr "«%(title)s» yuklandi, biroq PDF ichidan matn ajratib bo’lmadi."
 
 #: papers/views.py:134
 #, python-format
@@ -49,11 +49,11 @@ msgstr "«%(title)s» yuklandi, ammo xulosalash bajarilmadi: %(error)s"
 
 #: papers/views.py:158
 msgid "Paper deleted successfully."
-msgstr "Maqola o'chirildi."
+msgstr "Maqola muvaffaqiyatli o’chirildi."
 
 #: papers/views.py:171
 msgid "No text could be extracted from this PDF."
-msgstr "Bu PDF dan matn olib bo'lmadi."
+msgstr "Ushbu PDF ichidan matn ajratib bo’lmadi."
 
 #: papers/views.py:176
 msgid "Paper summarized successfully!"
@@ -71,11 +71,11 @@ msgstr "Xush kelibsiz, %(name)s! Hisobingiz yaratildi."
 
 #: summarizer/views.py:105
 msgid "Share link created successfully."
-msgstr "Ulashish havolasi yaratildi."
+msgstr "Ulashish havolasi muvaffaqiyatli yaratildi."
 
 #: summarizer/views.py:117
 msgid "Share link revoked."
-msgstr "Havola bekor qilindi."
+msgstr "Ulashish havolasi bekor qilindi."
 
 #: templates/base.html:7 templates/base.html:38
 #: templates/papers/confirm_delete.html:4 templates/papers/detail.html:4
@@ -89,7 +89,7 @@ msgstr "Maqolalarni qidirish"
 
 #: templates/base.html:45
 msgid "Search papers, tags, authors…"
-msgstr "Maqola, teg yoki muallifni qidiring…"
+msgstr "Maqola, teg yoki muallif bo’yicha qidiring…"
 
 #: templates/base.html:45 templates/papers/list.html:22
 #: templates/papers/list.html:41
@@ -106,12 +106,12 @@ msgstr "Yuklash"
 
 #: templates/base.html:63 templates/base.html:120
 msgid "Switch language"
-msgstr "Tilni almashtirish"
+msgstr "Tilni o’zgartirish"
 
 #: templates/base.html:83 templates/base.html:139
 #: templates/summarizer/shared_summary.html:33
 msgid "Toggle theme"
-msgstr "Mavzuni almashtirish"
+msgstr "Mavzuni o’zgartirish"
 
 #: templates/base.html:89
 msgid "Account menu"
@@ -119,11 +119,11 @@ msgstr "Hisob menyusi"
 
 #: templates/base.html:98
 msgid "Django admin"
-msgstr "Django admin"
+msgstr "Django admin paneli"
 
 #: templates/base.html:107
 msgid "Sign out"
-msgstr "Chiqish"
+msgstr "Tizimdan chiqish"
 
 #: templates/base.html:142 templates/registration/login.html:21
 #: templates/registration/login.html:54
@@ -140,7 +140,7 @@ msgstr "Hisob yaratish"
 
 #: templates/base.html:169 templates/summarizer/shared_summary.html:133
 msgid "All systems operational"
-msgstr "Tizim ishlamoqda"
+msgstr "Barcha tizimlar ishlamoqda"
 
 #: templates/base.html:175
 msgid "Source"
@@ -148,7 +148,7 @@ msgstr "Manba kodi"
 
 #: templates/home.html:4
 msgid "Academic Summarizer — Read less. Understand more."
-msgstr "Academic Summarizer — Kamroq o'qing. Ko'proq tushuning."
+msgstr "Academic Summarizer — Kamroq o’qing. Ko’proq tushuning."
 
 #: templates/home.html:12
 msgid "READY · groq llama-3.3-70b"
@@ -156,7 +156,7 @@ msgstr "TAYYOR · groq llama-3.3-70b"
 
 #: templates/home.html:13
 msgid "No. 01 · Edition 2.0"
-msgstr "No. 01 · Nashr 2.0"
+msgstr "Son 01 · Nashr 2.0"
 
 #: templates/home.html:19
 msgid ""
@@ -165,10 +165,10 @@ msgid ""
 "          don&rsquo;t have time<br>\n"
 "          to read."
 msgstr ""
-"O'qish xonasi —<br>\n"
-"          <em>maqolalar</em> uchun,<br>\n"
-"          siz o'qishga<br>\n"
-"          ulgurmagan."
+"O’qish xonasi —<br>\n"
+"          o’qishga ulgurmagan<br>\n"
+"          <em>maqolalaringiz</em><br>\n"
+"          uchun."
 
 #: templates/home.html:26
 msgid ""
@@ -176,9 +176,9 @@ msgid ""
 "          abstract, key points, methodology, results, and conclusion — typeset\n"
 "          like a magazine, ready in under thirty seconds."
 msgstr ""
-"PDF ni tashlang. Akademik aniqlikdagi beshta bo'limli xulosani qaytarib oling —\n"
+"PDFni tashlang. Beshta bo’limdan iborat, ilmiy jihatdan asoslangan xulosa —\n"
 "          annotatsiya, asosiy tezislar, metodologiya, natijalar va xulosa — jurnal\n"
-"          tarzida tartiblangan, o'ttiz soniyadan kam vaqtda tayyor."
+"          sahifasidek tartiblangan holda, o’ttiz soniyadan kam vaqt ichida tayyor bo’ladi."
 
 #: templates/home.html:34 templates/home.html:41
 msgid "Summarize a paper"
@@ -190,7 +190,7 @@ msgstr "Kutubxonamni ochish"
 
 #: templates/home.html:44
 msgid "Open a free account"
-msgstr "Bepul hisob ochish"
+msgstr "Bepul hisob yaratish"
 
 #: templates/home.html:47
 msgid "PDF · up to 50 MB · EN / RU / UZ"
@@ -205,8 +205,8 @@ msgid ""
 "&ldquo;Cut my literature review from three weeks to four evenings.\n"
 "          The methodology section alone is worth it.&rdquo;"
 msgstr ""
-"«Adabiyot sharhimni uch haftadan to'rt oqshomgacha qisqartirdi.\n"
-"          Yolg'iz metodologiya bo'limining o'zi arziydi.»"
+"«Adabiyotlar sharhimni uch haftadan to’rt kechalik ishga qisqartirdi.\n"
+"          Faqat metodologiya bo’limining o’zi ham bunga arziydi.»"
 
 #: templates/home.html:57
 msgid "— PhD candidate, computational linguistics"
@@ -214,7 +214,7 @@ msgstr "— Doktorant, hisoblash lingvistikasi"
 
 #: templates/home.html:63
 msgid "avg. inference"
-msgstr "o'rt. vaqt"
+msgstr "o’rtacha vaqt"
 
 #: templates/home.html:67
 msgid "languages"
@@ -222,7 +222,7 @@ msgstr "tillar"
 
 #: templates/home.html:71
 msgid "papers indexed"
-msgstr "maqolalar"
+msgstr "indekslangan maqolalar"
 
 #: templates/home.html:83
 msgid "How it works"
@@ -230,39 +230,39 @@ msgstr "Qanday ishlaydi"
 
 #: templates/home.html:84
 msgid "Three steps. One PDF in, one summary out."
-msgstr "Uch qadam. Bitta PDF kirsa, bitta xulosa chiqadi."
+msgstr "Uch qadam. Bir PDF kiradi — bir xulosa chiqadi."
 
 #: templates/home.html:91
 msgid "[ 01 ] Drop"
-msgstr "[ 01 ] Tashlash"
+msgstr "[ 01 ] Yuklash"
 
 #: templates/home.html:92
 msgid "A PDF, up to 50 MB."
-msgstr "PDF, 50 MB gacha."
+msgstr "50 MB gacha bo’lgan PDF fayl."
 
 #: templates/home.html:93
 msgid ""
 "English, Russian, or Uzbek. We extract the text, the figures' captions, and "
 "the reference list."
 msgstr ""
-"Inglizcha, ruscha yoki o'zbekcha. Matn, rasm sarlavhalari va adabiyotlar "
-"ro'yxati ajratib olinadi."
+"Inglizcha, ruscha yoki o’zbekcha. Biz matnni, rasm tagliklarini va "
+"adabiyotlar ro’yxatini ajratib olamiz."
 
 #: templates/home.html:96
 msgid "[ 02 ] Read"
-msgstr "[ 02 ] O'qish"
+msgstr "[ 02 ] O’qish"
 
 #: templates/home.html:97
 msgid "Llama 3.3 70B reads the paper."
-msgstr "Llama 3.3 70B maqolani o'qiydi."
+msgstr "Maqolani Llama 3.3 70B o’qib chiqadi."
 
 #: templates/home.html:98
 msgid ""
 "Served by Groq, the model returns a structured summary in roughly twenty "
 "seconds — not minutes."
 msgstr ""
-"Groq orqali model strukturali xulosani daqiqalar emas, taxminan yigirma "
-"soniyada qaytaradi."
+"Groq infratuzilmasida ishlovchi model tuzilmali xulosani daqiqalarda emas, "
+"taxminan yigirma soniyada qaytaradi."
 
 #: templates/home.html:101
 msgid "[ 03 ] Use"
@@ -270,23 +270,23 @@ msgstr "[ 03 ] Foydalanish"
 
 #: templates/home.html:102
 msgid "Read it, share it, export it."
-msgstr "O'qing, ulashing, eksport qiling."
+msgstr "O’qing, ulashing, eksport qiling."
 
 #: templates/home.html:103
 msgid ""
 "Browse the five sections, copy a public link, or export to PDF or Word for "
 "your literature review."
 msgstr ""
-"Beshta bo'limni ko'ring, ommaviy havolani nusxalang yoki adabiyot sharhi "
-"uchun PDF/Word ga eksport qiling."
+"Beshta bo’limni ko’rib chiqing, ommaviy havoladan nusxa oling yoki adabiyot "
+"sharhi uchun PDF yoki Word formatiga eksport qiling."
 
 #: templates/home.html:114
 msgid "Every paper, the same shape"
-msgstr "Har bir maqola — bir xil shaklda"
+msgstr "Har bir maqola — bir xil tuzilmada"
 
 #: templates/home.html:115
 msgid "Five sections. Always."
-msgstr "Beshta bo'lim. Doimo."
+msgstr "Doimo beshta bo’lim."
 
 #: templates/home.html:123 templates/papers/detail.html:47
 #: templates/papers/detail.html:94 templates/summarizer/shared_summary.html:63
@@ -295,7 +295,7 @@ msgstr "Annotatsiya"
 
 #: templates/home.html:124
 msgid "A two-paragraph distillation of the paper's core contribution."
-msgstr "Maqolaning asosiy hissasini ikki paragrafda."
+msgstr "Maqolaning asosiy hissasi ikki paragrafda jamlangan."
 
 #: templates/home.html:128
 msgid "Key Points"
@@ -303,7 +303,7 @@ msgstr "Asosiy tezislar"
 
 #: templates/home.html:129
 msgid "Five to eight takeaways, ranked by importance."
-msgstr "Beshdan sakkiztagacha, ahamiyatiga ko'ra tartiblangan."
+msgstr "Ahamiyatiga ko’ra tartiblangan beshtadan sakkiztagacha tezis."
 
 #: templates/home.html:133 templates/papers/detail.html:49
 #: templates/papers/detail.html:119
@@ -313,7 +313,7 @@ msgstr "Metodologiya"
 
 #: templates/home.html:134
 msgid "Setup, data, baselines, and the controls that matter."
-msgstr "Tuzilish, ma'lumotlar, taqqoslash modellari va muhim nazoratlar."
+msgstr "Tuzilma, ma’lumotlar, asosiy modellar va muhim nazorat omillari."
 
 #: templates/home.html:138 templates/papers/detail.html:50
 #: templates/papers/detail.html:127
@@ -323,7 +323,7 @@ msgstr "Natijalar"
 
 #: templates/home.html:139
 msgid "The numbers, with the deltas that earn them."
-msgstr "Raqamlar va ularni asoslaydigan farqlar."
+msgstr "Raqamlar va ularni asoslab beruvchi farqlar."
 
 #: templates/home.html:143 templates/papers/detail.html:51
 #: templates/papers/detail.html:135
@@ -333,19 +333,22 @@ msgstr "Xulosa"
 
 #: templates/home.html:144
 msgid "What it means, what it doesn't, and what's next."
-msgstr "Bu nimani anglatadi, nimani anglatmaydi va keyin nima bo'ladi."
+msgstr ""
+"Bu nimani anglatadi, nimani anglatmaydi va keyingi qadamlar nimadan iborat."
 
 #: templates/home.html:161
 msgid "Ready when you are"
-msgstr "Siz tayyor bo'lganda — biz ham tayyor"
+msgstr "Siz tayyor bo’lganda — biz ham tayyormiz"
 
 #: templates/home.html:162
 msgid "Summarize your first paper in under a minute."
-msgstr "Birinchi maqolangizni bir daqiqadan kam vaqtda xulosalang."
+msgstr "Birinchi maqolangizni bir daqiqadan kam vaqt ichida xulosalang."
 
 #: templates/home.html:164
 msgid "Free while in beta. No credit card. Sign up takes thirty seconds."
-msgstr "Beta davrida bepul. Kartasiz. Ro'yxatdan o'tish o'ttiz soniya."
+msgstr ""
+"Beta davrida bepul. Bank kartasi talab qilinmaydi. Ro’yxatdan o’tish — "
+"o’ttiz soniya."
 
 #: templates/home.html:168
 msgid "Create a free account"
@@ -353,15 +356,15 @@ msgstr "Bepul hisob yaratish"
 
 #: templates/home.html:171
 msgid "Sign in instead"
-msgstr "O'rniga kirish"
+msgstr "Yoki tizimga kirish"
 
 #: templates/papers/_citation_panel.html:15
 msgid "Cite this paper"
-msgstr "Ushbu maqolani iqtiboslash"
+msgstr "Ushbu maqolaga iqtibos"
 
 #: templates/papers/_citation_panel.html:16
 msgid "apa · mla · ieee · bibtex · auto-generated"
-msgstr "apa · mla · ieee · bibtex · avtomatik"
+msgstr "apa · mla · ieee · bibtex · avtomatik shakllantirilgan"
 
 #: templates/papers/_citation_panel.html:28
 msgid "Loading citation…"
@@ -373,23 +376,23 @@ msgstr "Nusxalash"
 
 #: templates/papers/_citation_panel.html:36
 msgid "Download .bib"
-msgstr ".bib yuklab olish"
+msgstr ".bib faylni yuklab olish"
 
 #: templates/papers/_citation_panel.html:42
 msgid ""
 "Citations are generated from the paper's metadata. Verify before submission."
 msgstr ""
-"Iqtiboslar maqola metama'lumotlaridan yaratiladi. Yuborishdan oldin "
-"tekshiring."
+"Iqtiboslar maqola meta-ma’lumotlari asosida shakllantiriladi. Foydalanishdan"
+" oldin tekshirib chiqing."
 
 #: templates/papers/confirm_delete.html:4
 #: templates/papers/confirm_delete.html:28
 msgid "Delete paper"
-msgstr "Maqolani o'chirish"
+msgstr "Maqolani o’chirish"
 
 #: templates/papers/confirm_delete.html:12
 msgid "destructive"
-msgstr "qaytarilmas"
+msgstr "qaytarib bo’lmaydi"
 
 #: templates/papers/confirm_delete.html:13 templates/papers/detail.html:66
 #: templates/summarizer/shared_summary.html:49
@@ -398,15 +401,15 @@ msgstr "maqola"
 
 #: templates/papers/confirm_delete.html:16
 msgid "Delete this paper?"
-msgstr "Bu maqolani o'chirilsinmi?"
+msgstr "Ushbu maqola o’chirilsinmi?"
 
 #: templates/papers/confirm_delete.html:21
 msgid ""
 "The PDF, its summary, and any share links will be removed permanently. This "
 "action cannot be undone."
 msgstr ""
-"PDF, uning xulosasi va barcha ulashish havolalari butunlay o'chiriladi. Bu "
-"amalni bekor qilib bo'lmaydi."
+"PDF fayl, uning xulosasi va barcha ulashish havolalari butunlay o’chiriladi."
+" Bu amalni ortga qaytarib bo’lmaydi."
 
 #: templates/papers/confirm_delete.html:26
 msgid "Cancel"
@@ -430,7 +433,7 @@ msgstr "Asl PDF"
 
 #: templates/papers/detail.html:43
 msgid "Sections"
-msgstr "Bo'limlar"
+msgstr "Bo’limlar"
 
 #: templates/papers/detail.html:48 templates/papers/detail.html:103
 #: templates/summarizer/shared_summary.html:71
@@ -440,7 +443,7 @@ msgstr "Asosiy tezislar"
 #: templates/papers/detail.html:52 templates/papers/detail.html:144
 #: templates/summarizer/shared_summary.html:107
 msgid "References"
-msgstr "Adabiyotlar"
+msgstr "Adabiyotlar ro’yxati"
 
 #: templates/papers/detail.html:65
 msgid "summary ready"
@@ -449,11 +452,11 @@ msgstr "xulosa tayyor"
 #: templates/papers/detail.html:68
 #, python-format
 msgid "detected · %(c)s%% confidence"
-msgstr "aniqlangan · %(c)s%% ishonch"
+msgstr "aniqlandi · ishonch %(c)s%%"
 
 #: templates/papers/detail.html:70
 msgid "user-set"
-msgstr "foydalanuvchi belgilagan"
+msgstr "foydalanuvchi tomonidan belgilangan"
 
 #: templates/papers/detail.html:78 templates/papers/detail.html:181
 msgid "file"
@@ -461,7 +464,7 @@ msgstr "fayl"
 
 #: templates/papers/detail.html:79 templates/papers/detail.html:182
 msgid "size"
-msgstr "hajm"
+msgstr "hajmi"
 
 #: templates/papers/detail.html:80 templates/summarizer/shared_summary.html:56
 msgid "model"
@@ -473,17 +476,17 @@ msgstr "yuklangan"
 
 #: templates/papers/detail.html:95 templates/summarizer/shared_summary.html:64
 msgid "Summary of the paper."
-msgstr "Maqola xulosasi."
+msgstr "Maqolaning umumiy xulosasi."
 
 #: templates/papers/detail.html:104
 #: templates/summarizer/shared_summary.html:72
 msgid "What the paper actually shows."
-msgstr "Maqola aslida nimani ko'rsatadi."
+msgstr "Maqola aslida nimani ko’rsatadi."
 
 #: templates/papers/detail.html:120
 #: templates/summarizer/shared_summary.html:84
 msgid "How the work was done."
-msgstr "Ish qanday bajarilgan."
+msgstr "Ish qanday amalga oshirilgan."
 
 #: templates/papers/detail.html:128
 #: templates/summarizer/shared_summary.html:92
@@ -498,7 +501,7 @@ msgstr "Bu nimani anglatadi."
 #: templates/papers/detail.html:145
 #: templates/summarizer/shared_summary.html:108
 msgid "Extracted citation list"
-msgstr "Ajratib olingan iqtiboslar ro'yxati"
+msgstr "Ajratib olingan adabiyotlar ro’yxati"
 
 #: templates/papers/detail.html:159
 msgid "Back to papers"
@@ -514,23 +517,23 @@ msgstr "xulosalanmagan"
 
 #: templates/papers/detail.html:176
 msgid "paper · pending"
-msgstr "maqola · kutilmoqda"
+msgstr "maqola · navbatda"
 
 #: templates/papers/detail.html:188
 msgid "No summary yet."
-msgstr "Xulosa hali yo'q."
+msgstr "Hozircha xulosa yo’q."
 
 #: templates/papers/detail.html:190
 msgid ""
 "Send this PDF to Groq's Llama 3.3 70B for structured summarization. It "
 "usually takes 15–30 seconds."
 msgstr ""
-"Ushbu PDF ni Groq Llama 3.3 70B ga strukturali xulosalash uchun yuboring. "
-"Odatda 15–30 soniya oladi."
+"Ushbu PDFni tuzilmali xulosalash uchun Groq’dagi Llama 3.3 70B modeliga "
+"yuboring. Bu odatda 15–30 soniya davom etadi."
 
 #: templates/papers/detail.html:196
 msgid "Summarize this paper"
-msgstr "Bu maqolani xulosalash"
+msgstr "Ushbu maqolani xulosalash"
 
 #: templates/papers/detail.html:206 templates/papers/list.html:54
 #: templates/summarizer/history.html:30
@@ -543,11 +546,11 @@ msgstr "Fayl"
 
 #: templates/papers/detail.html:209
 msgid "Size"
-msgstr "Hajm"
+msgstr "Hajmi"
 
 #: templates/papers/detail.html:210
 msgid "Uploaded"
-msgstr "Yuklangan"
+msgstr "Yuklangan sana"
 
 #: templates/papers/detail.html:212
 msgid "Language"
@@ -555,7 +558,7 @@ msgstr "Til"
 
 #: templates/papers/detail.html:214
 msgid "Uzbek"
-msgstr "O'zbek"
+msgstr "O’zbekcha"
 
 #: templates/papers/detail.html:222
 msgid "Generation"
@@ -571,7 +574,7 @@ msgstr "Provayder"
 
 #: templates/papers/detail.html:226 templates/papers/upload.html:175
 msgid "Cost"
-msgstr "Narx"
+msgstr "Narxi"
 
 #: templates/papers/detail.html:226
 msgid "beta"
@@ -583,7 +586,7 @@ msgstr "Ulashish"
 
 #: templates/papers/detail.html:234
 msgid "Create a public read-only link from the summary page."
-msgstr "Xulosa sahifasidan faqat o'qish uchun ommaviy havola yarating."
+msgstr "Xulosa sahifasidan faqat o’qish uchun ochiq havola yarating."
 
 #: templates/papers/detail.html:237
 msgid "Open share panel"
@@ -599,21 +602,21 @@ msgstr "Sizning kutubxonangiz"
 
 #: templates/papers/list.html:12
 msgid "Papers, summarized."
-msgstr "Xulosalangan maqolalar."
+msgstr "Maqolalar, xulosalangan ko’rinishda."
 
 #: templates/papers/list.html:15
 msgid "paper · distilled into structured summaries."
 msgid_plural "papers · distilled into structured summaries."
-msgstr[0] "%(counter)s maqola · strukturali xulosalarga aylantirildi."
-msgstr[1] "%(counter)s ta maqola · strukturali xulosalarga aylantirildi."
+msgstr[0] "%(counter)s ta maqola · tuzilmali xulosaga aylantirildi."
+msgstr[1] "%(counter)s ta maqola · tuzilmali xulosalarga aylantirildi."
 
 #: templates/papers/list.html:26
 msgid "Add paper"
-msgstr "Maqola qo'shish"
+msgstr "Maqola qo’shish"
 
 #: templates/papers/list.html:33
 msgid "Filter"
-msgstr "Filtr"
+msgstr "Saralash"
 
 #: templates/papers/list.html:36 templates/papers/list.html:44
 msgid "clear"
@@ -633,7 +636,7 @@ msgstr "Sana"
 
 #: templates/papers/list.html:68 templates/summarizer/history.html:43
 msgid "Unknown author"
-msgstr "Muallifi noma'lum"
+msgstr "Muallif noma’lum"
 
 #: templates/papers/list.html:97
 msgid "Open summary"
@@ -641,16 +644,16 @@ msgstr "Xulosani ochish"
 
 #: templates/papers/list.html:100
 msgid "Export PDF"
-msgstr "PDF ga eksport"
+msgstr "PDF formatida eksport"
 
 #: templates/papers/list.html:104
 msgid "Delete"
-msgstr "O'chirish"
+msgstr "O’chirish"
 
 #: templates/papers/list.html:146
 #, python-format
 msgid "%(n)s of %(total)s papers"
-msgstr "%(n)s / %(total)s maqola"
+msgstr "%(n)s / %(total)s ta maqola"
 
 #: templates/papers/list.html:147 templates/summarizer/history.html:88
 #, python-format
@@ -659,20 +662,20 @@ msgstr "sahifa %(n)s / %(total)s"
 
 #: templates/papers/list.html:152
 msgid "Empty library"
-msgstr "Bo'sh kutubxona"
+msgstr "Kutubxona bo’sh"
 
 #: templates/papers/list.html:154
 #, python-format
 msgid "No papers match \"%(query)s\"."
-msgstr "«%(query)s» ga mos maqola yo'q."
+msgstr "«%(query)s» so’roviga mos maqola topilmadi."
 
 #: templates/papers/list.html:154
 msgid "No papers yet."
-msgstr "Hozircha maqolalar yo'q."
+msgstr "Hozircha maqolalar yo’q."
 
 #: templates/papers/list.html:157
 msgid "Try a different search term, or clear the filter."
-msgstr "Boshqa so'rovni sinab ko'ring yoki filtrni tozalang."
+msgstr "Boshqa so’rovni sinab ko’ring yoki saralashni tozalang."
 
 #: templates/papers/list.html:157
 msgid "Upload your first academic paper to get started."
@@ -696,15 +699,16 @@ msgstr "01 / 03-qadam · Yuklash"
 
 #: templates/papers/upload.html:12
 msgid "Add a paper to the queue."
-msgstr "Maqolani navbatga qo'shing."
+msgstr "Maqolani navbatga qo’shing."
 
 #: templates/papers/upload.html:14
 msgid ""
 "PDF up to 50 MB. We extract the text, fix common encoding issues, and pass "
 "the result to Llama 3.3 70B for structured summarization."
 msgstr ""
-"50 MB gacha bo'lgan PDF. Matnni ajratib olamiz, kodlash xatolarini tuzatamiz"
-" va natijani strukturali xulosalash uchun Llama 3.3 70B ga uzatamiz."
+"50 MB gacha bo’lgan PDF. Biz matnni ajratib olamiz, kodlash xatolarini "
+"bartaraf etamiz va natijani tuzilmali xulosalash uchun Llama 3.3 70B "
+"modeliga uzatamiz."
 
 #: templates/papers/upload.html:18
 msgid "queue 0 / 3"
@@ -716,11 +720,11 @@ msgstr "kreditlar ∞"
 
 #: templates/papers/upload.html:35
 msgid "Drop a PDF, or click to browse."
-msgstr "PDF ni tashlang yoki tanlash uchun bosing."
+msgstr "PDF faylni tashlang yoki tanlash uchun bosing."
 
 #: templates/papers/upload.html:36
 msgid "English, Russian, or Uzbek · up to 50 MB · single file"
-msgstr "Inglizcha, ruscha yoki o'zbekcha · 50 MB gacha · bitta fayl"
+msgstr "Inglizcha, ruscha yoki o’zbekcha · 50 MB gacha · bitta fayl"
 
 #: templates/papers/upload.html:39
 msgid "Choose PDF"
@@ -744,7 +748,7 @@ msgstr "Sahifalar"
 
 #: templates/papers/upload.html:77
 msgid "Tokens (est.)"
-msgstr "Tokenlar (taxm.)"
+msgstr "Tokenlar (taxminiy)"
 
 #: templates/papers/upload.html:78
 msgid "Limit"
@@ -752,11 +756,11 @@ msgstr "Chegara"
 
 #: templates/papers/upload.html:83
 msgid "Try anyway →"
-msgstr "Baribir urinish →"
+msgstr "Baribir urinib ko’rish →"
 
 #: templates/papers/upload.html:89
 msgid "Paper metadata"
-msgstr "Maqola metama'lumotlari"
+msgstr "Maqola meta-ma’lumotlari"
 
 #: templates/papers/upload.html:92
 msgid "Title"
@@ -776,15 +780,15 @@ msgstr "Maqola tili"
 
 #: templates/papers/upload.html:110
 msgid "Auto-detect from PDF text"
-msgstr "PDF matnidan aniqlash"
+msgstr "PDF matnidan avtomatik aniqlash"
 
 #: templates/papers/upload.html:113
 msgid "Uzbek (Latin)"
-msgstr "O'zbek (Lotin)"
+msgstr "O’zbek (lotin)"
 
 #: templates/papers/upload.html:116
 msgid "The summary and chat replies will be generated in this language."
-msgstr "Xulosa va chat javoblari shu tilda yaratiladi."
+msgstr "Xulosa va suhbat javoblari shu tilda shakllantiriladi."
 
 #: templates/papers/upload.html:123
 msgid "selected"
@@ -792,11 +796,11 @@ msgstr "tanlangan"
 
 #: templates/papers/upload.html:126
 msgid "AI analyzing…"
-msgstr "AI tahlil qilmoqda…"
+msgstr "Sun’iy intellekt tahlil qilmoqda…"
 
 #: templates/papers/upload.html:133
 msgid "↑ auto-suggested by llama-3.3 · click to add"
-msgstr "↑ llama-3.3 tomonidan tavsiya qilingan · qo'shish uchun bosing"
+msgstr "↑ llama-3.3 tavsiya qildi · qo’shish uchun bosing"
 
 #: templates/papers/upload.html:138
 msgid "Selected"
@@ -804,15 +808,15 @@ msgstr "Tanlangan"
 
 #: templates/papers/upload.html:140
 msgid "None yet"
-msgstr "Hozircha yo'q"
+msgstr "Hozircha tanlanmagan"
 
 #: templates/papers/upload.html:145
 msgid "Custom tag…"
-msgstr "O'z tegingiz…"
+msgstr "O’z tegingizni kiriting…"
 
 #: templates/papers/upload.html:147
 msgid "Add"
-msgstr "Qo'shish"
+msgstr "Qo’shish"
 
 #: templates/papers/upload.html:158
 msgid "Back"
@@ -824,15 +828,15 @@ msgstr "Yuklash va xulosalash"
 
 #: templates/papers/upload.html:169
 msgid "Run plan"
-msgstr "Ishga tushirish rejasi"
+msgstr "Bajarish rejasi"
 
 #: templates/papers/upload.html:173
 msgid "Output"
-msgstr "Chiqish"
+msgstr "Natija"
 
 #: templates/papers/upload.html:173
 msgid "5 sections + citations"
-msgstr "5 bo'lim + iqtiboslar"
+msgstr "5 bo’lim + iqtiboslar"
 
 #: templates/papers/upload.html:174
 msgid "ETA"
@@ -840,7 +844,7 @@ msgstr "Vaqt"
 
 #: templates/papers/upload.html:174
 msgid "~ 20 s"
-msgstr "~ 20 s"
+msgstr "~ 20 soniya"
 
 #: templates/papers/upload.html:175
 msgid "free · beta"
@@ -848,7 +852,7 @@ msgstr "bepul · beta"
 
 #: templates/papers/upload.html:180
 msgid "What you'll get"
-msgstr "Nimaga ega bo'lasiz"
+msgstr "Nima olasiz"
 
 #: templates/papers/upload.html:182
 msgid "Abstract — 2 paragraphs"
@@ -856,7 +860,7 @@ msgstr "Annotatsiya — 2 paragraf"
 
 #: templates/papers/upload.html:183
 msgid "Key points — 5 to 8 ranked"
-msgstr "Asosiy tezislar — 5 dan 8 tagacha"
+msgstr "Asosiy tezislar — 5 tadan 8 tagacha"
 
 #: templates/papers/upload.html:184
 msgid "Methodology summary"
@@ -868,11 +872,11 @@ msgstr "Natijalar va farqlar"
 
 #: templates/papers/upload.html:186
 msgid "Conclusion and future work"
-msgstr "Xulosa va kelajakdagi yo'nalishlar"
+msgstr "Xulosa va kelajakdagi yo’nalishlar"
 
 #: templates/papers/upload.html:187
 msgid "Citation list, deduplicated"
-msgstr "Takrorsiz iqtiboslar ro'yxati"
+msgstr "Takrorlanmas iqtiboslar ro’yxati"
 
 #: templates/papers/upload.html:192
 msgid "Privacy"
@@ -881,8 +885,8 @@ msgstr "Maxfiylik"
 #: templates/papers/upload.html:194
 msgid "Files are stored only in your account. We don't train on your uploads."
 msgstr ""
-"Fayllar faqat sizning hisobingizda saqlanadi. Yuklamalaringizdan o'rgatish "
-"qilinmaydi."
+"Fayllar faqat sizning hisobingizda saqlanadi. Yuklangan fayllaringiz model "
+"o’qitishda ishlatilmaydi."
 
 #: templates/registration/login.html:4
 msgid "Sign in — Academic Summarizer"
@@ -895,16 +899,17 @@ msgstr "xavfsiz"
 
 #: templates/registration/login.html:15
 msgid "Welcome back."
-msgstr "Qaytib kelganingiz bilan."
+msgstr "Yana xush kelibsiz."
 
 #: templates/registration/login.html:17
 msgid "Sign in to read your saved summaries and continue your reviews."
 msgstr ""
-"Saqlangan xulosalarni o'qish va sharhlarni davom ettirish uchun kiring."
+"Saqlangan xulosalarni o’qish va sharhlarni davom ettirish uchun tizimga "
+"kiring."
 
 #: templates/registration/login.html:37
 msgid "your username"
-msgstr "foydalanuvchi nomi"
+msgstr "foydalanuvchi nomingiz"
 
 #: templates/registration/login.html:58
 #: templates/registration/register.html:54
@@ -914,7 +919,9 @@ msgstr "yoki"
 #: templates/registration/login.html:62
 #, python-format
 msgid "New here? <a href=\"%(register_url)s\">Create a free account</a>"
-msgstr "Yangimi? <a href=\"%(register_url)s\">Bepul hisob yarating</a>"
+msgstr ""
+"Yangi foydalanuvchimisiz? <a href=\"%(register_url)s\">Bepul hisob "
+"yarating</a>"
 
 #: templates/registration/register.html:4
 msgid "Create account — Academic Summarizer"
@@ -927,7 +934,8 @@ msgstr "Hisob oching."
 #: templates/registration/register.html:17
 msgid "Free while in beta. We'll never share your reading list."
 msgstr ""
-"Beta davrida bepul. O'qish ro'yxatingiz hech qachon oshkor qilinmaydi."
+"Beta davrida bepul. Sizning o’qish ro’yxatingiz hech qachon oshkor "
+"etilmaydi."
 
 #: templates/registration/register.html:37
 msgid "at least 8 characters"
@@ -940,15 +948,15 @@ msgstr "parolni qayta kiriting"
 #: templates/registration/register.html:58
 #, python-format
 msgid "Already have one? <a href=\"%(login_url)s\">Sign in</a>"
-msgstr "Hisobingiz bormi? <a href=\"%(login_url)s\">Kiring</a>"
+msgstr "Hisobingiz bormi? <a href=\"%(login_url)s\">Tizimga kiring</a>"
 
 #: templates/summarizer/_chat_panel.html:18
 msgid "Chat with this paper"
-msgstr "Maqola bilan suhbat"
+msgstr "Maqola bo’yicha suhbat"
 
 #: templates/summarizer/_chat_panel.html:19
 msgid "groq · llama-3.3-70b · grounded in the summary above"
-msgstr "groq · llama-3.3-70b · yuqoridagi xulosaga asoslangan"
+msgstr "groq · llama-3.3-70b · yuqoridagi xulosaga asoslanadi"
 
 #: templates/summarizer/_chat_panel.html:22
 msgid "Clear history"
@@ -961,28 +969,28 @@ msgstr "Maqola haqida istalgan savol bering."
 #: templates/summarizer/_chat_panel.html:28
 msgid "Try one of these prompts to get started, or type your own."
 msgstr ""
-"Boshlash uchun quyidagi tavsiyalardan birini sinab ko'ring yoki "
-"o'zingiznikini yozing."
+"Boshlash uchun quyidagi takliflardan birini sinab ko’ring yoki o’z "
+"savolingizni yozing."
 
 #: templates/summarizer/_chat_panel.html:30
 msgid "What is the main contribution of this paper?"
-msgstr "Maqolaning asosiy hissasi nima?"
+msgstr "Ushbu maqolaning asosiy hissasi nimadan iborat?"
 
 #: templates/summarizer/_chat_panel.html:31
 msgid "Main contribution?"
-msgstr "Asosiy hissa?"
+msgstr "Asosiy hissasi?"
 
 #: templates/summarizer/_chat_panel.html:33
 msgid "Summarize the methodology in plain language."
-msgstr "Metodologiyani oddiy tilda tushuntiring."
+msgstr "Metodologiyani sodda tilda tushuntiring."
 
 #: templates/summarizer/_chat_panel.html:34
 msgid "Methodology in plain language"
-msgstr "Metodologiya oddiy tilda"
+msgstr "Metodologiya — sodda tilda"
 
 #: templates/summarizer/_chat_panel.html:36
 msgid "What are the most important results, with numbers?"
-msgstr "Eng muhim natijalar qanday, raqamlar bilan?"
+msgstr "Eng muhim natijalar qaysilar, raqamlar bilan ayting?"
 
 #: templates/summarizer/_chat_panel.html:37
 msgid "Most important results"
@@ -990,23 +998,23 @@ msgstr "Eng muhim natijalar"
 
 #: templates/summarizer/_chat_panel.html:39
 msgid "What are the limitations or weaknesses?"
-msgstr "Cheklovlar va kuchsiz tomonlari nimalar?"
+msgstr "Cheklovlar va kamchiliklar nimalardan iborat?"
 
 #: templates/summarizer/_chat_panel.html:40
 msgid "Limitations & weaknesses"
-msgstr "Cheklovlar va kuchsizliklar"
+msgstr "Cheklovlar va kamchiliklar"
 
 #: templates/summarizer/_chat_panel.html:42
 msgid "Suggest three follow-up research questions."
-msgstr "Uchta keyingi tadqiqot savolini taklif qiling."
+msgstr "Davom ettirish uchun uchta tadqiqot savolini taklif qiling."
 
 #: templates/summarizer/_chat_panel.html:43
 msgid "Follow-up questions"
-msgstr "Keyingi savollar"
+msgstr "Qo’shimcha savollar"
 
 #: templates/summarizer/_chat_panel.html:55
 msgid "Ask about this paper…"
-msgstr "Ushbu maqola haqida so'rang…"
+msgstr "Maqola haqida so’rang…"
 
 #: templates/summarizer/_chat_panel.html:58
 msgid "Your message"
@@ -1026,17 +1034,17 @@ msgstr "Tarix — Academic Summarizer"
 
 #: templates/summarizer/history.html:11
 msgid "Summary history"
-msgstr "Xulosa tarixi"
+msgstr "Xulosalar tarixi"
 
 #: templates/summarizer/history.html:12
 msgid "Your reading log."
-msgstr "Sizning o'qish jurnalingiz."
+msgstr "Sizning o’qish jurnalingiz."
 
 #: templates/summarizer/history.html:15
 msgid "summary · ordered by recency."
 msgid_plural "summaries · ordered by recency."
-msgstr[0] "%(counter)s xulosa · yangiligi bo'yicha tartiblangan."
-msgstr[1] "%(counter)s ta xulosa · yangiligi bo'yicha tartiblangan."
+msgstr[0] "%(counter)s ta xulosa · yangiligi bo’yicha tartiblangan."
+msgstr[1] "%(counter)s ta xulosa · yangiligi bo’yicha tartiblangan."
 
 #: templates/summarizer/history.html:20
 msgid "New paper"
@@ -1049,19 +1057,19 @@ msgstr "Ochish"
 #: templates/summarizer/history.html:87
 #, python-format
 msgid "%(n)s of %(total)s summaries"
-msgstr "%(n)s / %(total)s xulosa"
+msgstr "%(n)s / %(total)s ta xulosa"
 
 #: templates/summarizer/history.html:93
 msgid "Empty history"
-msgstr "Bo'sh tarix"
+msgstr "Tarix bo’sh"
 
 #: templates/summarizer/history.html:94
 msgid "No summaries yet."
-msgstr "Hozircha xulosalar yo'q."
+msgstr "Hozircha xulosalar yo’q."
 
 #: templates/summarizer/history.html:95
 msgid "Upload and summarize your first paper to see it here."
-msgstr "Birinchi maqolangizni yuklang va xulosalang, u shu yerda ko'rinadi."
+msgstr "Birinchi maqolangizni yuklang va xulosalang — u shu yerda ko’rinadi."
 
 #: templates/summarizer/history.html:97
 msgid "Upload a paper"
@@ -1085,11 +1093,11 @@ msgid ""
 "ask them for a fresh one."
 msgstr ""
 "Ushbu ulashish havolasining muddati tugagan yoki egasi tomonidan bekor "
-"qilingan. Yangi havolani so'rang."
+"qilingan. Yangi havolani so’rang."
 
 #: templates/summarizer/share_expired.html:22
 msgid "Go to home"
-msgstr "Bosh sahifaga"
+msgstr "Bosh sahifaga o’tish"
 
 #: templates/summarizer/shared_summary.html:7
 msgid "Shared summary"
@@ -1097,7 +1105,7 @@ msgstr "Ulashilgan xulosa"
 
 #: templates/summarizer/shared_summary.html:32
 msgid "shared view"
-msgstr "ulashilgan ko'rinish"
+msgstr "ommaviy ko’rinish"
 
 #: templates/summarizer/shared_summary.html:48
 msgid "shared summary"
@@ -1107,8 +1115,8 @@ msgstr "ulashilgan xulosa"
 #, python-format
 msgid "%(counter)s view"
 msgid_plural "%(counter)s views"
-msgstr[0] "%(counter)s ko'rish"
-msgstr[1] "%(counter)s ta ko'rish"
+msgstr[0] "%(counter)s ta ko’rish"
+msgstr[1] "%(counter)s ta ko’rish"
 
 #: templates/summarizer/shared_summary.html:57
 msgid "generated"
@@ -1120,11 +1128,11 @@ msgstr "Yoqdimi?"
 
 #: templates/summarizer/shared_summary.html:117
 msgid "Summarize your own papers."
-msgstr "O'z maqolalaringizni xulosalang."
+msgstr "O’z maqolalaringizni xulosalang."
 
 #: templates/summarizer/shared_summary.html:118
 msgid "Free while in beta · sign-up takes 30 seconds."
-msgstr "Beta davrida bepul · ro'yxatdan o'tish 30 soniya."
+msgstr "Beta davrida bepul · ro’yxatdan o’tish 30 soniya."
 
 #: templates/summarizer/shared_summary.html:120
 msgid "Create free account"
@@ -1138,21 +1146,23 @@ msgid "Dashboard — Academic Summarizer"
 msgstr "Boshqaruv paneli — Academic Summarizer"
 
 msgid "Your reading room"
-msgstr "Sizning o'qish xonangiz"
+msgstr "Sizning o’qish xonangiz"
 
 msgid "Nothing here yet"
-msgstr "Bu yerda hali hech narsa yo'q"
+msgstr "Hozircha bo’sh"
 
 msgid "Your dashboard fills up once you upload a paper."
-msgstr "Panel siz birinchi maqolani yuklaganingizda to'ldiriladi."
+msgstr ""
+"Birinchi maqolani yuklaganingizdan so’ng panel ma’lumotlar bilan "
+"to’ldiriladi."
 
 msgid ""
 "Stats, charts, and a tag cloud appear here as you summarize. Start with one "
 "paper — it takes about twenty seconds."
 msgstr ""
-"Statistika, diagrammalar va teglar buluti siz xulosalashtirgan sayin shu "
-"yerda paydo bo'ladi. Bitta maqola bilan boshlang — bu taxminan yigirma "
-"soniya oladi."
+"Siz xulosa yaratgan sayin statistika, diagrammalar va teglar buluti shu "
+"yerda paydo bo’ladi. Bitta maqoladan boshlang — bu taxminan yigirma soniya "
+"oladi."
 
 msgid "uploaded to your library"
 msgstr "kutubxonangizga yuklangan"
@@ -1167,10 +1177,10 @@ msgid "distinct topics covered"
 msgstr "noyob mavzu qamrab olingan"
 
 msgid "Time saved"
-msgstr "Vaqt tejaldi"
+msgstr "Tejalgan vaqt"
 
 msgid "vs. reading every paper"
-msgstr "har bir maqolani o'qishga nisbatan"
+msgstr "har bir maqolani to’liq o’qishga qiyosan"
 
 msgid "Languages"
 msgstr "Tillar"
@@ -1182,50 +1192,50 @@ msgid "Active days"
 msgstr "Faol kunlar"
 
 msgid "with uploads or chat"
-msgstr "yuklash yoki chat bilan"
+msgstr "yuklash yoki suhbat bilan"
 
 msgid "Activity"
 msgstr "Faollik"
 
 msgid "Papers per day · last 30 days"
-msgstr "Kuniga maqolalar · oxirgi 30 kun"
+msgstr "Kunlik maqolalar · so’nggi 30 kun"
 
 msgid "Distribution"
 msgstr "Taqsimot"
 
 msgid "By language"
-msgstr "Til bo'yicha"
+msgstr "Til bo’yicha"
 
 msgid "Top tags"
-msgstr "Eng yaxshi teglar"
+msgstr "Asosiy teglar"
 
 msgid "Most-used in your library"
-msgstr "Kutubxonangizda eng ko'p ishlatilganlar"
+msgstr "Kutubxonangizda eng ko’p ishlatilganlar"
 
 msgid "Tag cloud"
 msgstr "Teglar buluti"
 
 msgid "Every tag, sized by use"
-msgstr "Barcha teglar, hajmi foydalanish chastotasiga ko'ra"
+msgstr "Barcha teglar — foydalanish chastotasiga ko’ra"
 
 msgid "Recent activity"
-msgstr "So'nggi faollik"
+msgstr "So’nggi faollik"
 
 msgid "What you've been reading"
-msgstr "Nimani o'qiyotgan edingiz"
+msgstr "Nimalar o’qiyotganingiz"
 
 msgid "all papers"
 msgstr "barcha maqolalar"
 
 msgid "Welcome back, %(name)s."
-msgstr "Qaytib kelganingizdan xursandmiz, %(name)s."
+msgstr "Yana xush kelibsiz, %(name)s."
 
 msgid "%(counter)s tag"
 msgid_plural "%(counter)s tags"
-msgstr[0] "%(counter)s teg"
-msgstr[1] "%(counter)s teg"
+msgstr[0] "%(counter)s ta teg"
+msgstr[1] "%(counter)s ta teg"
 
 msgid "%(counter)s paper"
 msgid_plural "%(counter)s papers"
-msgstr[0] "%(counter)s maqola"
-msgstr[1] "%(counter)s maqola"
+msgstr[0] "%(counter)s ta maqola"
+msgstr[1] "%(counter)s ta maqola"
