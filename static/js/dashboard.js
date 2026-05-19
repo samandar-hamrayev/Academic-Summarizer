@@ -61,7 +61,7 @@
       data: {
         labels: data.activity_30d.map(d => fmtDate(d.date)),
         datasets: [{
-          label: 'Papers',
+          label: (window.i18n && window.i18n.dashboardChartPapers) || 'Papers',
           data: data.activity_30d.map(d => d.count),
           borderColor: theme.accent,
           backgroundColor: ACCENT_FILL,
@@ -165,7 +165,7 @@
       data: {
         labels,
         datasets: [{
-          label: 'Papers',
+          label: (window.i18n && window.i18n.dashboardChartPapers) || 'Papers',
           data: values,
           backgroundColor: ACCENT_FILL_STRONG,
           borderColor: theme.accent,

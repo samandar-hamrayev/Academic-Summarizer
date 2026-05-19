@@ -1239,3 +1239,83 @@ msgid "%(counter)s paper"
 msgid_plural "%(counter)s papers"
 msgstr[0] "%(counter)s ta maqola"
 msgstr[1] "%(counter)s ta maqola"
+
+msgid "You"
+msgstr "Siz"
+
+msgid "Assistant"
+msgstr "Yordamchi"
+
+msgid "Server returned {code}"
+msgstr "Server javobi: {code}"
+
+msgid "Network error: {detail}"
+msgstr "Tarmoq xatosi: {detail}"
+
+msgid "could not reach server"
+msgstr "serverga ulanib bo’lmadi"
+
+msgid "Clear the chat for this paper? This cannot be undone."
+msgstr ""
+"Ushbu maqola bo’yicha suhbat tozalansinmi? Bu amalni ortga qaytarib "
+"bo’lmaydi."
+
+msgid "Could not clear history: {detail}"
+msgstr "Tarixni tozalab bo’lmadi: {detail}"
+
+msgid "Could not load citations: {detail}"
+msgstr "Iqtiboslarni yuklab bo’lmadi: {detail}"
+
+msgid "Could not copy — please copy manually."
+msgstr "Nusxalab bo’lmadi — iltimos, qo’lda nusxalang."
+
+msgid "{format} citation copied to clipboard."
+msgstr "{format} formatidagi iqtibos vaqtinchalik xotiraga nusxalandi."
+
+msgid "Copied"
+msgstr "Nusxalandi"
+
+msgid "Copied!"
+msgstr "Nusxalandi!"
+
+msgid "Only PDF files are accepted."
+msgstr "Faqat PDF fayllar qabul qilinadi."
+
+msgid "File is larger than 50 MB."
+msgstr "Fayl hajmi 50 MB dan oshib ketdi."
+
+msgid "Share link copied to clipboard."
+msgstr "Ulashish havolasi vaqtinchalik xotiraga nusxalandi."
+
+msgid "Processing…"
+msgstr "Qayta ishlanmoqda…"
+
+msgid "Success"
+msgstr "Muvaffaqiyatli"
+
+msgid "Warning"
+msgstr "Ogohlantirish"
+
+msgid "Error"
+msgstr "Xato"
+
+msgid "Info"
+msgstr "Ma’lumot"
+
+msgid "Extracting text…"
+msgstr "Matn ajratilmoqda…"
+
+msgid "AI is analyzing…"
+msgstr "Sun’iy intellekt tahlil qilmoqda…"
+
+msgid "Generating summary…"
+msgstr "Xulosa yaratilmoqda…"
+
+msgid "Summarizing your paper…"
+msgstr "Maqolangiz xulosalanmoqda…"
+
+msgid "Don't close this tab. Most jobs finish in 15–25 seconds."
+msgstr "Sahifani yopmang. Jarayon odatda 15–25 soniyada yakunlanadi."
+
+msgid "Working…"
+msgstr "Bajarilmoqda…"

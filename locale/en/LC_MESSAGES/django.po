@@ -1222,3 +1222,81 @@ msgid "%(counter)s paper"
 msgid_plural "%(counter)s papers"
 msgstr[0] "%(counter)s paper"
 msgstr[1] "%(counter)s papers"
+
+msgid "You"
+msgstr "You"
+
+msgid "Assistant"
+msgstr "Assistant"
+
+msgid "Server returned {code}"
+msgstr "Server returned {code}"
+
+msgid "Network error: {detail}"
+msgstr "Network error: {detail}"
+
+msgid "could not reach server"
+msgstr "could not reach server"
+
+msgid "Clear the chat for this paper? This cannot be undone."
+msgstr "Clear the chat for this paper? This cannot be undone."
+
+msgid "Could not clear history: {detail}"
+msgstr "Could not clear history: {detail}"
+
+msgid "Could not load citations: {detail}"
+msgstr "Could not load citations: {detail}"
+
+msgid "Could not copy — please copy manually."
+msgstr "Could not copy — please copy manually."
+
+msgid "{format} citation copied to clipboard."
+msgstr "{format} citation copied to clipboard."
+
+msgid "Copied"
+msgstr "Copied"
+
+msgid "Copied!"
+msgstr "Copied!"
+
+msgid "Only PDF files are accepted."
+msgstr "Only PDF files are accepted."
+
+msgid "File is larger than 50 MB."
+msgstr "File is larger than 50 MB."
+
+msgid "Share link copied to clipboard."
+msgstr "Share link copied to clipboard."
+
+msgid "Processing…"
+msgstr "Processing…"
+
+msgid "Success"
+msgstr "Success"
+
+msgid "Warning"
+msgstr "Warning"
+
+msgid "Error"
+msgstr "Error"
+
+msgid "Info"
+msgstr "Info"
+
+msgid "Extracting text…"
+msgstr "Extracting text…"
+
+msgid "AI is analyzing…"
+msgstr "AI is analyzing…"
+
+msgid "Generating summary…"
+msgstr "Generating summary…"
+
+msgid "Summarizing your paper…"
+msgstr "Summarizing your paper…"
+
+msgid "Don't close this tab. Most jobs finish in 15–25 seconds."
+msgstr "Don't close this tab. Most jobs finish in 15–25 seconds."
+
+msgid "Working…"
+msgstr "Working…"

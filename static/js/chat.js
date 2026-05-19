@@ -59,7 +59,8 @@
 
     const roleEl = document.createElement('div');
     roleEl.className = 'chat-role';
-    roleEl.textContent = role === 'user' ? 'You' : 'Assistant';
+    roleEl.textContent = role === 'user' ? (window.i18n && window.i18n.you || 'You')
+                                         : (window.i18n && window.i18n.assistant || 'Assistant');
     wrap.appendChild(roleEl);
 
     const bubble = document.createElement('div');
@@ -81,7 +82,7 @@
 
     const roleEl = document.createElement('div');
     roleEl.className = 'chat-role';
-    roleEl.textContent = 'Assistant';
+    roleEl.textContent = (window.i18n && window.i18n.assistant) || 'Assistant';
     wrap.appendChild(roleEl);
 
     const bubble = document.createElement('div');
@@ -201,13 +202,16 @@
         const data = await res.json().catch(() => ({}));
         hideTyping();
         if (!res.ok) {
-          showError(data.error || ('Server returned ' + res.status));
+          const fallback = window.i18n.format(window.i18n.serverReturned, { code: res.status });
+          showError(data.error || fallback);
           return;
         }
         appendMessage('assistant', data.reply);
       } catch (e) {
         hideTyping();
-        showError('Network error: ' + (e.message || 'could not reach server'));
+        showError(window.i18n.format(window.i18n.networkError, {
+          detail: e.message || window.i18n.couldNotReachServer,
+        }));
       } finally {
         setBusy(false);
         input.focus();
@@ -216,7 +220,7 @@
 
     // ── clear history ───────────────────────────────────────────────────
     async function clearHistory() {
-      if (!confirm('Clear the chat for this paper? This cannot be undone.')) return;
+      if (!confirm(window.i18n.confirmClearChat)) return;
       setBusy(true);
       try {
         const res = await fetch(clearUrl, {
@@ -228,7 +232,7 @@
         setEmptyVisible(true);
         clearError();
       } catch (e) {
-        showError('Could not clear history: ' + e.message);
+        showError(window.i18n.format(window.i18n.couldNotClearHistory, { detail: e.message }));
       } finally {
         setBusy(false);
       }

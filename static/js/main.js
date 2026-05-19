@@ -100,11 +100,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const file = e.dataTransfer.files[0];
       if (!file) return;
       if (!file.name.toLowerCase().endsWith('.pdf')) {
-        showToast('Only PDF files are accepted.', 'warning');
+        showToast(window.i18n.onlyPdfAccepted, 'warning');
         return;
       }
       if (file.size > 50 * 1024 * 1024) {
-        showToast('File is larger than 50 MB.', 'danger');
+        showToast(window.i18n.fileTooLarge, 'danger');
         return;
       }
       assignFile(file);
@@ -163,7 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const btn = uploadForm.querySelector('[type="submit"]');
       if (btn) {
         btn.disabled = true;
-        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Processing…';
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>' + window.i18n.processing;
       }
 
       if (progressSteps) {
@@ -192,15 +192,15 @@ document.addEventListener('DOMContentLoaded', () => {
       const ok = await copyToClipboard(input.value);
       if (ok) {
         const orig = btn.innerHTML;
-        btn.innerHTML = '<i class="bi bi-check2 me-1"></i>Copied!';
+        btn.innerHTML = '<i class="bi bi-check2 me-1"></i>' + window.i18n.copiedExcl;
         btn.classList.replace('btn-outline-secondary', 'btn-success');
-        showToast('Share link copied to clipboard.', 'success');
+        showToast(window.i18n.shareLinkCopied, 'success');
         setTimeout(() => {
           btn.innerHTML = orig;
           btn.classList.replace('btn-success', 'btn-outline-secondary');
         }, 2200);
       } else {
-        showToast('Could not copy — please copy manually.', 'danger');
+        showToast(window.i18n.couldNotCopy, 'danger');
       }
     });
   });
@@ -246,12 +246,13 @@ function showToast(message, type = 'info', title = '') {
   const container = document.getElementById('toast-container');
   if (!container) return;
 
+  const i18n = window.i18n || {};
   const cfg = {
-    success: { icon: 'check-circle-fill text-success', label: 'Success' },
-    warning: { icon: 'exclamation-triangle-fill text-warning', label: 'Warning' },
-    danger:  { icon: 'exclamation-circle-fill text-danger',  label: 'Error' },
-    error:   { icon: 'exclamation-circle-fill text-danger',  label: 'Error' },
-    info:    { icon: 'info-circle-fill text-info',           label: 'Info' },
+    success: { icon: 'check-circle-fill text-success',       label: i18n.toastSuccess || 'Success' },
+    warning: { icon: 'exclamation-triangle-fill text-warning', label: i18n.toastWarning || 'Warning' },
+    danger:  { icon: 'exclamation-circle-fill text-danger',  label: i18n.toastError   || 'Error' },
+    error:   { icon: 'exclamation-circle-fill text-danger',  label: i18n.toastError   || 'Error' },
+    info:    { icon: 'info-circle-fill text-info',           label: i18n.toastInfo    || 'Info' },
   };
 
   const { icon, label } = cfg[type] || cfg.info;

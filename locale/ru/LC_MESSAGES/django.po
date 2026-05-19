@@ -1233,3 +1233,81 @@ msgid_plural "%(counter)s papers"
 msgstr[0] "%(counter)s статья"
 msgstr[1] "%(counter)s статьи"
 msgstr[2] "%(counter)s статей"
+
+msgid "You"
+msgstr "Вы"
+
+msgid "Assistant"
+msgstr "Ассистент"
+
+msgid "Server returned {code}"
+msgstr "Сервер вернул {code}"
+
+msgid "Network error: {detail}"
+msgstr "Сетевая ошибка: {detail}"
+
+msgid "could not reach server"
+msgstr "не удалось связаться с сервером"
+
+msgid "Clear the chat for this paper? This cannot be undone."
+msgstr "Очистить переписку по этой статье? Действие необратимо."
+
+msgid "Could not clear history: {detail}"
+msgstr "Не удалось очистить историю: {detail}"
+
+msgid "Could not load citations: {detail}"
+msgstr "Не удалось загрузить цитирование: {detail}"
+
+msgid "Could not copy — please copy manually."
+msgstr "Не удалось скопировать — пожалуйста, скопируйте вручную."
+
+msgid "{format} citation copied to clipboard."
+msgstr "Цитирование в формате {format} скопировано в буфер обмена."
+
+msgid "Copied"
+msgstr "Скопировано"
+
+msgid "Copied!"
+msgstr "Скопировано!"
+
+msgid "Only PDF files are accepted."
+msgstr "Принимаются только PDF-файлы."
+
+msgid "File is larger than 50 MB."
+msgstr "Размер файла превышает 50 МБ."
+
+msgid "Share link copied to clipboard."
+msgstr "Ссылка скопирована в буфер обмена."
+
+msgid "Processing…"
+msgstr "Обработка…"
+
+msgid "Success"
+msgstr "Успешно"
+
+msgid "Warning"
+msgstr "Предупреждение"
+
+msgid "Error"
+msgstr "Ошибка"
+
+msgid "Info"
+msgstr "Информация"
+
+msgid "Extracting text…"
+msgstr "Извлечение текста…"
+
+msgid "AI is analyzing…"
+msgstr "ИИ анализирует…"
+
+msgid "Generating summary…"
+msgstr "Создание реферата…"
+
+msgid "Summarizing your paper…"
+msgstr "Реферируем вашу статью…"
+
+msgid "Don't close this tab. Most jobs finish in 15–25 seconds."
+msgstr "Не закрывайте вкладку. Обычно процесс занимает 15–25 секунд."
+
+msgid "Working…"
+msgstr "Выполняется…"

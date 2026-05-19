@@ -12,10 +12,17 @@
 (function () {
   'use strict';
 
+  function _t(key, fallback) {
+    return (window.i18n && window.i18n[key]) || fallback;
+  }
+
   const STEPS = [
-    { label: 'Matn ajratilmoqda…',  detail: 'parsing pdf · pdfplumber',     hold: 2400  },
-    { label: 'AI tahlil qilmoqda…', detail: 'groq lpu · llama-3.3-70b',     hold: 18000 },
-    { label: 'Xulosa yaratilmoqda…',detail: 'validating · serializing',     hold: null  }, // sticks until response
+    { labelKey: 'overlayStep1', labelFallback: 'Extracting text…',
+      detail: 'parsing pdf · pdfplumber',     hold: 2400  },
+    { labelKey: 'overlayStep2', labelFallback: 'AI is analyzing…',
+      detail: 'groq lpu · llama-3.3-70b',     hold: 18000 },
+    { labelKey: 'overlayStep3', labelFallback: 'Generating summary…',
+      detail: 'validating · serializing',     hold: null  }, // sticks until response
   ];
 
   let timers = [];
@@ -37,15 +44,15 @@
           <span class="eyebrow" id="wow-elapsed">elapsed · 0.0s</span>
         </div>
 
-        <div class="loading-title">Summarizing your paper…</div>
-        <p class="loading-sub">Don't close this tab. Most jobs finish in 15–25 seconds.</p>
+        <div class="loading-title">${_t('overlayTitle', 'Summarizing your paper…')}</div>
+        <p class="loading-sub">${_t('overlaySubtitle', "Don't close this tab. Most jobs finish in 15–25 seconds.")}</p>
 
         <div class="loading-steps" id="wow-loading-steps">
           ${STEPS.map((s, i) => `
             <div class="loading-step" data-idx="${i}">
               <span class="step-bullet">${(i + 1).toString().padStart(2, '0')}</span>
               <div>
-                <div class="step-label">${s.label}</div>
+                <div class="step-label">${_t(s.labelKey, s.labelFallback)}</div>
                 <div class="step-detail">${s.detail}</div>
               </div>
               <span class="step-state">QUEUED</span>
@@ -145,7 +152,7 @@
         if (btn) {
           btn.disabled = true;
           btn.dataset.origHtml = btn.innerHTML;
-          btn.innerHTML = '<span style="display:inline-flex; align-items:center; gap:8px;"><span class="spinner-border spinner-border-sm" role="status" style="width:12px; height:12px; border-width:2px;"></span> Working…</span>';
+          btn.innerHTML = '<span style="display:inline-flex; align-items:center; gap:8px;"><span class="spinner-border spinner-border-sm" role="status" style="width:12px; height:12px; border-width:2px;"></span> ' + _t('overlayWorking', 'Working…') + '</span>';
         }
 
         show();

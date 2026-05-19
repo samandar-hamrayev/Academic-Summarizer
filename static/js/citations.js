@@ -50,7 +50,7 @@
 
     function render() {
       if (!citations) {
-        codeEl.textContent = 'Loading citation…';
+        codeEl.textContent = window.i18n.loadingCitation;
         return;
       }
       const text = citations[active] || '';
@@ -64,7 +64,7 @@
         citations = await res.json();
         render();
       } catch (e) {
-        codeEl.textContent = 'Could not load citations: ' + e.message;
+        codeEl.textContent = window.i18n.format(window.i18n.couldNotLoadCitations, { detail: e.message });
         codeEl.classList.add('cite-error');
       }
     }
@@ -82,17 +82,20 @@
         const ok = await window.copyToClipboard(text);
         if (ok) {
           const orig = copyBtn.innerHTML;
-          copyBtn.innerHTML = '<i class="bi bi-check2"></i> Copied';
+          copyBtn.innerHTML = '<i class="bi bi-check2"></i> ' + window.i18n.copied;
           copyBtn.classList.add('is-copied');
           if (typeof window.showToast === 'function') {
-            window.showToast(active.toUpperCase() + ' citation copied to clipboard.', 'success');
+            window.showToast(
+              window.i18n.format(window.i18n.citationCopiedToClipboard, { format: active.toUpperCase() }),
+              'success'
+            );
           }
           setTimeout(() => {
             copyBtn.innerHTML = orig;
             copyBtn.classList.remove('is-copied');
           }, 1800);
         } else if (typeof window.showToast === 'function') {
-          window.showToast('Could not copy — please copy manually.', 'danger');
+          window.showToast(window.i18n.couldNotCopy, 'danger');
         }
       });
     }
