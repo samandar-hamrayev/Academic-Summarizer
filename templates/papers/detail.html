@@ -143,9 +143,9 @@
             <span class="pill is-ok"><span class="dot"></span>{% trans "summary ready" %}</span>
             <span class="eyebrow">{% trans "paper" %} · {{ s.language|upper }}</span>
             {% if paper.language_confidence and paper.language_confidence > 0 %}
-              <span class="eyebrow" style="color: var(--ink-4);">{% blocktrans with c=paper.language_confidence|floatformat:'0' %}detected · {{ c }}% confidence{% endblocktrans %}</span>
-            {% elif paper.language %}
-              <span class="eyebrow" style="color: var(--ink-4);">{% trans "user-set" %}</span>
+              <span class="eyebrow" data-bs-toggle="tooltip" title="Language detection confidence (0-100%)" style="color: var(--ink-4);">{% blocktrans with c=paper.language_confidence|floatformat:'0' %}detected · {{ c }}% confidence{% endblocktrans %}</span>
+{% elif paper.language %}
+              <span class="eyebrow" data-bs-toggle="tooltip" title="Manually set by user" style="color: var(--ink-4);">{% trans "user-set" %}</span>
             {% endif %}
           </div>
           <h1>{{ paper.title }}</h1>
@@ -299,9 +299,9 @@
       <div class="card side-card" style="margin-top: 18px;">
         <h4>{% trans "Generation" %}</h4>
         <div class="kv">
-          <div class="k">{% trans "Model" %}</div><div class="v mono">llama-3.3-70b</div>
-          <div class="k">{% trans "Provider" %}</div><div class="v mono">groq</div>
-          <div class="k">{% trans "Cost" %}</div><div class="v">$0.00 · {% trans "beta" %}</div>
+          <div class="k" data-bs-toggle="tooltip" title="Llama 3.3-70B (Groq inference)">{% trans "Model" %}</div><div class="v mono">llama-3.3-70b</div>
+          <div class="k" data-bs-toggle="tooltip" title="Groq Cloud LPU™ inference">{% trans "Provider" %}</div><div class="v mono">groq</div>
+          <div class="k" data-bs-toggle="tooltip" title="Approximate API cost in USD">{% trans "Cost" %}</div><div class="v">$0.00 · {% trans "beta" %}</div>
         </div>
       </div>
 

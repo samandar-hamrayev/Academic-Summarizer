@@ -66,7 +66,7 @@
   --gap-card: 24px;
   --text-base: 16px;
   --text-lead: 1.05rem;
-  --measure: 65ch;
+  --measure: 70ch;
 }
 
 [data-theme="dark"] {
@@ -181,7 +181,7 @@ p  { margin: 0 0 1em; text-wrap: pretty; }
   font-size: 4.4em;
   line-height: 0.84;
   float: left;
-  padding: 4px 10px 0 0;
+  padding: 4px 0.1em 0 0;
   color: var(--accent-2);
 }
 [data-theme="dark"] .dropcap::first-letter,
@@ -887,12 +887,12 @@ input::placeholder, textarea::placeholder { color: var(--ink-3); }
   font-size: 13px;
   color: var(--ink-3);
   text-decoration: none;
-  transition: color var(--t), background var(--t);
+  transition: color var(--t), background var(--t), transform var(--t);
   font-weight: 500;
   cursor: pointer;
 }
 .toc-item:hover { color: var(--ink); background: var(--bg-hover); text-decoration: none; }
-.toc-item.is-on { color: var(--ink); background: var(--bg-hover); }
+.toc-item.is-on { color: var(--ink); background: var(--bg-hover); transform: scale(1.05); }
 .toc-item.is-on .toc-bar { background: var(--accent); }
 .toc-bar {
   width: 2px; height: 16px; border-radius: 1px;

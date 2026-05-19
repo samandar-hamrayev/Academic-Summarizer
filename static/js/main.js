@@ -42,6 +42,12 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => bootstrap.Alert.getOrCreateInstance(el)?.close(), 6000);
   });
 
+  /* ---- Bootstrap Tooltips ---- */
+  const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+  tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl);
+  });
+
   /* ---- Navbar search: debounce-and-submit (300 ms) ---- */
   document.querySelectorAll('form[data-debounce-search]').forEach(form => {
     const input = form.querySelector('input[name="query"]');
