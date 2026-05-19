@@ -118,7 +118,7 @@ body {
   background: var(--bg);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  transition: background-color var(--t), color var(--t);
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -126,11 +126,20 @@ body {
 main { flex: 1; }
 
 img, svg { max-width: 100%; display: block; }
-a { color: var(--accent); text-decoration: none; }
+a { color: var(--accent); text-decoration: none; transition: color 0.2s ease; }
 a:hover { text-decoration: underline; text-underline-offset: 3px; }
-button { font: inherit; cursor: pointer; background: none; border: 0; color: inherit; }
+button { font: inherit; cursor: pointer; background: none; border: 0; color: inherit; transition: background 0.2s ease, color 0.2s ease, transform 0.1s ease; }
 ::selection { background: var(--accent-soft); color: var(--ink); }
-:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+
+:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--accent-ring);
+  border-radius: var(--radius-xs);
+}
+.btn:focus, .form-control:focus, .form-select:focus, .chip:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--accent-ring) !important;
+}
 
 h1, h2, h3, h4 {
   font-family: var(--serif);
@@ -372,12 +381,12 @@ input::placeholder, textarea::placeholder { color: var(--ink-3); }
 /* ── 9.  Navigation ─────────────────────────────────────────────────── */
 
 .nav {
-  position: sticky; top: 0; z-index: 40;
-  background: color-mix(in oklch, var(--bg), transparent 12%);
-  backdrop-filter: saturate(140%) blur(14px);
-  -webkit-backdrop-filter: saturate(140%) blur(14px);
+  position: sticky; top: 0; z-index: 1050;
+  background: color-mix(in oklch, var(--bg), transparent 15%);
+  backdrop-filter: saturate(140%) blur(10px);
+  -webkit-backdrop-filter: saturate(140%) blur(10px);
   border-bottom: 1px solid var(--rule);
-  transition: background var(--t), border-color var(--t);
+  transition: background 0.3s ease, border-color 0.3s ease;
 }
 .nav-inner {
   display: flex; align-items: center; gap: 24px;
@@ -950,7 +959,7 @@ input::placeholder, textarea::placeholder { color: var(--ink-3); }
   display: flex; align-items: center; gap: 12px;
   margin-bottom: 14px;
 }
-.sec-eyebrow .num { font-family: var(--mono); font-size: 10.5px; color: var(--accent); letter-spacing: 0.18em; }
+.sec-eyebrow .num { font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); letter-spacing: 0.18em; }
 .sec-eyebrow .label { font-family: var(--sans); font-weight: 600; font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-3); }
 .sec-eyebrow .rule { flex: 1; height: 1px; background: var(--rule); }
 
@@ -990,7 +999,7 @@ input::placeholder, textarea::placeholder { color: var(--ink-3); }
 .key-points li .k-num {
   font-family: var(--mono);
   font-size: 11px;
-  color: var(--accent);
+  color: var(--ink-3);
   letter-spacing: 0.08em;
   padding-top: 6px;
   font-feature-settings: "tnum";
@@ -1033,7 +1042,7 @@ input::placeholder, textarea::placeholder { color: var(--ink-3); }
   content: "[" counter(fn, decimal-leading-zero) "]";
   font-family: var(--mono);
   font-size: 11px;
-  color: var(--accent);
+  color: var(--ink-4);
   letter-spacing: 0.04em;
   padding-top: 4px;
 }

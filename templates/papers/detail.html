@@ -322,6 +322,55 @@
 
   </div>
 </div>
+
+{# ── Mobile floating action button ── #}
+<div class="d-lg-none" style="position: fixed; bottom: 24px; right: 24px; z-index: 1000;">
+  <button class="btn btn-primary shadow-lg rounded-pill" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMeta" style="padding: 12px 24px; font-weight: 600;">
+    <i class="bi bi-info-circle me-2"></i> {% trans "Paper Info" %}
+  </button>
+</div>
+
+{# ── Mobile Offcanvas Meta ── #}
+<div class="offcanvas offcanvas-bottom" tabindex="-1" id="mobileMeta" style="height: 70vh; border-top-left-radius: 20px; border-top-right-radius: 20px;">
+  <div class="offcanvas-header border-bottom">
+    <h5 class="offcanvas-title font-serif">{% trans "Paper Information" %}</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <div class="stack stack-3">
+      <div class="card side-card">
+        <h4>{% trans "Paper" %}</h4>
+        <div class="kv">
+          <div class="k">{% trans "File" %}</div><div class="v">{{ paper.filename|truncatechars:30 }}</div>
+          <div class="k">{% trans "Size" %}</div><div class="v">{{ paper.file_size_display }}</div>
+          <div class="k">{% trans "Uploaded" %}</div><div class="v">{{ paper.uploaded_at|date:"Y-m-d" }}</div>
+        </div>
+      </div>
+      <div class="card side-card">
+        <h4>{% trans "Generation" %}</h4>
+        <div class="kv">
+          <div class="k">{% trans "Model" %}</div><div class="v mono">llama-3.3-70b</div>
+          <div class="k">{% trans "Provider" %}</div><div class="v mono">groq</div>
+        </div>
+      </div>
+      <div class="card side-card">
+        <h4>{% trans "Sections" %}</h4>
+        <div class="summary-toc">
+          {% if paper.has_summary %}
+            {% with s=paper.summary %}
+              {% if s.abstract %}<a class="toc-item" href="#sec-abstract" data-bs-dismiss="offcanvas"><span class="toc-bar"></span><span style="flex:1;">{% trans "Abstract" %}</span></a>{% endif %}
+              {% if s.get_key_points_list %}<a class="toc-item" href="#sec-key-points" data-bs-dismiss="offcanvas"><span class="toc-bar"></span><span style="flex:1;">{% trans "Key points" %}</span></a>{% endif %}
+              {% if s.methodology %}<a class="toc-item" href="#sec-methodology" data-bs-dismiss="offcanvas"><span class="toc-bar"></span><span style="flex:1;">{% trans "Methodology" %}</span></a>{% endif %}
+              {% if s.results %}<a class="toc-item" href="#sec-results" data-bs-dismiss="offcanvas"><span class="toc-bar"></span><span style="flex:1;">{% trans "Results" %}</span></a>{% endif %}
+              {% if s.conclusion %}<a class="toc-item" href="#sec-conclusion" data-bs-dismiss="offcanvas"><span class="toc-bar"></span><span style="flex:1;">{% trans "Conclusion" %}</span></a>{% endif %}
+            {% endwith %}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endblock %}
 
 {% block extra_js %}
