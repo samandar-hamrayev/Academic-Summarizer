@@ -1156,10 +1156,24 @@ tr:hover .row-actions { opacity: 1; }
 .shortcuts-row .sc { display: inline-flex; align-items: center; gap: 6px; }
 
 
-/* Scrollbars (dark) */
-[data-theme="dark"] ::-webkit-scrollbar { width: 12px; height: 12px; }
-[data-theme="dark"] ::-webkit-scrollbar-thumb { background: var(--rule-strong); border-radius: 6px; border: 3px solid var(--bg); }
-[data-theme="dark"] ::-webkit-scrollbar-track { background: var(--bg); }
+/* Scrollbars */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--rule-strong); border-radius: 10px; border: 2px solid var(--bg); }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb { background: var(--rule-strong); border-color: var(--bg); }
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+/* i18n safety */
+.btn, .nav-link, .stat-label {
+  min-width: 0;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.stat-card { min-width: 0; }
+.h-row { min-width: 0; }
 
 
 /* =========================================================================

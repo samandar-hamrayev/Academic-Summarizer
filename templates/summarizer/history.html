@@ -89,11 +89,19 @@
     </div>
 
   {% else %}
-    <div style="text-align:center; padding: 80px 16px; color: var(--ink-3);">
+    <div style="text-align:center; padding: 100px 16px; color: var(--ink-3);">
+      <div style="font-size: 4rem; margin-bottom: 24px; color: var(--accent-soft);"><i class="bi bi-book"></i></div>
       <div class="eyebrow" style="margin-bottom: 10px;">{% trans "Empty history" %}</div>
-      <h2 style="font-family: var(--serif); margin-bottom: 10px;">{% trans "No summaries yet." %}</h2>
-      <p style="margin-bottom: 24px;">{% trans "Upload and summarize your first paper to see it here." %}</p>
-      <a href="{% url 'papers:upload' %}" class="btn btn-primary">
+      <h2 style="font-family: var(--serif); margin-bottom: 10px; color: var(--ink);">{% trans "No summaries yet." %}</h2>
+      <p style="margin-bottom: 32px; max-width: 40ch; margin-left: auto; margin-right: auto;">
+        {% trans "Upload and summarize your first paper to see it here. Try exploring these topics:" %}
+      </p>
+      <div class="h-row" style="justify-content: center; gap: 10px; margin-bottom: 40px;">
+        <span class="chip">#machine-learning</span>
+        <span class="chip">#linguistics</span>
+        <span class="chip">#physics</span>
+      </div>
+      <a href="{% url 'papers:upload' %}" class="btn btn-primary btn-lg">
         <i class="bi bi-cloud-upload"></i> {% trans "Upload a paper" %}
       </a>
     </div>

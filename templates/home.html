@@ -135,6 +135,8 @@
            title="{% blocktrans count counter=tag.c %}{{ counter }} paper{% plural %}{{ counter }} papers{% endblocktrans %}">
           {{ tag.name }}
         </a>
+      {% empty %}
+        <p class="dim mono" style="padding: 20px; text-align: center;">{% trans "Tags will appear as you upload papers" %}</p>
       {% endfor %}
     </div>
   </div>
