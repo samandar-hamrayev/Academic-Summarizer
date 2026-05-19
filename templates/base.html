@@ -284,6 +284,19 @@
     overlaySubtitle:           "{% filter escapejs %}{% blocktrans %}Don't close this tab. Most jobs finish in 15–25 seconds.{% endblocktrans %}{% endfilter %}",
     overlayWorking:            "{% filter escapejs %}{% trans 'Working…' %}{% endfilter %}",
     dashboardChartPapers:      "{% filter escapejs %}{% trans 'Papers' %}{% endfilter %}",
+    home:                      "{% filter escapejs %}{% trans 'Home' %}{% endfilter %}",
+    dashboard:                 "{% filter escapejs %}{% trans 'Dashboard' %}{% endfilter %}",
+    papers:                    "{% filter escapejs %}{% trans 'Papers' %}{% endfilter %}",
+    upload:                    "{% filter escapejs %}{% trans 'Upload' %}{% endfilter %}",
+    history:                   "{% filter escapejs %}{% trans 'History' %}{% endfilter %}",
+    logout:                    "{% filter escapejs %}{% trans 'Sign out' %}{% endfilter %}",
+  };
+  window.urls = {
+    home:      "{% url 'home' %}",
+    papers:    "{% url 'papers:list' %}",
+    upload:    "{% url 'papers:upload' %}",
+    history:   "{% url 'summarizer:history' %}",
+    logout:    "{% url 'logout' %}",
   };
   window.i18n.format = function (template, vars) {
     return String(template).replace(/\{([a-zA-Z_]+)\}/g, function (_m, k) {
@@ -292,7 +305,7 @@
   };
 </script>
 
-<script src="{% static 'js/main.js' %}"></script>
+<script src="{% static 'js/main.js' %}?v=2.2"></script>
 <script src="{% static 'js/loading-overlay.js' %}"></script>
 <script src="{% static 'js/chat.js' %}"></script>
 <script src="{% static 'js/citations.js' %}"></script>

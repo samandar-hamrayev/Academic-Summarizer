@@ -52,6 +52,15 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('form[data-debounce-search]').forEach(form => {
     const input = form.querySelector('input[name="query"]');
     if (!input) return;
+
+    // Auto-focus navbar search if query exists (after page reload)
+    if (input.value.trim() !== '') {
+      input.focus();
+      // Put cursor at the end
+      const len = input.value.length;
+      input.setSelectionRange(len, len);
+    }
+
     let timer = null;
     let last = input.value;
     input.addEventListener('input', () => {
@@ -74,12 +83,12 @@ document.addEventListener('DOMContentLoaded', () => {
   let paletteSelectedIndex = -1;
 
   const commands = [
-    { icon: 'bi-house', label: window.i18n.home || 'Home', url: '/' },
-    { icon: 'bi-speedometer2', label: window.i18n.dashboard || 'Dashboard', url: '/dashboard/' },
-    { icon: 'bi-files', label: window.i18n.papers || 'Papers', url: '/papers/' },
-    { icon: 'bi-cloud-upload', label: window.i18n.upload || 'Upload', url: '/papers/upload/' },
-    { icon: 'bi-clock-history', label: window.i18n.history || 'History', url: '/summarizer/history/' },
-    { icon: 'bi-box-arrow-right', label: window.i18n.logout || 'Sign out', url: '/logout/', method: 'POST' }
+    { icon: 'bi-house', label: window.i18n.home || 'Home', url: window.urls?.home || '/' },
+    { icon: 'bi-speedometer2', label: window.i18n.dashboard || 'Dashboard', url: window.urls?.home || '/' },
+    { icon: 'bi-files', label: window.i18n.papers || 'Papers', url: window.urls?.papers || '/papers/' },
+    { icon: 'bi-cloud-upload', label: window.i18n.upload || 'Upload', url: window.urls?.upload || '/papers/upload/' },
+    { icon: 'bi-clock-history', label: window.i18n.history || 'History', url: window.urls?.history || '/summarizer/history/' },
+    { icon: 'bi-box-arrow-right', label: window.i18n.logout || 'Sign out', url: window.urls?.logout || '/auth/logout/', method: 'POST' }
   ];
 
   function renderPaletteResults(filter = '') {
@@ -99,6 +108,9 @@ document.addEventListener('DOMContentLoaded', () => {
     paletteResults.querySelectorAll('.palette-item').forEach(item => {
       item.addEventListener('click', () => executeCommand(item.dataset.url, item.dataset.method));
     });
+
+    // Ensure input keeps focus
+    if (paletteInput) paletteInput.focus();
   }
 
   function executeCommand(url, method) {
