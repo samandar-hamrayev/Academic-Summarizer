@@ -72,21 +72,21 @@
 [data-theme="dark"] {
   /* Softened palette — Linear/GitHub/Vercel feel, charcoal rather than
      near-black. Easier on the eyes for long-form academic reading.
-     Three-step elevation: sunk (inputs, code) < bg (page) < elev (cards). */
-  --bg:           #0F0F14;
-  --bg-elev:      #16161D;
-  --bg-sunk:      #1C1C24;
-  --bg-hover:     #20202A;
+     Elevation: sunk (inputs) #0F < bg (page) #16 < elev (cards) #1E. */
+  --bg:           #16161D;
+  --bg-elev:      #1E1E27;
+  --bg-sunk:      #0F0F14;
+  --bg-hover:     #24242E;
 
-  --ink:          #EAEAEC;
-  --ink-2:        #A1A1AA;
-  --ink-3:        #71717A;
-  --ink-4:        #52525B;
-  --ink-5:        #3F3F46;
+  --ink:          #E8E8EB;
+  --ink-2:        #B4B4BD;
+  --ink-3:        #8B8B96;
+  --ink-4:        #65656E;
+  --ink-5:        #4A4A52;
 
-  --rule:         #2A2A33;
-  --rule-2:       #35353F;
-  --rule-strong:  #44444E;
+  --rule:         #2E2E38;
+  --rule-2:       #383844;
+  --rule-strong:  #484854;
 
   --accent:       oklch(70% 0.20 295);
   --accent-2:     oklch(78% 0.18 295);
@@ -95,9 +95,9 @@
   --accent-ink:   oklch(85% 0.10 295);
 
   /* Softer shadows — lifted black, not flat black */
-  --shadow-1: 0 1px 0 rgba(0,0,0,0.22), 0 1px 2px rgba(0,0,0,0.18);
-  --shadow-2: 0 4px 18px rgba(0,0,0,0.30), 0 1px 3px rgba(0,0,0,0.22);
-  --shadow-3: 0 20px 60px -20px rgba(0,0,0,0.50), 0 8px 24px -8px rgba(0,0,0,0.32);
+  --shadow-1: 0 1px 0 rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
+  --shadow-2: 0 4px 18px rgba(0,0,0,0.4), 0 1px 3px rgba(0,0,0,0.3);
+  --shadow-3: 0 20px 60px -20px rgba(0,0,0,0.6), 0 8px 24px -8px rgba(0,0,0,0.4);
 }
 
 
@@ -194,7 +194,10 @@ p  { margin: 0 0 1em; text-wrap: pretty; }
   color: var(--accent-2);
 }
 [data-theme="dark"] .dropcap::first-letter,
-[data-theme="dark"] .has-dropcap p:first-of-type::first-letter { color: var(--accent); }
+[data-theme="dark"] .has-dropcap p:first-of-type::first-letter {
+  color: var(--accent);
+  text-shadow: 0 0 25px var(--accent-ring);
+}
 
 .lead {
   font-family: var(--serif);
