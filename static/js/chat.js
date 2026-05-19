@@ -87,7 +87,12 @@
 
     const bubble = document.createElement('div');
     bubble.className = 'chat-bubble';
-    bubble.innerHTML = '<span class="typing-indicator"><span></span><span></span><span></span></span>';
+    bubble.style.width = '100%';
+    bubble.innerHTML = `
+      <div class="skeleton-block w-75"></div>
+      <div class="skeleton-block"></div>
+      <div class="skeleton-block w-50"></div>
+    `;
     wrap.appendChild(bubble);
     return wrap;
   }

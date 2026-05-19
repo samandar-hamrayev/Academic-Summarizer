@@ -60,13 +60,120 @@ document.addEventListener('DOMContentLoaded', () => {
     // Enter still submits immediately (native form behavior preserved)
   });
 
-  /* ---- ⌘K / Ctrl+K → focus navbar search ---- */
+  /* ---- ⌘K / Ctrl+K → Command Palette ---- */
+  const paletteModalEl = document.getElementById('commandPalette');
+  const paletteModal = paletteModalEl ? new bootstrap.Modal(paletteModalEl) : null;
+  const paletteInput = document.getElementById('palette-input');
+  const paletteResults = document.getElementById('palette-results');
+  let paletteSelectedIndex = -1;
+
+  const commands = [
+    { icon: 'bi-house', label: window.i18n.home || 'Home', url: '/' },
+    { icon: 'bi-speedometer2', label: window.i18n.dashboard || 'Dashboard', url: '/dashboard/' },
+    { icon: 'bi-files', label: window.i18n.papers || 'Papers', url: '/papers/' },
+    { icon: 'bi-cloud-upload', label: window.i18n.upload || 'Upload', url: '/papers/upload/' },
+    { icon: 'bi-clock-history', label: window.i18n.history || 'History', url: '/summarizer/history/' },
+    { icon: 'bi-box-arrow-right', label: window.i18n.logout || 'Sign out', url: '/logout/', method: 'POST' }
+  ];
+
+  function renderPaletteResults(filter = '') {
+    if (!paletteResults) return;
+    const filtered = commands.filter(c => 
+      c.label.toLowerCase().includes(filter.toLowerCase())
+    );
+    paletteResults.innerHTML = filtered.map((c, i) => `
+      <div class="palette-item ${i === paletteSelectedIndex ? 'is-selected' : ''}" data-index="${i}" data-url="${c.url}" data-method="${c.method || 'GET'}">
+        <i class="bi ${c.icon}"></i>
+        <span>${c.label}</span>
+        <div class="spacer"></div>
+        <span class="shortcut">↵</span>
+      </div>
+    `).join('');
+
+    paletteResults.querySelectorAll('.palette-item').forEach(item => {
+      item.addEventListener('click', () => executeCommand(item.dataset.url, item.dataset.method));
+    });
+  }
+
+  function executeCommand(url, method) {
+    if (method === 'POST') {
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = url;
+      const csrf = document.querySelector('[name=csrfmiddlewaretoken]');
+      if (csrf) {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'csrfmiddlewaretoken';
+        input.value = csrf.value;
+        form.appendChild(input);
+      }
+      document.body.appendChild(form);
+      form.submit();
+    } else {
+      window.location.href = url;
+    }
+  }
+
   document.addEventListener('keydown', (e) => {
+    // ⌘K / Ctrl+K
     if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-      const input = document.getElementById('nav-search-input');
-      if (input) { e.preventDefault(); input.focus(); input.select(); }
+      e.preventDefault();
+      if (paletteModal) {
+        paletteModal.show();
+        setTimeout(() => paletteInput.focus(), 150);
+        paletteSelectedIndex = 0;
+        renderPaletteResults();
+      }
+    }
+    // ?
+    if (e.key === '?' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+      const shortcutsModalEl = document.getElementById('shortcutsModal');
+      if (shortcutsModalEl) {
+        const shortcutsModal = new bootstrap.Modal(shortcutsModalEl);
+        shortcutsModal.show();
+      }
+    }
+    // ESC to close palette if focused on input
+    if (e.key === 'Escape' && document.activeElement === paletteInput) {
+      paletteModal?.hide();
+    }
+    // Arrow navigation in palette
+    if (paletteModalEl?.classList.contains('show')) {
+      const items = paletteResults.querySelectorAll('.palette-item');
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        paletteSelectedIndex = (paletteSelectedIndex + 1) % items.length;
+        renderPaletteResults(paletteInput.value);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        paletteSelectedIndex = (paletteSelectedIndex - 1 + items.length) % items.length;
+        renderPaletteResults(paletteInput.value);
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        const selected = paletteResults.querySelector('.palette-item.is-selected');
+        if (selected) executeCommand(selected.dataset.url, selected.dataset.method);
+      }
     }
   });
+
+  if (paletteInput) {
+    paletteInput.addEventListener('input', () => {
+      paletteSelectedIndex = 0;
+      renderPaletteResults(paletteInput.value);
+    });
+  }
+
+  /* ---- Reading Progress Bar ---- */
+  const progressBar = document.getElementById('reading-progress');
+  if (progressBar) {
+    window.addEventListener('scroll', () => {
+      const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      progressBar.style.width = scrolled + '%';
+    });
+  }
 
   /* ---- Drag & Drop Upload ---- */
   const dropZone      = document.getElementById('drop-zone');

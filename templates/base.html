@@ -30,7 +30,10 @@
     })();
   </script>
 </head>
-<body>
+<body {% if request.resolver_match.url_name == 'detail' %}data-page-type="detail"{% endif %}>
+
+<!-- Reading Progress Bar -->
+<div id="reading-progress" class="reading-progress"></div>
 
 <header class="nav">
   <div class="container nav-inner">
@@ -49,7 +52,7 @@
                placeholder="{% trans 'Search papers, tags, authors…' %}"
                aria-label="{% trans 'Search' %}"
                autocomplete="off">
-        <span class="kbd">⌘K</span>
+        <span class="kbd" id="nav-search-kbd">⌘K</span>
       </form>
     {% endif %}
 
@@ -184,6 +187,64 @@
     </div>
   </div>
 </footer>
+
+<!-- Command Palette Modal -->
+<div class="modal fade" id="commandPalette" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content palette-content">
+      <div class="palette-search">
+        <i class="bi bi-search"></i>
+        <input type="text" id="palette-input" placeholder="{% trans 'Type a command or search…' %}" autocomplete="off">
+        <span class="kbd">ESC</span>
+      </div>
+      <div class="palette-results" id="palette-results">
+        <!-- Results injected via JS -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Keyboard Shortcuts Modal -->
+<div class="modal fade" id="shortcutsModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shortcuts-content">
+      <div class="modal-header">
+        <h5 class="modal-title font-serif">{% trans "Keyboard Shortcuts" %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="shortcut-list">
+          <div class="shortcut-item">
+            <span class="label">{% trans "Global" %}</span>
+            <div class="row">
+              <div class="col-8">{% trans "Command Palette" %}</div>
+              <div class="col-4 text-end"><span class="kbd">⌘K</span></div>
+            </div>
+            <div class="row mt-2">
+              <div class="col-8">{% trans "Show Shortcuts" %}</div>
+              <div class="col-4 text-end"><span class="kbd">?</span></div>
+            </div>
+          </div>
+          <div class="shortcut-item mt-3">
+            <span class="label">{% trans "Reading" %}</span>
+            <div class="row">
+              <div class="col-8">{% trans "Next section" %}</div>
+              <div class="col-4 text-end"><span class="kbd">J</span></div>
+            </div>
+            <div class="row mt-2">
+              <div class="col-8">{% trans "Previous section" %}</div>
+              <div class="col-4 text-end"><span class="kbd">K</span></div>
+            </div>
+            <div class="row mt-2">
+              <div class="col-8">{% trans "Chat with paper" %}</div>
+              <div class="col-4 text-end"><span class="kbd">C</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- Toast container -->
 <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="false"></div>

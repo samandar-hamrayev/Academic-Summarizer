@@ -2133,6 +2133,97 @@ tr:hover .row-actions { opacity: 1; }
   color: var(--ink-3);
   font-style: italic;
 }
+
+/* ── 20.  Phase 1 Improvements ─────────────────────────────────────── */
+
+/* Reading Progress Bar */
+.reading-progress {
+  position: fixed; top: 0; left: 0; width: 0%; height: 3px;
+  background: var(--accent);
+  z-index: 1100;
+  transition: width 0.1s ease;
+}
+
+/* Command Palette */
+.palette-content {
+  background: var(--bg-elev) !important;
+  border: 1px solid var(--rule) !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow-3) !important;
+  overflow: hidden;
+}
+.palette-search {
+  display: flex; align-items: center; gap: 14px;
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--rule);
+}
+.palette-search i { color: var(--ink-3); font-size: 1.1rem; }
+.palette-search input {
+  flex: 1; background: none; border: 0; outline: 0;
+  font-family: var(--sans); font-size: 16px; color: var(--ink);
+}
+.palette-results {
+  max-height: 400px; overflow-y: auto; padding: 8px;
+}
+.palette-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 16px;
+  border-radius: var(--radius);
+  color: var(--ink-2);
+  text-decoration: none;
+  font-size: 14.5px;
+  transition: background var(--t), color var(--t);
+  cursor: pointer;
+}
+.palette-item:hover, .palette-item.is-selected {
+  background: var(--bg-hover);
+  color: var(--ink);
+  text-decoration: none;
+}
+.palette-item i { font-size: 1.1rem; color: var(--ink-3); transition: color var(--t); }
+.palette-item:hover i, .palette-item.is-selected i { color: var(--accent); }
+.palette-item .spacer { flex: 1; }
+.palette-item .shortcut {
+  font-family: var(--mono); font-size: 10px; color: var(--ink-4);
+  letter-spacing: 0.05em; text-transform: uppercase;
+}
+
+/* Shortcuts Modal */
+.shortcuts-content {
+  background: var(--bg-elev) !important;
+  border: 1px solid var(--rule) !important;
+  border-radius: var(--radius-lg) !important;
+}
+.shortcuts-content .modal-header { border-bottom: 1px solid var(--rule); }
+.shortcuts-content .label {
+  display: block; font-family: var(--mono); font-size: 10px;
+  color: var(--ink-4); letter-spacing: 0.1em; text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.shortcuts-content .row { font-size: 14px; color: var(--ink-2); align-items: center; }
+
+/* Refined Skeleton Loaders */
+.skeleton-block {
+  height: 12px;
+  background: var(--bg-sunk);
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+.skeleton-block::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, var(--bg-hover), transparent);
+  animation: skeleton-shimmer 1.5s infinite;
+}
+@keyframes skeleton-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+.skeleton-block.w-75 { width: 75%; }
+.skeleton-block.w-50 { width: 50%; }
+.skeleton-block.w-25 { width: 25%; }
+
 .timeline-meta {
   display: flex;
   align-items: center;

@@ -204,6 +204,38 @@
     });
   }
 
+  // ── Animated Stat Counters ──────────────────────────────────────────
+  function animateStats() {
+    const stats = document.querySelectorAll('.stat-value[data-value]');
+    stats.forEach(el => {
+      const target = parseFloat(el.getAttribute('data-value'));
+      if (isNaN(target)) return;
+      const duration = 1200; // 1.2s
+      const start = 0;
+      const startTime = performance.now();
+
+      function update(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const easeOut = 1 - Math.pow(1 - progress, 3); // Ease out cubic
+        const current = start + (target - start) * easeOut;
+        
+        if (target % 1 === 0) {
+          el.childNodes[0].textContent = Math.floor(current);
+        } else {
+          el.childNodes[0].textContent = current.toFixed(1);
+        }
+
+        if (progress < 1) {
+          requestAnimationFrame(update);
+        } else {
+          el.childNodes[0].textContent = target; // Ensure final value is exact
+        }
+      }
+      requestAnimationFrame(update);
+    });
+  }
+
   // ── lifecycle ──────────────────────────────────────────────────────
   let charts = [];
 
@@ -230,6 +262,7 @@
 
   function init() {
     renderAll();
+    animateStats();
 
     // Re-render on theme toggle so colors track --ink / --rule / --accent
     const observer = new MutationObserver((mutations) => {

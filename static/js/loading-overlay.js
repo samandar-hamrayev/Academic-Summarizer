@@ -60,6 +60,13 @@
           `).join('')}
         </div>
 
+        <!-- Skeleton Content Simulation -->
+        <div style="margin: 24px 0;">
+          <div class="skeleton-block w-75"></div>
+          <div class="skeleton-block"></div>
+          <div class="skeleton-block w-50"></div>
+        </div>
+
         <div class="progress-track"><div class="progress-fill" id="wow-progress" style="width: 4%;"></div></div>
         <div class="progress-meta">
           <span id="wow-pct">4% · 0.0s elapsed</span>
