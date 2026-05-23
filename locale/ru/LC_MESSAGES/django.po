@@ -9,9 +9,9 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-17 12:49+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2026-05-19 14:00+0000\n"
+"Last-Translator: Gemini CLI\n"
+"Language-Team: Russian\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -35,47 +35,47 @@ msgstr "Узбекский (латиница)"
 #: papers/views.py:123
 #, python-format
 msgid "\"%(title)s\" uploaded and summarized successfully!"
-msgstr "«%(title)s» успешно загружена и реферирована."
+msgstr "Статья «%(title)s» успешно загружена, реферат готов!"
 
 #: papers/views.py:128
 #, python-format
 msgid "\"%(title)s\" uploaded, but no text could be extracted from the PDF."
-msgstr "«%(title)s» загружена, но извлечь текст из PDF не удалось."
+msgstr "Статья «%(title)s» загружена, но извлечь текст из PDF не удалось."
 
 #: papers/views.py:134
 #, python-format
 msgid "\"%(title)s\" uploaded, but summarization failed: %(error)s"
-msgstr "«%(title)s» загружена, однако реферирование не удалось: %(error)s"
+msgstr "Статья «%(title)s» загружена, однако реферирование не удалось: %(error)s"
 
 #: papers/views.py:158
 msgid "Paper deleted successfully."
-msgstr "Статья удалена."
+msgstr "Статья успешно удалена."
 
 #: papers/views.py:171
 msgid "No text could be extracted from this PDF."
-msgstr "Из этого PDF не удалось извлечь текст."
+msgstr "Из данного PDF-файла не удалось извлечь текст."
 
 #: papers/views.py:176
 msgid "Paper summarized successfully!"
-msgstr "Статья успешно реферирована."
+msgstr "Реферат статьи успешно сформирован!"
 
 #: papers/views.py:179
 #, python-format
 msgid "Summarization failed: %(error)s"
-msgstr "Реферирование не удалось: %(error)s"
+msgstr "Ошибка реферирования: %(error)s"
 
 #: papers/views.py:214
 #, python-format
 msgid "Welcome, %(name)s! Your account has been created."
-msgstr "Добро пожаловать, %(name)s. Ваша учётная запись создана."
+msgstr "Добро пожаловать, %(name)s! Ваша учётная запись успешно создана."
 
 #: summarizer/views.py:105
 msgid "Share link created successfully."
-msgstr "Ссылка для общего доступа создана."
+msgstr "Ссылка для общего доступа успешно создана."
 
 #: summarizer/views.py:117
 msgid "Share link revoked."
-msgstr "Ссылка для общего доступа отозвана."
+msgstr "Доступ по ссылке аннулирован."
 
 #: templates/base.html:7 templates/base.html:38
 #: templates/papers/confirm_delete.html:4 templates/papers/detail.html:4
@@ -89,7 +89,7 @@ msgstr "Поиск статей"
 
 #: templates/base.html:45
 msgid "Search papers, tags, authors…"
-msgstr "Поиск по статьям, тегам и авторам…"
+msgstr "Поиск по статьям, тегам, авторам…"
 
 #: templates/base.html:45 templates/papers/list.html:22
 #: templates/papers/list.html:41
@@ -111,15 +111,15 @@ msgstr "Сменить язык"
 #: templates/base.html:83 templates/base.html:139
 #: templates/summarizer/shared_summary.html:33
 msgid "Toggle theme"
-msgstr "Переключить тему"
+msgstr "Сменить тему"
 
 #: templates/base.html:89
 msgid "Account menu"
-msgstr "Меню профиля"
+msgstr "Меню аккаунта"
 
 #: templates/base.html:98
 msgid "Django admin"
-msgstr "Панель администратора Django"
+msgstr "Администрирование Django"
 
 #: templates/base.html:107
 msgid "Sign out"
@@ -140,7 +140,7 @@ msgstr "Создать аккаунт"
 
 #: templates/base.html:169 templates/summarizer/shared_summary.html:133
 msgid "All systems operational"
-msgstr "Все системы в норме"
+msgstr "Все системы работают штатно"
 
 #: templates/base.html:175
 msgid "Source"
@@ -152,11 +152,11 @@ msgstr "Academic Summarizer — Читайте меньше. Понимайте 
 
 #: templates/home.html:12
 msgid "READY · groq llama-3.3-70b"
-msgstr "ГОТОВО · groq llama-3.3-70b"
+msgstr "ГОТОВ К РАБОТЕ · groq llama-3.3-70b"
 
 #: templates/home.html:13
 msgid "No. 01 · Edition 2.0"
-msgstr "Выпуск 01 · Издание 2.0"
+msgstr "№ 01 · Издание 2.0"
 
 #: templates/home.html:19
 msgid ""
@@ -166,9 +166,9 @@ msgid ""
 "          to read."
 msgstr ""
 "Читальный зал<br>\n"
-"          для <em>статей</em>,<br>\n"
-"          которые вы не успеваете<br>\n"
-"          прочесть."
+"          для <em>научных статей</em>,<br>\n"
+"          на которые обычно<br>\n"
+"          не хватает времени."
 
 #: templates/home.html:26
 msgid ""
@@ -176,17 +176,15 @@ msgid ""
 "          abstract, key points, methodology, results, and conclusion — typeset\n"
 "          like a magazine, ready in under thirty seconds."
 msgstr ""
-"Загрузите PDF — и получите академически выверенный реферат из пяти разделов:\n"
-"          аннотация, ключевые тезисы, методология, результаты и вывод —\n"
-"          свёрстанный, как журнальный материал, и готовый менее чем за тридцать секунд."
+"Загрузите PDF и получите выверенный реферат из пяти разделов: аннотация, ключевые тезисы, методология, результаты и выводы. Профессиональная верстка, готовность менее чем за 30 секунд."
 
 #: templates/home.html:34 templates/home.html:41
 msgid "Summarize a paper"
-msgstr "Реферировать статью"
+msgstr "Создать реферат"
 
 #: templates/home.html:37
 msgid "Open my library"
-msgstr "Открыть мою библиотеку"
+msgstr "Моя библиотека"
 
 #: templates/home.html:44
 msgid "Open a free account"
@@ -198,15 +196,14 @@ msgstr "PDF · до 50 МБ · EN / RU / UZ"
 
 #: templates/home.html:52
 msgid "From a reader"
-msgstr "От читателя"
+msgstr "Отзыв пользователя"
 
 #: templates/home.html:54
 msgid ""
 "&ldquo;Cut my literature review from three weeks to four evenings.\n"
 "          The methodology section alone is worth it.&rdquo;"
 msgstr ""
-"«Сократил обзор литературы с трёх недель до четырёх вечеров.\n"
-"          Одного раздела по методологии уже достаточно, чтобы пользоваться этим сервисом.»"
+"«Сократил время на обзор литературы с трех недель до четырех вечеров. Раздел с методологией — просто находка.»"
 
 #: templates/home.html:57
 msgid "— PhD candidate, computational linguistics"
@@ -222,7 +219,7 @@ msgstr "языки"
 
 #: templates/home.html:71
 msgid "papers indexed"
-msgstr "статей в индексе"
+msgstr "статей обработано"
 
 #: templates/home.html:83
 msgid "How it works"
@@ -238,35 +235,33 @@ msgstr "[ 01 ] Загрузка"
 
 #: templates/home.html:92
 msgid "A PDF, up to 50 MB."
-msgstr "PDF-файл до 50 МБ."
+msgstr "PDF-файл объемом до 50 МБ."
 
 #: templates/home.html:93
 msgid ""
 "English, Russian, or Uzbek. We extract the text, the figures' captions, and "
 "the reference list."
 msgstr ""
-"Английский, русский или узбекский. Извлекаем текст, подписи к иллюстрациям и"
-" список литературы."
+"Английский, русский или узбекский язык. Мы извлекаем текст, подписи к рисункам и список литературы."
 
 #: templates/home.html:96
 msgid "[ 02 ] Read"
-msgstr "[ 02 ] Чтение"
+msgstr "[ 02 ] Анализ"
 
 #: templates/home.html:97
 msgid "Llama 3.3 70B reads the paper."
-msgstr "Статью читает модель Llama 3.3 70B."
+msgstr "Модель Llama 3.3 70B анализирует статью."
 
 #: templates/home.html:98
 msgid ""
 "Served by Groq, the model returns a structured summary in roughly twenty "
 "seconds — not minutes."
 msgstr ""
-"Развёрнутая в Groq, модель возвращает структурированный реферат примерно за "
-"двадцать секунд, а не за минуты."
+"Благодаря технологии Groq, модель формирует структурированный реферат примерно за 20 секунд."
 
 #: templates/home.html:101
 msgid "[ 03 ] Use"
-msgstr "[ 03 ] Использование"
+msgstr "[ 03 ] Работа"
 
 #: templates/home.html:102
 msgid "Read it, share it, export it."
@@ -277,12 +272,11 @@ msgid ""
 "Browse the five sections, copy a public link, or export to PDF or Word for "
 "your literature review."
 msgstr ""
-"Изучайте пять разделов, копируйте публичную ссылку или выгружайте реферат в "
-"PDF либо Word для вашего обзора литературы."
+"Изучайте разделы, делитесь ссылкой или экспортируйте данные в PDF/Word для своего обзора литературы."
 
 #: templates/home.html:114
 msgid "Every paper, the same shape"
-msgstr "Каждая статья — единый формат"
+msgstr "Единый стандарт структуры"
 
 #: templates/home.html:115
 msgid "Five sections. Always."
@@ -295,7 +289,7 @@ msgstr "Аннотация"
 
 #: templates/home.html:124
 msgid "A two-paragraph distillation of the paper's core contribution."
-msgstr "Главный вклад статьи, изложенный в двух абзацах."
+msgstr "Краткое изложение основного вклада статьи в двух абзацах."
 
 #: templates/home.html:128
 msgid "Key Points"
@@ -303,7 +297,7 @@ msgstr "Ключевые тезисы"
 
 #: templates/home.html:129
 msgid "Five to eight takeaways, ranked by importance."
-msgstr "От пяти до восьми тезисов, отсортированных по значимости."
+msgstr "От пяти до восьми основных выводов, ранжированных по значимости."
 
 #: templates/home.html:133 templates/papers/detail.html:49
 #: templates/papers/detail.html:119
@@ -313,7 +307,7 @@ msgstr "Методология"
 
 #: templates/home.html:134
 msgid "Setup, data, baselines, and the controls that matter."
-msgstr "Постановка, данные, базовые модели и значимые контрольные параметры."
+msgstr "Описание эксперимента, данные, базовые показатели и значимые параметры контроля."
 
 #: templates/home.html:138 templates/papers/detail.html:50
 #: templates/papers/detail.html:127
@@ -323,31 +317,30 @@ msgstr "Результаты"
 
 #: templates/home.html:139
 msgid "The numbers, with the deltas that earn them."
-msgstr "Цифры и приросты, которые за ними стоят."
+msgstr "Количественные показатели и статистически значимые изменения."
 
 #: templates/home.html:143 templates/papers/detail.html:51
 #: templates/papers/detail.html:135
 #: templates/summarizer/shared_summary.html:99
 msgid "Conclusion"
-msgstr "Вывод"
+msgstr "Заключение"
 
 #: templates/home.html:144
 msgid "What it means, what it doesn't, and what's next."
-msgstr "Что это значит, чего не значит и что дальше."
+msgstr "Интерпретация результатов, ограничения исследования и перспективы."
 
 #: templates/home.html:161
 msgid "Ready when you are"
-msgstr "Готовы начать — мы уже здесь"
+msgstr "Начните прямо сейчас"
 
 #: templates/home.html:162
 msgid "Summarize your first paper in under a minute."
-msgstr "Создайте первый реферат меньше чем за минуту."
+msgstr "Создайте свой первый реферат менее чем за минуту."
 
 #: templates/home.html:164
 msgid "Free while in beta. No credit card. Sign up takes thirty seconds."
 msgstr ""
-"Бесплатно во время беты. Без банковской карты. Регистрация займёт тридцать "
-"секунд."
+"Бесплатно в период бета-тестирования. Банковская карта не требуется. Регистрация занимает 30 секунд."
 
 #: templates/home.html:168
 msgid "Create a free account"
@@ -355,15 +348,15 @@ msgstr "Создать бесплатный аккаунт"
 
 #: templates/home.html:171
 msgid "Sign in instead"
-msgstr "Или войти в аккаунт"
+msgstr "Или войдите в систему"
 
 #: templates/papers/_citation_panel.html:15
 msgid "Cite this paper"
-msgstr "Цитировать эту статью"
+msgstr "Цитировать статью"
 
 #: templates/papers/_citation_panel.html:16
 msgid "apa · mla · ieee · bibtex · auto-generated"
-msgstr "apa · mla · ieee · bibtex · формируется автоматически"
+msgstr "apa · mla · ieee · bibtex · сформировано автоматически"
 
 #: templates/papers/_citation_panel.html:28
 msgid "Loading citation…"
@@ -381,8 +374,7 @@ msgstr "Скачать .bib"
 msgid ""
 "Citations are generated from the paper's metadata. Verify before submission."
 msgstr ""
-"Цитирование формируется на основе метаданных статьи. Проверьте перед "
-"использованием."
+"Данные для цитирования сформированы на основе метаданных. Пожалуйста, проверьте их перед использованием."
 
 #: templates/papers/confirm_delete.html:4
 #: templates/papers/confirm_delete.html:28
@@ -407,8 +399,7 @@ msgid ""
 "The PDF, its summary, and any share links will be removed permanently. This "
 "action cannot be undone."
 msgstr ""
-"PDF-файл, его реферат и все ссылки общего доступа будут удалены "
-"безвозвратно. Отменить это действие нельзя."
+"PDF-файл, его реферат и все ссылки общего доступа будут безвозвратно удалены. Это действие нельзя отменить."
 
 #: templates/papers/confirm_delete.html:26
 msgid "Cancel"
@@ -475,64 +466,63 @@ msgstr "загружено"
 
 #: templates/papers/detail.html:95 templates/summarizer/shared_summary.html:64
 msgid "Summary of the paper."
-msgstr "Общий реферат статьи."
+msgstr "Общее содержание статьи."
 
 #: templates/papers/detail.html:104
 #: templates/summarizer/shared_summary.html:72
 msgid "What the paper actually shows."
-msgstr "Что на самом деле показывает статья."
+msgstr "Основные научные результаты."
 
 #: templates/papers/detail.html:120
 #: templates/summarizer/shared_summary.html:84
 msgid "How the work was done."
-msgstr "Как была проведена работа."
+msgstr "Методы проведенного исследования."
 
 #: templates/papers/detail.html:128
 #: templates/summarizer/shared_summary.html:92
 msgid "What the numbers say."
-msgstr "О чём говорят цифры."
+msgstr "Анализ количественных данных."
 
 #: templates/papers/detail.html:136
 #: templates/summarizer/shared_summary.html:100
 msgid "What it means."
-msgstr "Что это значит."
+msgstr "Научная значимость и интерпретация."
 
 #: templates/papers/detail.html:145
 #: templates/summarizer/shared_summary.html:108
 msgid "Extracted citation list"
-msgstr "Извлечённый список литературы"
+msgstr "Извлеченный список литературы"
 
 #: templates/papers/detail.html:159
 msgid "Back to papers"
-msgstr "Назад к статьям"
+msgstr "К списку статей"
 
 #: templates/papers/detail.html:165
 msgid "Re-run summary"
-msgstr "Перегенерировать реферат"
+msgstr "Обновить реферат"
 
 #: templates/papers/detail.html:175
 msgid "not summarized"
-msgstr "не реферировано"
+msgstr "без реферата"
 
 #: templates/papers/detail.html:176
 msgid "paper · pending"
-msgstr "статья · в ожидании"
+msgstr "статья · в очереди"
 
 #: templates/papers/detail.html:188
 msgid "No summary yet."
-msgstr "Реферат ещё не создан."
+msgstr "Реферат еще не сформирован."
 
 #: templates/papers/detail.html:190
 msgid ""
 "Send this PDF to Groq's Llama 3.3 70B for structured summarization. It "
 "usually takes 15–30 seconds."
 msgstr ""
-"Отправьте этот PDF в модель Llama 3.3 70B (Groq) для структурированного "
-"реферирования. Обычно это занимает 15–30 секунд."
+"Отправьте этот PDF-файл модели Llama 3.3 70B (Groq) для создания структурированного реферата. Обычно это занимает 15–30 секунд."
 
 #: templates/papers/detail.html:196
 msgid "Summarize this paper"
-msgstr "Реферировать эту статью"
+msgstr "Сформировать реферат"
 
 #: templates/papers/detail.html:206 templates/papers/list.html:54
 #: templates/summarizer/history.html:30
@@ -585,11 +575,11 @@ msgstr "Поделиться"
 
 #: templates/papers/detail.html:234
 msgid "Create a public read-only link from the summary page."
-msgstr "Создайте публичную ссылку «только для чтения» на странице реферата."
+msgstr "Создать публичную ссылку для ознакомления с рефератом."
 
 #: templates/papers/detail.html:237
 msgid "Open share panel"
-msgstr "Открыть панель общего доступа"
+msgstr "Открыть панель доступа"
 
 #: templates/papers/list.html:4
 msgid "Papers — Academic Summarizer"
@@ -601,14 +591,14 @@ msgstr "Ваша библиотека"
 
 #: templates/papers/list.html:12
 msgid "Papers, summarized."
-msgstr "Статьи в реферированном виде."
+msgstr "Ваш список реферированных статей."
 
 #: templates/papers/list.html:15
 msgid "paper · distilled into structured summaries."
 msgid_plural "papers · distilled into structured summaries."
-msgstr[0] "%(counter)s статья · преобразована в структурированный реферат."
-msgstr[1] "%(counter)s статьи · преобразованы в структурированные рефераты."
-msgstr[2] "%(counter)s статей · преобразованы в структурированные рефераты."
+msgstr[0] "%(counter)s статья · реферирована."
+msgstr[1] "%(counter)s статьи · реферированы."
+msgstr[2] "%(counter)s статей · реферированы."
 
 #: templates/papers/list.html:26
 msgid "Add paper"
@@ -628,7 +618,7 @@ msgstr "Теги"
 
 #: templates/papers/list.html:56 templates/summarizer/history.html:31
 msgid "Lang"
-msgstr "Язык"
+msgstr "Яз."
 
 #: templates/papers/list.html:57 templates/summarizer/history.html:32
 msgid "Date"
@@ -636,7 +626,7 @@ msgstr "Дата"
 
 #: templates/papers/list.html:68 templates/summarizer/history.html:43
 msgid "Unknown author"
-msgstr "Автор неизвестен"
+msgstr "Автор не указан"
 
 #: templates/papers/list.html:97
 msgid "Open summary"
@@ -658,7 +648,7 @@ msgstr "%(n)s из %(total)s статей"
 #: templates/papers/list.html:147 templates/summarizer/history.html:88
 #, python-format
 msgid "page %(n)s / %(total)s"
-msgstr "страница %(n)s из %(total)s"
+msgstr "стр. %(n)s из %(total)s"
 
 #: templates/papers/list.html:152
 msgid "Empty library"
@@ -667,7 +657,7 @@ msgstr "Библиотека пуста"
 #: templates/papers/list.html:154
 #, python-format
 msgid "No papers match \"%(query)s\"."
-msgstr "По запросу «%(query)s» статей не найдено."
+msgstr "По запросу «%(query)s» ничего не найдено."
 
 #: templates/papers/list.html:154
 msgid "No papers yet."
@@ -675,15 +665,15 @@ msgstr "Статей пока нет."
 
 #: templates/papers/list.html:157
 msgid "Try a different search term, or clear the filter."
-msgstr "Попробуйте другой запрос или сбросьте фильтр."
+msgstr "Попробуйте изменить запрос или сбросить фильтры."
 
 #: templates/papers/list.html:157
 msgid "Upload your first academic paper to get started."
-msgstr "Загрузите первую научную статью, чтобы начать работу."
+msgstr "Загрузите свою первую научную статью, чтобы начать работу."
 
 #: templates/papers/list.html:160
 msgid "Clear search"
-msgstr "Сбросить поиск"
+msgstr "Очистить поиск"
 
 #: templates/papers/list.html:163
 msgid "Upload your first paper"
@@ -699,16 +689,14 @@ msgstr "Шаг 01 / 03 · Загрузка"
 
 #: templates/papers/upload.html:12
 msgid "Add a paper to the queue."
-msgstr "Добавьте статью в очередь."
+msgstr "Добавление статьи в очередь."
 
 #: templates/papers/upload.html:14
 msgid ""
 "PDF up to 50 MB. We extract the text, fix common encoding issues, and pass "
 "the result to Llama 3.3 70B for structured summarization."
 msgstr ""
-"PDF до 50 МБ. Мы извлекаем текст, исправляем типичные проблемы с кодировкой "
-"и передаём результат модели Llama 3.3 70B для структурированного "
-"реферирования."
+"Поддерживаются PDF-файлы до 50 МБ. Мы извлекаем текст, устраняем проблемы с кодировкой и передаем данные модели Llama 3.3 70B для создания реферата."
 
 #: templates/papers/upload.html:18
 msgid "queue 0 / 3"
@@ -720,7 +708,7 @@ msgstr "кредиты ∞"
 
 #: templates/papers/upload.html:35
 msgid "Drop a PDF, or click to browse."
-msgstr "Перетащите PDF или нажмите, чтобы выбрать файл."
+msgstr "Перетащите PDF сюда или нажмите для выбора."
 
 #: templates/papers/upload.html:36
 msgid "English, Russian, or Uzbek · up to 50 MB · single file"
@@ -756,7 +744,7 @@ msgstr "Лимит"
 
 #: templates/papers/upload.html:83
 msgid "Try anyway →"
-msgstr "Всё равно попробовать →"
+msgstr "Все равно попробовать →"
 
 #: templates/papers/upload.html:89
 msgid "Paper metadata"
@@ -772,7 +760,7 @@ msgstr "Автор(ы)"
 
 #: templates/papers/upload.html:103
 msgid "Optional · separate multiple authors with commas"
-msgstr "Необязательно · несколько авторов разделяйте запятыми"
+msgstr "Необязательно · перечислите авторов через запятую"
 
 #: templates/papers/upload.html:108
 msgid "Paper language"
@@ -780,7 +768,7 @@ msgstr "Язык статьи"
 
 #: templates/papers/upload.html:110
 msgid "Auto-detect from PDF text"
-msgstr "Определить автоматически по тексту PDF"
+msgstr "Определить автоматически"
 
 #: templates/papers/upload.html:113
 msgid "Uzbek (Latin)"
@@ -788,7 +776,7 @@ msgstr "Узбекский (латиница)"
 
 #: templates/papers/upload.html:116
 msgid "The summary and chat replies will be generated in this language."
-msgstr "Реферат и ответы в чате будут сформированы на выбранном языке."
+msgstr "Реферат и ответы ИИ-ассистента будут представлены на этом языке."
 
 #: templates/papers/upload.html:123
 msgid "selected"
@@ -804,11 +792,11 @@ msgstr "↑ предложено llama-3.3 · нажмите, чтобы доб�
 
 #: templates/papers/upload.html:138
 msgid "Selected"
-msgstr "Выбрано"
+msgstr "Выбранные"
 
 #: templates/papers/upload.html:140
 msgid "None yet"
-msgstr "Пока ничего"
+msgstr "Не выбрано"
 
 #: templates/papers/upload.html:145
 msgid "Custom tag…"
@@ -828,7 +816,7 @@ msgstr "Загрузить и реферировать"
 
 #: templates/papers/upload.html:169
 msgid "Run plan"
-msgstr "План выполнения"
+msgstr "Параметры запуска"
 
 #: templates/papers/upload.html:173
 msgid "Output"
@@ -844,7 +832,7 @@ msgstr "Время"
 
 #: templates/papers/upload.html:174
 msgid "~ 20 s"
-msgstr "~ 20 с"
+msgstr "~ 20 сек"
 
 #: templates/papers/upload.html:175
 msgid "free · beta"
@@ -852,7 +840,7 @@ msgstr "бесплатно · бета"
 
 #: templates/papers/upload.html:180
 msgid "What you'll get"
-msgstr "Что вы получите"
+msgstr "Что входит в реферат"
 
 #: templates/papers/upload.html:182
 msgid "Abstract — 2 paragraphs"
@@ -860,23 +848,23 @@ msgstr "Аннотация — 2 абзаца"
 
 #: templates/papers/upload.html:183
 msgid "Key points — 5 to 8 ranked"
-msgstr "Ключевые тезисы — от 5 до 8 пунктов"
+msgstr "Ключевые тезисы — 5–8 пунктов"
 
 #: templates/papers/upload.html:184
 msgid "Methodology summary"
-msgstr "Раздел методологии"
+msgstr "Описание методологии"
 
 #: templates/papers/upload.html:185
 msgid "Results, with deltas"
-msgstr "Результаты и их приросты"
+msgstr "Результаты и значимые показатели"
 
 #: templates/papers/upload.html:186
 msgid "Conclusion and future work"
-msgstr "Вывод и направления будущей работы"
+msgstr "Выводы и перспективы работы"
 
 #: templates/papers/upload.html:187
 msgid "Citation list, deduplicated"
-msgstr "Список литературы без дубликатов"
+msgstr "Очищенный список литературы"
 
 #: templates/papers/upload.html:192
 msgid "Privacy"
@@ -885,8 +873,7 @@ msgstr "Конфиденциальность"
 #: templates/papers/upload.html:194
 msgid "Files are stored only in your account. We don't train on your uploads."
 msgstr ""
-"Файлы хранятся только в вашем аккаунте. Мы не используем ваши загрузки для "
-"обучения моделей."
+"Файлы хранятся исключительно в вашем аккаунте. Мы не используем ваши данные для обучения моделей."
 
 #: templates/registration/login.html:4
 msgid "Sign in — Academic Summarizer"
@@ -895,7 +882,7 @@ msgstr "Вход — Academic Summarizer"
 #: templates/registration/login.html:11
 #: templates/registration/register.html:11
 msgid "secure"
-msgstr "безопасно"
+msgstr "защищено"
 
 #: templates/registration/login.html:15
 msgid "Welcome back."
@@ -903,11 +890,11 @@ msgstr "С возвращением."
 
 #: templates/registration/login.html:17
 msgid "Sign in to read your saved summaries and continue your reviews."
-msgstr "Войдите, чтобы вернуться к сохранённым рефератам и продолжить работу."
+msgstr "Войдите, чтобы просмотреть свои рефераты и продолжить работу."
 
 #: templates/registration/login.html:37
 msgid "your username"
-msgstr "имя пользователя"
+msgstr "ваше имя пользователя"
 
 #: templates/registration/login.html:58
 #: templates/registration/register.html:54
@@ -917,8 +904,7 @@ msgstr "или"
 #: templates/registration/login.html:62
 #, python-format
 msgid "New here? <a href=\"%(register_url)s\">Create a free account</a>"
-msgstr ""
-"Впервые здесь? <a href=\"%(register_url)s\">Создайте бесплатный аккаунт</a>"
+msgstr "Впервые у нас? <a href=\"%(register_url)s\">Создайте бесплатный аккаунт</a>"
 
 #: templates/registration/register.html:4
 msgid "Create account — Academic Summarizer"
@@ -926,15 +912,15 @@ msgstr "Регистрация — Academic Summarizer"
 
 #: templates/registration/register.html:15
 msgid "Open an account."
-msgstr "Создайте аккаунт."
+msgstr "Создать аккаунт."
 
 #: templates/registration/register.html:17
 msgid "Free while in beta. We'll never share your reading list."
-msgstr "Бесплатно во время беты. Мы никогда не раскроем ваш список чтения."
+msgstr "Бесплатно во время беты. Мы гарантируем конфиденциальность вашего списка чтения."
 
 #: templates/registration/register.html:37
 msgid "at least 8 characters"
-msgstr "минимум 8 символов"
+msgstr "не менее 8 символов"
 
 #: templates/registration/register.html:37
 msgid "re-enter password"
@@ -943,7 +929,7 @@ msgstr "повторите пароль"
 #: templates/registration/register.html:58
 #, python-format
 msgid "Already have one? <a href=\"%(login_url)s\">Sign in</a>"
-msgstr "Уже зарегистрированы? <a href=\"%(login_url)s\">Войдите</a>"
+msgstr "Уже есть аккаунт? <a href=\"%(login_url)s\">Войдите</a>"
 
 #: templates/summarizer/_chat_panel.html:18
 msgid "Chat with this paper"
@@ -951,7 +937,7 @@ msgstr "Чат по статье"
 
 #: templates/summarizer/_chat_panel.html:19
 msgid "groq · llama-3.3-70b · grounded in the summary above"
-msgstr "groq · llama-3.3-70b · опирается на реферат выше"
+msgstr "groq · llama-3.3-70b · на основе реферата выше"
 
 #: templates/summarizer/_chat_panel.html:22
 msgid "Clear history"
@@ -959,15 +945,15 @@ msgstr "Очистить историю"
 
 #: templates/summarizer/_chat_panel.html:27
 msgid "Ask anything about this paper."
-msgstr "Задайте любой вопрос об этой статье."
+msgstr "Задайте любой вопрос по этой статье."
 
 #: templates/summarizer/_chat_panel.html:28
 msgid "Try one of these prompts to get started, or type your own."
-msgstr "Попробуйте одну из подсказок ниже или напишите свой вопрос."
+msgstr "Воспользуйтесь подсказками или введите свой вопрос."
 
 #: templates/summarizer/_chat_panel.html:30
 msgid "What is the main contribution of this paper?"
-msgstr "В чём основной вклад этой статьи?"
+msgstr "В чем заключается основной вклад этой статьи?"
 
 #: templates/summarizer/_chat_panel.html:31
 msgid "Main contribution?"
@@ -975,15 +961,15 @@ msgstr "Основной вклад?"
 
 #: templates/summarizer/_chat_panel.html:33
 msgid "Summarize the methodology in plain language."
-msgstr "Объясните методологию простым языком."
+msgstr "Объясните методологию простыми словами."
 
 #: templates/summarizer/_chat_panel.html:34
 msgid "Methodology in plain language"
-msgstr "Методология простым языком"
+msgstr "Методология простыми словами"
 
 #: templates/summarizer/_chat_panel.html:36
 msgid "What are the most important results, with numbers?"
-msgstr "Каковы важнейшие результаты в цифрах?"
+msgstr "Каковы наиболее важные результаты в цифрах?"
 
 #: templates/summarizer/_chat_panel.html:37
 msgid "Most important results"
@@ -991,23 +977,23 @@ msgstr "Важнейшие результаты"
 
 #: templates/summarizer/_chat_panel.html:39
 msgid "What are the limitations or weaknesses?"
-msgstr "В чём ограничения и слабые стороны?"
+msgstr "Каковы ограничения и слабые стороны исследования?"
 
 #: templates/summarizer/_chat_panel.html:40
 msgid "Limitations & weaknesses"
-msgstr "Ограничения и слабые стороны"
+msgstr "Ограничения и недостатки"
 
 #: templates/summarizer/_chat_panel.html:42
 msgid "Suggest three follow-up research questions."
-msgstr "Предложите три направления дальнейших исследований."
+msgstr "Предложите три вопроса для дальнейших исследований."
 
 #: templates/summarizer/_chat_panel.html:43
 msgid "Follow-up questions"
-msgstr "Дополнительные вопросы"
+msgstr "Дальнейшие вопросы"
 
 #: templates/summarizer/_chat_panel.html:55
 msgid "Ask about this paper…"
-msgstr "Спросите об этой статье…"
+msgstr "Спросите что-нибудь о статье…"
 
 #: templates/summarizer/_chat_panel.html:58
 msgid "Your message"
@@ -1019,7 +1005,7 @@ msgstr "Отправить"
 
 #: templates/summarizer/_chat_panel.html:64
 msgid "Enter to send · Shift+Enter for a new line · max 2,000 chars"
-msgstr "Enter — отправить · Shift+Enter — новая строка · до 2 000 символов"
+msgstr "Enter — отправить · Shift+Enter — новая строка · макс. 2000 симв."
 
 #: templates/summarizer/history.html:4
 msgid "History — Academic Summarizer"
@@ -1036,9 +1022,9 @@ msgstr "Ваш журнал чтения."
 #: templates/summarizer/history.html:15
 msgid "summary · ordered by recency."
 msgid_plural "summaries · ordered by recency."
-msgstr[0] "%(counter)s реферат · в порядке от свежих к старым."
-msgstr[1] "%(counter)s реферата · в порядке от свежих к старым."
-msgstr[2] "%(counter)s рефератов · в порядке от свежих к старым."
+msgstr[0] "%(counter)s реферат · от новых к старым."
+msgstr[1] "%(counter)s реферата · от новых к старым."
+msgstr[2] "%(counter)s рефератов · от новых к старым."
 
 #: templates/summarizer/history.html:20
 msgid "New paper"
@@ -1063,7 +1049,7 @@ msgstr "Рефератов пока нет."
 
 #: templates/summarizer/history.html:95
 msgid "Upload and summarize your first paper to see it here."
-msgstr "Загрузите и реферируйте первую статью, чтобы увидеть её здесь."
+msgstr "Загрузите и реферируйте свою первую статью, чтобы она появилась здесь."
 
 #: templates/summarizer/history.html:97
 msgid "Upload a paper"
@@ -1075,19 +1061,18 @@ msgstr "Срок действия ссылки истёк — Academic Summarize
 
 #: templates/summarizer/share_expired.html:12
 msgid "expired"
-msgstr "срок истёк"
+msgstr "истекло"
 
 #: templates/summarizer/share_expired.html:16
 msgid "Link no longer valid."
-msgstr "Ссылка больше недействительна."
+msgstr "Ссылка недействительна."
 
 #: templates/summarizer/share_expired.html:18
 msgid ""
 "This shared summary link has expired or been revoked by its owner. Please "
 "ask them for a fresh one."
 msgstr ""
-"Срок действия этой ссылки общего доступа истёк или она была отозвана её "
-"владельцем. Попросите у него новую ссылку."
+"Срок действия ссылки истек или она была аннулирована владельцем. Пожалуйста, запросите новую ссылку."
 
 #: templates/summarizer/share_expired.html:22
 msgid "Go to home"
@@ -1099,7 +1084,7 @@ msgstr "Общедоступный реферат"
 
 #: templates/summarizer/shared_summary.html:32
 msgid "shared view"
-msgstr "общедоступный просмотр"
+msgstr "публичный просмотр"
 
 #: templates/summarizer/shared_summary.html:48
 msgid "shared summary"
@@ -1115,7 +1100,7 @@ msgstr[2] "%(counter)s просмотров"
 
 #: templates/summarizer/shared_summary.html:57
 msgid "generated"
-msgstr "создано"
+msgstr "сформировано"
 
 #: templates/summarizer/shared_summary.html:116
 msgid "Like this?"
@@ -1127,7 +1112,7 @@ msgstr "Реферируйте свои статьи."
 
 #: templates/summarizer/shared_summary.html:118
 msgid "Free while in beta · sign-up takes 30 seconds."
-msgstr "Бесплатно во время беты · регистрация 30 секунд."
+msgstr "Бесплатно во время беты · регистрация за 30 сек."
 
 #: templates/summarizer/shared_summary.html:120
 msgid "Create free account"
@@ -1141,29 +1126,28 @@ msgid "Dashboard — Academic Summarizer"
 msgstr "Панель — Academic Summarizer"
 
 msgid "Your reading room"
-msgstr "Ваш читальный зал"
+msgstr "Ваш личный кабинет"
 
 msgid "Nothing here yet"
-msgstr "Здесь пока пусто"
+msgstr "Здесь пока ничего нет"
 
 msgid "Your dashboard fills up once you upload a paper."
-msgstr "Панель заполнится, как только вы загрузите первую статью."
+msgstr "Панель заполнится данными сразу после загрузки первой статьи."
 
 msgid ""
 "Stats, charts, and a tag cloud appear here as you summarize. Start with one "
 "paper — it takes about twenty seconds."
 msgstr ""
-"Статистика, графики и облако тегов появятся здесь по мере работы. Начните с "
-"одной статьи — это занимает около двадцати секунд."
+"Статистика, графики и облако тегов появятся здесь по мере реферирования. Начните с первой статьи — это займет около 20 секунд."
 
 msgid "uploaded to your library"
-msgstr "загружено в вашу библиотеку"
+msgstr "загружено в библиотеку"
 
 msgid "Summaries"
 msgstr "Рефераты"
 
 msgid "generated by Llama 3.3"
-msgstr "создано моделью Llama 3.3"
+msgstr "сформировано Llama 3.3"
 
 msgid "distinct topics covered"
 msgstr "уникальных тем охвачено"
@@ -1172,7 +1156,7 @@ msgid "Time saved"
 msgstr "Сэкономлено времени"
 
 msgid "vs. reading every paper"
-msgstr "по сравнению с чтением каждой статьи"
+msgstr "по сравнению с полным чтением"
 
 msgid "Languages"
 msgstr "Языки"
@@ -1190,7 +1174,7 @@ msgid "Activity"
 msgstr "Активность"
 
 msgid "Papers per day · last 30 days"
-msgstr "Статей в день · за последние 30 дней"
+msgstr "Статей в день · последние 30 дней"
 
 msgid "Distribution"
 msgstr "Распределение"
@@ -1199,22 +1183,22 @@ msgid "By language"
 msgstr "По языкам"
 
 msgid "Top tags"
-msgstr "Главные теги"
+msgstr "Популярные теги"
 
 msgid "Most-used in your library"
-msgstr "Самые используемые в вашей библиотеке"
+msgstr "Чаще всего в вашей библиотеке"
 
 msgid "Tag cloud"
 msgstr "Облако тегов"
 
 msgid "Every tag, sized by use"
-msgstr "Все теги — размер по частоте использования"
+msgstr "Все теги, размер зависит от частоты"
 
 msgid "Recent activity"
-msgstr "Недавняя активность"
+msgstr "Последние действия"
 
 msgid "What you've been reading"
-msgstr "Что вы читали"
+msgstr "Недавно просмотренные статьи"
 
 msgid "all papers"
 msgstr "все статьи"
@@ -1241,7 +1225,7 @@ msgid "Assistant"
 msgstr "Ассистент"
 
 msgid "Server returned {code}"
-msgstr "Сервер вернул {code}"
+msgstr "Сервер вернул ошибку {code}"
 
 msgid "Network error: {detail}"
 msgstr "Сетевая ошибка: {detail}"
@@ -1250,7 +1234,7 @@ msgid "could not reach server"
 msgstr "не удалось связаться с сервером"
 
 msgid "Clear the chat for this paper? This cannot be undone."
-msgstr "Очистить переписку по этой статье? Действие необратимо."
+msgstr "Очистить историю чата для этой статьи? Это действие необратимо."
 
 msgid "Could not clear history: {detail}"
 msgstr "Не удалось очистить историю: {detail}"
@@ -1259,10 +1243,10 @@ msgid "Could not load citations: {detail}"
 msgstr "Не удалось загрузить цитирование: {detail}"
 
 msgid "Could not copy — please copy manually."
-msgstr "Не удалось скопировать — пожалуйста, скопируйте вручную."
+msgstr "Не удалось скопировать — пожалуйста, сделайте это вручную."
 
 msgid "{format} citation copied to clipboard."
-msgstr "Цитирование в формате {format} скопировано в буфер обмена."
+msgstr "Цитирование в формате {format} скопировано."
 
 msgid "Copied"
 msgstr "Скопировано"
@@ -1292,7 +1276,7 @@ msgid "Error"
 msgstr "Ошибка"
 
 msgid "Info"
-msgstr "Информация"
+msgstr "Инфо"
 
 msgid "Extracting text…"
 msgstr "Извлечение текста…"
@@ -1301,13 +1285,13 @@ msgid "AI is analyzing…"
 msgstr "ИИ анализирует…"
 
 msgid "Generating summary…"
-msgstr "Создание реферата…"
+msgstr "Формирование реферата…"
 
 msgid "Summarizing your paper…"
-msgstr "Реферируем вашу статью…"
+msgstr "Создаем реферат вашей статьи…"
 
 msgid "Don't close this tab. Most jobs finish in 15–25 seconds."
-msgstr "Не закрывайте вкладку. Обычно процесс занимает 15–25 секунд."
+msgstr "Пожалуйста, не закрывайте эту вкладку. Процесс займет 15–25 секунд."
 
 msgid "Working…"
-msgstr "Выполняется…"
+msgstr "В процессе…"
