@@ -1,57 +1,75 @@
-.PHONY: help build up down restart logs shell migrate superuser ps clean dev
+.DEFAULT_GOAL := help
+.PHONY: help install run migrate lint format test cov check precommit \
+        build up down restart logs shell dmigrate superuser ps clean dev
 
-# ── Default target ────────────────────────────────────────────────────────────
-help:
-	@echo ""
-	@echo "  Academic Summarizer — Docker commands"
-	@echo ""
-	@echo "  Production (PostgreSQL + Nginx):"
-	@echo "    make build        — Docker image yasash"
-	@echo "    make up           — Barcha servislarni ishga tushirish"
-	@echo "    make down         — Servislarni to'xtatish"
-	@echo "    make restart      — Qayta ishga tushirish"
-	@echo "    make logs         — Loglarni ko'rish"
-	@echo "    make shell        — Django konteyneri ichida shell"
-	@echo "    make migrate      — Ma'lumotlar bazasi migratsiyalari"
-	@echo "    make superuser    — Superuser yaratish"
-	@echo "    make ps           — Ishlaydigan konteynerlar"
-	@echo "    make clean        — Konteyner + volume larni o'chirish"
-	@echo ""
-	@echo "  Development (SQLite, hot reload):"
-	@echo "    make dev          — Dev serverni ishga tushirish"
-	@echo ""
+PYTHON ?= python
+COMPOSE ?= docker compose
 
-# ── Production ────────────────────────────────────────────────────────────────
-build:
-	docker compose build --no-cache
+help: ## Show this help
+	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | \
+		awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-11s\033[0m %s\n", $$1, $$2}'
 
-up:
-	docker compose up -d
+# ── Local development ────────────────────────────────────────────────────────
+install: ## Install runtime + dev dependencies and git hooks
+	$(PYTHON) -m pip install -r requirements-dev.txt
+	pre-commit install
 
-down:
-	docker compose down
+run: ## Run the Django dev server (SQLite unless DATABASE_URL is set)
+	$(PYTHON) manage.py migrate
+	$(PYTHON) manage.py runserver
 
-restart:
-	docker compose restart web
+migrate: ## Apply migrations locally
+	$(PYTHON) manage.py migrate
 
-logs:
-	docker compose logs -f --tail=100
+lint: ## Lint and check formatting with ruff
+	ruff check .
+	ruff format --check .
 
-shell:
-	docker compose exec web python manage.py shell
+format: ## Auto-fix lint issues and format code
+	ruff check --fix .
+	ruff format .
 
-migrate:
-	docker compose exec web python manage.py migrate
+test: ## Run the test suite
+	pytest
 
-superuser:
-	docker compose exec web python manage.py createsuperuser
+cov: ## Run tests with a coverage report
+	pytest --cov --cov-report=term-missing
 
-ps:
-	docker compose ps
+check: lint test ## Lint + tests (what CI runs)
 
-clean:
-	docker compose down -v --remove-orphans
+precommit: ## Run all pre-commit hooks on every file
+	pre-commit run --all-files
 
-# ── Development ───────────────────────────────────────────────────────────────
-dev:
-	docker compose -f docker-compose.dev.yml up --build
+# ── Docker (PostgreSQL + gunicorn + nginx) ───────────────────────────────────
+build: ## Build the Docker image
+	$(COMPOSE) build
+
+up: ## Start the stack and wait until it is healthy
+	$(COMPOSE) up -d --wait
+
+down: ## Stop the stack
+	$(COMPOSE) down
+
+restart: ## Restart the web service
+	$(COMPOSE) restart web
+
+logs: ## Follow logs
+	$(COMPOSE) logs -f --tail=100
+
+shell: ## Django shell inside the web container
+	$(COMPOSE) exec web python manage.py shell
+
+dmigrate: ## Run migrations inside the web container
+	$(COMPOSE) exec web python manage.py migrate
+
+superuser: ## Create a Django superuser inside the web container
+	$(COMPOSE) exec web python manage.py createsuperuser
+
+ps: ## List running containers
+	$(COMPOSE) ps
+
+clean: ## Stop the stack and delete its volumes (database + uploads!)
+	$(COMPOSE) down -v --remove-orphans
+
+dev: ## Docker dev server with hot reload (SQLite)
+	$(COMPOSE) -f docker-compose.dev.yml up --build
