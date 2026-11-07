@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from django.db import models
+from django.db import IntegrityError, models
 from django.utils.text import slugify
 
 
@@ -9,7 +9,7 @@ def paper_upload_path(instance, filename):
 
 class Tag(models.Model):
     name = models.CharField(max_length=50, unique=True)
-    slug = models.SlugField(unique=True, blank=True)
+    slug = models.SlugField(unique=True, blank=True, allow_unicode=True)
     color = models.CharField(max_length=7, default='#4361ee')
 
     class Meta:
@@ -20,8 +20,28 @@ class Tag(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.name)
+            self.slug = slugify(self.name, allow_unicode=True)
         super().save(*args, **kwargs)
+
+    @classmethod
+    def get_or_create_by_name(cls, name: str) -> 'Tag | None':
+        """
+        Return the tag matching ``name`` by slug, creating it if needed.
+
+        Matching on the slug (not the raw name) means "Deep Learning" and
+        "deep learning" resolve to one tag instead of violating the unique
+        slug constraint. Unicode is kept so Russian/Uzbek tags get real slugs.
+        """
+        name = name.strip()[:50]
+        slug = slugify(name, allow_unicode=True)
+        if not slug:
+            return None
+        try:
+            tag, _ = cls.objects.get_or_create(slug=slug, defaults={'name': name})
+        except IntegrityError:
+            # Same name already stored under a different (hand-edited) slug.
+            tag = cls.objects.get(name=name)
+        return tag
 
 
 class Paper(models.Model):

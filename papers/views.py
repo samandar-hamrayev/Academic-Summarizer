@@ -5,10 +5,15 @@ from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.paginator import Paginator
 from django.db.models import Q
+from django.http import FileResponse, Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
+from django.views.decorators.http import require_POST
 from django.views.generic import CreateView, DeleteView, DetailView, FormView, ListView
+
+from summarizer.services import SummarizationError, summarize_paper_task
 
 from .forms import PaperSearchForm, PaperUploadForm, UserRegistrationForm
 from .models import Paper, Tag
@@ -53,8 +58,6 @@ def papers_by_tag(request, tag_slug):
     query = request.GET.get('query', '').strip()
     if query:
         queryset = queryset.filter(Q(title__icontains=query) | Q(author__icontains=query))
-    from django.core.paginator import Paginator
-
     paginator = Paginator(queryset, 12)
     page_obj = paginator.get_page(request.GET.get('page'))
     return render(
@@ -86,37 +89,40 @@ class PaperUploadView(LoginRequiredMixin, CreateView):
         tags_raw = self.request.POST.get('tags_json', '[]')
         try:
             tag_names = json.loads(tags_raw)
-            if isinstance(tag_names, list):
-                for name in tag_names[:10]:
-                    name = str(name).strip()[:50]
-                    if name:
-                        tag, _ = Tag.objects.get_or_create(name=name)
-                        paper.tags.add(tag)
         except (json.JSONDecodeError, ValueError):
-            pass  # Malformed input — skip tags silently
+            tag_names = []  # Malformed input — skip tags silently
+        if isinstance(tag_names, list):
+            for name in tag_names[:10]:
+                tag = Tag.get_or_create_by_name(str(name))
+                if tag:
+                    paper.tags.add(tag)
 
         # Extract text and trigger summarization
-        try:
-            text = extract_text_from_pdf(paper.file)
-            if text.strip():
-                from summarizer.services import summarize_paper_task
-
-                summarize_paper_task(paper, text)
-                messages.success(
-                    self.request, f'"{paper.title}" uploaded and summarized successfully!'
-                )
-            else:
-                messages.warning(
-                    self.request,
-                    f'"{paper.title}" uploaded, but no text could be extracted from the PDF.',
-                )
-        except Exception as exc:
-            logger.error('Error processing paper %s: %s', paper.pk, exc)
-            messages.error(
-                self.request, f'"{paper.title}" uploaded, but summarization failed: {exc}'
+        text = extract_text_from_pdf(form.cleaned_data['file'])
+        if not text.strip():
+            messages.warning(
+                self.request,
+                f'"{paper.title}" uploaded, but no text could be extracted from the PDF.',
             )
+        elif _run_summarization(self.request, paper, text):
+            messages.success(self.request, f'"{paper.title}" uploaded and summarized successfully!')
 
         return redirect('papers:detail', pk=paper.pk)
+
+
+def _run_summarization(request, paper, text: str) -> bool:
+    """Summarize a paper, reporting failures as user-friendly flash messages."""
+    try:
+        summarize_paper_task(paper, text)
+    except SummarizationError as exc:
+        logger.warning('Summarization failed for paper %s: %s', paper.pk, exc)
+        messages.error(request, f'Summarization failed: {exc}')
+        return False
+    except Exception:
+        logger.exception('Unexpected error summarizing paper %s', paper.pk)
+        messages.error(request, 'Summarization failed due to an unexpected error.')
+        return False
+    return True
 
 
 class PaperDetailView(LoginRequiredMixin, DetailView):
@@ -142,22 +148,30 @@ class PaperDeleteView(LoginRequiredMixin, DeleteView):
 
 
 @login_required
+def download_paper(request, pk):
+    """Serve the original PDF to its owner only (media files are not public)."""
+    paper = get_object_or_404(Paper, pk=pk, uploaded_by=request.user)
+    try:
+        handle = paper.file.open('rb')
+    except FileNotFoundError as exc:
+        raise Http404('File not found.') from exc
+    return FileResponse(handle, content_type='application/pdf', filename=paper.filename)
+
+
+@login_required
+@require_POST
 def trigger_summarize(request, pk):
     """Re-run summarization for an existing paper."""
     paper = get_object_or_404(Paper, pk=pk, uploaded_by=request.user)
     try:
-        text = extract_text_from_pdf(paper.file)
-        if not text.strip():
-            messages.error(request, 'No text could be extracted from this PDF.')
-            return redirect('papers:detail', pk=pk)
-
-        from summarizer.services import summarize_paper_task
-
-        summarize_paper_task(paper, text)
+        with paper.file.open('rb') as handle:
+            text = extract_text_from_pdf(handle)
+    except FileNotFoundError:
+        text = ''
+    if not text.strip():
+        messages.error(request, 'No text could be extracted from this PDF.')
+    elif _run_summarization(request, paper, text):
         messages.success(request, 'Paper summarized successfully!')
-    except Exception as exc:
-        logger.error('Re-summarization failed for paper %s: %s', pk, exc)
-        messages.error(request, f'Summarization failed: {exc}')
 
     return redirect('papers:detail', pk=pk)
 

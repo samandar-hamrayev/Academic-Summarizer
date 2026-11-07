@@ -3,6 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
 from .models import Paper
+from .services import validate_pdf_upload
 
 
 class PaperUploadForm(forms.ModelForm):
@@ -34,10 +35,9 @@ class PaperUploadForm(forms.ModelForm):
     def clean_file(self):
         file = self.cleaned_data.get('file')
         if file:
-            if not file.name.lower().endswith('.pdf'):
-                raise forms.ValidationError('Only PDF files are allowed.')
-            if file.size > 50 * 1024 * 1024:
-                raise forms.ValidationError('File size must be under 50 MB.')
+            error = validate_pdf_upload(file)
+            if error:
+                raise forms.ValidationError(error)
         return file
 
 

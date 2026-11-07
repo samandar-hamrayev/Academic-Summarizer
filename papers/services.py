@@ -1,13 +1,38 @@
-"""PDF text extraction service using PyPDF2 and pdfplumber."""
+"""PDF validation and text extraction (pdfplumber primary, pypdf fallback)."""
 
 import logging
 
+from django.conf import settings
+
 logger = logging.getLogger(__name__)
+
+PDF_MAGIC = b'%PDF-'
+
+
+def validate_pdf_upload(file_obj) -> str | None:
+    """
+    Validate an uploaded file is a PDF within the configured size limit.
+
+    Checks the extension, the size and the ``%PDF-`` magic bytes (so a renamed
+    non-PDF file is rejected). Returns an error message, or None if valid.
+    """
+    max_mb = settings.MAX_UPLOAD_MB
+    if not file_obj.name.lower().endswith('.pdf'):
+        return 'Only PDF files are allowed.'
+    if file_obj.size > max_mb * 1024 * 1024:
+        return f'File size must be under {max_mb} MB.'
+
+    file_obj.seek(0)
+    header = file_obj.read(1024)
+    file_obj.seek(0)
+    if PDF_MAGIC not in header:
+        return 'The file does not look like a valid PDF.'
+    return None
 
 
 def extract_text_from_pdf(file_obj) -> str:
     """
-    Extract text from a PDF file using pdfplumber (primary) with PyPDF2 fallback.
+    Extract text from a PDF file using pdfplumber (primary) with pypdf fallback.
 
     Args:
         file_obj: A file-like object containing PDF data.
@@ -17,8 +42,7 @@ def extract_text_from_pdf(file_obj) -> str:
     """
     text = _extract_with_pdfplumber(file_obj)
     if not text.strip():
-        file_obj.seek(0)
-        text = _extract_with_pypdf2(file_obj)
+        text = _extract_with_pypdf(file_obj)
     return text
 
 
@@ -40,13 +64,13 @@ def _extract_with_pdfplumber(file_obj) -> str:
         return ''
 
 
-def _extract_with_pypdf2(file_obj) -> str:
-    """Extract text using PyPDF2 — fallback for simple PDFs."""
+def _extract_with_pypdf(file_obj) -> str:
+    """Extract text using pypdf — fallback for simple PDFs."""
     try:
-        import PyPDF2
+        from pypdf import PdfReader
 
         file_obj.seek(0)
-        reader = PyPDF2.PdfReader(file_obj)
+        reader = PdfReader(file_obj)
         text_parts = []
         for page in reader.pages:
             page_text = page.extract_text()
@@ -54,5 +78,5 @@ def _extract_with_pypdf2(file_obj) -> str:
                 text_parts.append(page_text)
         return '\n\n'.join(text_parts)
     except Exception as exc:
-        logger.warning('PyPDF2 extraction failed: %s', exc)
+        logger.warning('pypdf extraction failed: %s', exc)
         return ''
