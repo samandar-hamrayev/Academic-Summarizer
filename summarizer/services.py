@@ -1,5 +1,5 @@
 """
-AI summarization service using Groq API (llama-3.3-70b-versatile).
+AI summarization service using the Groq API (model configurable via GROQ_MODEL).
 
 Supports English, Russian, and Uzbek papers.
 Extracts structured summary + top citations in a single API call.
@@ -10,11 +10,18 @@ import logging
 import re
 
 from django.conf import settings
-from groq import APIConnectionError, APIStatusError, Groq
+from django.db import transaction
+from groq import APIConnectionError, APIStatusError, APITimeoutError, Groq, RateLimitError
 
 logger = logging.getLogger(__name__)
 
 MAX_TEXT_CHARS = 100_000
+SUMMARY_TEXT_FIELDS = ('abstract', 'methodology', 'results', 'conclusion')
+
+
+class SummarizationError(Exception):
+    """Raised when a summary cannot be produced. The message is safe to show to users."""
+
 
 # ---- System prompts per language ----------------------------------------
 
@@ -114,11 +121,45 @@ def detect_language(text: str) -> str:
 
 def _get_client() -> Groq:
     if not settings.GROQ_API_KEY:
-        raise ValueError(
+        raise SummarizationError(
             'GROQ_API_KEY is not set. '
-            'Get your free key at https://console.groq.com and add it to your .env file.'
+            'Get a free key at https://console.groq.com and add it to your .env file.'
         )
-    return Groq(api_key=settings.GROQ_API_KEY)
+    return Groq(
+        api_key=settings.GROQ_API_KEY,
+        timeout=settings.GROQ_TIMEOUT,
+        max_retries=settings.GROQ_MAX_RETRIES,
+    )
+
+
+def _complete(client: Groq, messages: list[dict], **kwargs) -> str:
+    """Run a chat completion and map SDK errors to SummarizationError."""
+    try:
+        response = client.chat.completions.create(
+            model=settings.GROQ_MODEL,
+            messages=messages,
+            **kwargs,
+        )
+    except RateLimitError as exc:
+        logger.warning('Groq rate limit hit: %s', exc)
+        raise SummarizationError(
+            'Groq rate limit reached. Please wait a moment and try again.'
+        ) from exc
+    except APITimeoutError as exc:
+        logger.error('Groq request timed out: %s', exc)
+        raise SummarizationError('The AI service timed out. Please try again.') from exc
+    except APIConnectionError as exc:
+        logger.error('Groq connection error: %s', exc)
+        raise SummarizationError('Could not connect to the AI service.') from exc
+    except APIStatusError as exc:
+        logger.error('Groq API status error %s: %s', exc.status_code, exc.message)
+        raise SummarizationError(
+            f'The AI service returned an error (HTTP {exc.status_code}).'
+        ) from exc
+
+    if not response.choices or not response.choices[0].message.content:
+        raise SummarizationError('The AI service returned an empty response.')
+    return response.choices[0].message.content.strip()
 
 
 # ---- Main summarization --------------------------------------------------
@@ -126,10 +167,12 @@ def _get_client() -> Groq:
 
 def summarize_paper_text(text: str, title: str = '', language: str | None = None) -> dict:
     """
-    Summarize an academic paper using Groq / Llama 3.3.
+    Summarize an academic paper with the configured Groq model.
 
     Returns dict with keys: abstract, key_points (list), methodology,
     results, conclusion, citations (list), language (str).
+
+    Raises SummarizationError on any API or parsing failure.
     """
     client = _get_client()
 
@@ -146,83 +189,85 @@ def summarize_paper_text(text: str, title: str = '', language: str | None = None
         'Provide a structured summary in the JSON format described in your instructions.'
     )
 
-    try:
-        response = client.chat.completions.create(
-            model='llama-3.3-70b-versatile',
-            messages=[
-                {'role': 'system', 'content': system_prompt},
-                {'role': 'user', 'content': user_message},
-            ],
-            temperature=0.3,
-            max_tokens=2500,
-            response_format={'type': 'json_object'},
-        )
-        response_text = response.choices[0].message.content.strip()
-        logger.debug('Groq response (first 500 chars): %s', response_text[:500])
-
-    except APIStatusError as exc:
-        logger.error('Groq API status error %s: %s', exc.status_code, exc.message)
-        if exc.status_code == 429:
-            raise ValueError(
-                'Groq rate limit reached. Please wait a moment and try again.'
-            ) from exc
-        raise ValueError(f'Groq API error ({exc.status_code}): {exc.message}') from exc
-    except APIConnectionError as exc:
-        logger.error('Groq connection error: %s', exc)
-        raise ValueError(f'Could not connect to Groq API: {exc}') from exc
+    response_text = _complete(
+        client,
+        [
+            {'role': 'system', 'content': system_prompt},
+            {'role': 'user', 'content': user_message},
+        ],
+        temperature=0.3,
+        max_tokens=2500,
+        response_format={'type': 'json_object'},
+    )
+    logger.debug('Groq response (first 500 chars): %s', response_text[:500])
 
     result = _parse_response(response_text)
     result['language'] = detected
     return result
 
 
+def _strip_fences(raw: str) -> str:
+    cleaned = re.sub(r'^```(?:json)?\s*', '', raw, flags=re.IGNORECASE)
+    return re.sub(r'\s*```$', '', cleaned).strip()
+
+
+def _as_text(value) -> str:
+    """Coerce a model-provided field to a clean string."""
+    if value is None:
+        return ''
+    if isinstance(value, list):
+        return '\n\n'.join(_as_text(v) for v in value if v)
+    return str(value).strip()
+
+
+def _as_list(value) -> list[str]:
+    """Coerce a model-provided field to a list of non-empty strings."""
+    if value is None:
+        return []
+    if isinstance(value, str):
+        items = value.split('\n')
+    elif isinstance(value, list):
+        items = value
+    else:
+        items = [value]
+    return [s for s in (_as_text(item) for item in items) if s]
+
+
 def _parse_response(response_text: str) -> dict:
-    cleaned = re.sub(r'^```(?:json)?\s*', '', response_text, flags=re.IGNORECASE)
-    cleaned = re.sub(r'\s*```$', '', cleaned).strip()
+    cleaned = _strip_fences(response_text)
 
     match = re.search(r'\{.*\}', cleaned, re.DOTALL)
     if not match:
         logger.error('No JSON object in Groq response: %s', response_text[:300])
-        raise ValueError('Model did not return a valid JSON object.')
+        raise SummarizationError('The AI model did not return a valid JSON object.')
 
     try:
         data = json.loads(match.group())
     except json.JSONDecodeError as exc:
         logger.error('JSON decode error: %s\nRaw: %s', exc, response_text[:300])
-        raise ValueError(f'Could not parse response as JSON: {exc}') from exc
+        raise SummarizationError('Could not parse the AI response as JSON.') from exc
 
-    key_points = data.get('key_points', [])
-    if isinstance(key_points, str):
-        key_points = [kp.strip() for kp in key_points.split('\n') if kp.strip()]
+    if not isinstance(data, dict):
+        raise SummarizationError('The AI model returned an unexpected JSON structure.')
 
-    citations = data.get('citations', [])
-    if isinstance(citations, str):
-        citations = [c.strip() for c in citations.split('\n') if c.strip()]
+    result = {field: _as_text(data.get(field)) for field in SUMMARY_TEXT_FIELDS}
+    result['key_points'] = _as_list(data.get('key_points'))
+    result['citations'] = _as_list(data.get('citations'))
 
-    return {
-        'abstract': data.get('abstract', '').strip(),
-        'key_points': key_points,
-        'methodology': data.get('methodology', '').strip(),
-        'results': data.get('results', '').strip(),
-        'conclusion': data.get('conclusion', '').strip(),
-        'citations': citations,
-    }
+    if not result['abstract'] and not result['key_points']:
+        raise SummarizationError('The AI response did not contain a summary.')
+    return result
 
 
 # ---- Tag extraction ------------------------------------------------------
 
 
-def extract_tags_from_text(text: str, max_tags: int = 5) -> list:
+def extract_tags_from_text(text: str, max_tags: int = 5) -> list[str]:
     """
     Extract relevant academic tags from paper text using Groq.
     Returns a list of tag strings, e.g. ['Machine Learning', 'NLP', 'BERT'].
-    Never raises — returns [] on any failure.
+    Never raises — returns [] on any failure, since tags are optional.
     """
-    try:
-        client = _get_client()
-    except ValueError:
-        return []
-
     sample = text[:8_000]
     prompt = (
         f'Extract exactly {max_tags} concise tags/keywords from this academic paper.\n\n'
@@ -236,9 +281,9 @@ def extract_tags_from_text(text: str, max_tags: int = 5) -> list:
     )
 
     try:
-        response = client.chat.completions.create(
-            model='llama-3.3-70b-versatile',
-            messages=[
+        raw = _complete(
+            _get_client(),
+            [
                 {
                     'role': 'system',
                     'content': (
@@ -250,53 +295,60 @@ def extract_tags_from_text(text: str, max_tags: int = 5) -> list:
             temperature=0.2,
             max_tokens=150,
         )
-        raw = response.choices[0].message.content.strip()
-        logger.debug('Tag extraction raw: %s', raw[:200])
+    except SummarizationError as exc:
+        logger.warning('Tag extraction skipped: %s', exc)
+        return []
 
-        cleaned = re.sub(r'^```(?:json)?\s*', '', raw, flags=re.IGNORECASE)
-        cleaned = re.sub(r'\s*```$', '', cleaned).strip()
+    logger.debug('Tag extraction raw: %s', raw[:200])
+    match = re.search(r'\[.*\]', _strip_fences(raw), re.DOTALL)
+    if not match:
+        logger.warning('No JSON array in tag response: %s', raw[:200])
+        return []
 
-        match = re.search(r'\[.*?\]', cleaned, re.DOTALL)
-        if not match:
-            logger.warning('No JSON array in tag response: %s', raw[:200])
-            return []
-
+    try:
         tags = json.loads(match.group())
-        if not isinstance(tags, list):
-            return []
-
-        return [str(t).strip()[:50] for t in tags if t and str(t).strip()][:max_tags]
-
-    except (json.JSONDecodeError, APIStatusError, APIConnectionError) as exc:
-        logger.error('Tag extraction failed: %s', exc)
+    except json.JSONDecodeError as exc:
+        logger.warning('Tag response is not valid JSON: %s', exc)
         return []
-    except Exception as exc:
-        logger.error('Unexpected error in extract_tags_from_text: %s', exc)
+    if not isinstance(tags, list):
         return []
+
+    seen: set[str] = set()
+    unique: list[str] = []
+    for tag in _as_list(tags):
+        tag = tag[:50]
+        if tag.lower() not in seen:
+            seen.add(tag.lower())
+            unique.append(tag)
+    return unique[:max_tags]
 
 
 # ---- Orchestration -------------------------------------------------------
 
 
-def summarize_paper_task(paper, text: str) -> None:
-    """Summarize a Paper and persist the result."""
+def summarize_paper_task(paper, text: str):
+    """Summarize a Paper and persist the result. Returns the saved Summary."""
     from .models import Summary
 
+    # Call the LLM outside the transaction so no DB connection is held open
+    # for the duration of a slow network request.
     result = summarize_paper_text(text, title=paper.title)
 
-    summary, _ = Summary.objects.get_or_create(paper=paper)
-    summary.abstract = result['abstract']
-    summary.methodology = result['methodology']
-    summary.results = result['results']
-    summary.conclusion = result['conclusion']
-    summary.language = result.get('language', 'en')
-    summary.set_key_points_list(result['key_points'])
-    summary.set_citations_list(result.get('citations', []))
-    summary.save()
+    with transaction.atomic():
+        summary, _ = Summary.objects.get_or_create(paper=paper)
+        summary.abstract = result['abstract']
+        summary.methodology = result['methodology']
+        summary.results = result['results']
+        summary.conclusion = result['conclusion']
+        summary.language = result.get('language', 'en')
+        summary.set_key_points_list(result['key_points'])
+        summary.set_citations_list(result.get('citations', []))
+        summary.save()
 
-    paper.processed = True
-    paper.save(update_fields=['processed'])
+        paper.processed = True
+        paper.save(update_fields=['processed'])
 
     logger.info(
         'Summary saved for paper pk=%s "%s" [lang=%s]', paper.pk, paper.title, summary.language
     )
+    return summary
