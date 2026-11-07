@@ -4,8 +4,8 @@ diplom/
 
 # Environment
 .env
-.env.dev
-.env.example
+.env.*
+!.env.example
 *.env
 
 # Python
@@ -39,3 +39,10 @@ staticfiles/
 # OS
 .DS_Store
 Thumbs.db
+
+# Tooling
+.pytest_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
