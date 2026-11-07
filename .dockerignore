@@ -46,3 +46,14 @@ Thumbs.db
 # Docs
 README.md
 *.md
+
+# Tests & tooling (not needed at runtime)
+tests/
+.github/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.pre-commit-config.yaml
+Makefile
+nginx/

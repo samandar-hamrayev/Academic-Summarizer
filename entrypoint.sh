@@ -1,11 +1,10 @@
 #!/bin/sh
 set -e
 
-echo "==> Running database migrations..."
-python manage.py migrate --noinput
+if [ "${RUN_MIGRATIONS:-1}" = "1" ]; then
+  echo "==> Running database migrations..."
+  python manage.py migrate --noinput
+fi
 
-echo "==> Collecting static files..."
-python manage.py collectstatic --noinput --clear
-
-echo "==> Starting application..."
+echo "==> Starting: $*"
 exec "$@"

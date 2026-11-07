@@ -1,56 +1,53 @@
-# ── Stage 1: dependency builder ──────────────────────────────────────────────
-FROM python:3.11-slim AS builder
+# syntax=docker/dockerfile:1
 
-# System deps needed to compile psycopg2 and Pillow
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    gcc \
-    libpq-dev \
-    && rm -rf /var/lib/apt/lists/*
+# ── Stage 1: build a virtualenv with all Python dependencies ─────────────────
+FROM python:3.12-slim AS builder
 
-WORKDIR /build
+ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PIP_NO_CACHE_DIR=1
+
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
 
 COPY requirements.txt .
-RUN pip install --upgrade pip \
- && pip install --prefix=/install --no-cache-dir -r requirements.txt
+RUN pip install -r requirements.txt
 
 
-# ── Stage 2: runtime image ────────────────────────────────────────────────────
-FROM python:3.11-slim
+# ── Stage 2: slim runtime image ──────────────────────────────────────────────
+FROM python:3.12-slim AS runtime
 
-# Runtime PostgreSQL client library only (no dev headers)
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libpq5 \
-    && rm -rf /var/lib/apt/lists/*
+# fonts-dejavu-core: Cyrillic-capable font for PDF exports of RU/UZ summaries
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends fonts-dejavu-core \
+ && rm -rf /var/lib/apt/lists/*
 
-# Copy installed packages from builder
-COPY --from=builder /install /usr/local
-
-ENV PYTHONDONTWRITEBYTECODE=1 \
+ENV PATH="/opt/venv/bin:$PATH" \
+    PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     DJANGO_SETTINGS_MODULE=academic_summarizer.settings
 
-WORKDIR /app
+RUN groupadd --system django \
+ && useradd --system --gid django --home-dir /app --shell /usr/sbin/nologin django
 
-# Copy source code
+COPY --from=builder /opt/venv /opt/venv
+
+WORKDIR /app
+# Code stays root-owned (read-only for the app user); only media is writable.
 COPY . .
 
-# Create non-root user
-RUN addgroup --system django && adduser --system --ingroup django django \
- && mkdir -p /app/media /app/staticfiles \
- && chown -R django:django /app
+# Static files are baked into the image (served by WhiteNoise), so no shared
+# volume is needed. A throwaway key is enough for collectstatic.
+RUN SECRET_KEY=collectstatic-only python manage.py collectstatic --noinput \
+ && mkdir -p /app/media \
+ && chown django:django /app/media \
+ && chmod +x /app/entrypoint.sh
 
 USER django
 
-# entrypoint: migrate → collectstatic → gunicorn
-COPY --chown=django:django entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-
 EXPOSE 8000
 
-ENTRYPOINT ["/entrypoint.sh"]
-CMD ["gunicorn", "academic_summarizer.wsgi:application", \
-     "--bind", "0.0.0.0:8000", \
-     "--workers", "3", \
-     "--timeout", "120", \
-     "--access-logfile", "-", \
-     "--error-logfile", "-"]
+HEALTHCHECK --interval=15s --timeout=5s --start-period=20s --retries=3 \
+  CMD ["python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/healthz/', timeout=4).status == 200 else 1)"]
+
+ENTRYPOINT ["/app/entrypoint.sh"]
+CMD ["gunicorn", "academic_summarizer.wsgi:application"]
