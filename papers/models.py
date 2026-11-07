@@ -1,5 +1,5 @@
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
 from django.utils.text import slugify
 
 
@@ -8,8 +8,8 @@ def paper_upload_path(instance, filename):
 
 
 class Tag(models.Model):
-    name  = models.CharField(max_length=50, unique=True)
-    slug  = models.SlugField(unique=True, blank=True)
+    name = models.CharField(max_length=50, unique=True)
+    slug = models.SlugField(unique=True, blank=True)
     color = models.CharField(max_length=7, default='#4361ee')
 
     class Meta:
@@ -25,14 +25,14 @@ class Tag(models.Model):
 
 
 class Paper(models.Model):
-    title       = models.CharField(max_length=500)
-    author      = models.CharField(max_length=300, blank=True)
-    file        = models.FileField(upload_to=paper_upload_path)
+    title = models.CharField(max_length=500)
+    author = models.CharField(max_length=300, blank=True)
+    file = models.FileField(upload_to=paper_upload_path)
     uploaded_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='papers')
     uploaded_at = models.DateTimeField(auto_now_add=True)
-    processed   = models.BooleanField(default=False)
-    file_size   = models.PositiveIntegerField(default=0, help_text='Size in bytes')
-    tags        = models.ManyToManyField(Tag, blank=True, related_name='papers')
+    processed = models.BooleanField(default=False)
+    file_size = models.PositiveIntegerField(default=0, help_text='Size in bytes')
+    tags = models.ManyToManyField(Tag, blank=True, related_name='papers')
 
     class Meta:
         ordering = ['-uploaded_at']

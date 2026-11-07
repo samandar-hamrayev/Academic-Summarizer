@@ -4,12 +4,13 @@ AI summarization service using Groq API (llama-3.3-70b-versatile).
 Supports English, Russian, and Uzbek papers.
 Extracts structured summary + top citations in a single API call.
 """
+
 import json
 import logging
 import re
 
-from groq import Groq, APIStatusError, APIConnectionError
 from django.conf import settings
+from groq import APIConnectionError, APIStatusError, Groq
 
 logger = logging.getLogger(__name__)
 
@@ -61,7 +62,8 @@ _PROMPT_RU = """Вы эксперт по реферированию научны
 - Отвечайте на РУССКОМ языке."""
 
 _PROMPT_UZ = """Siz ilmiy maqolalarni xulosalash bo'yicha mutaxasssissiz. Maqolani o'qib,
-faqat bitta to'g'ri JSON ob'ektini qaytaring — markdown belgilarsiz, JSON tashqarisida matn bo'lmagan holda —
+faqat bitta to'g'ri JSON ob'ektini qaytaring — markdown belgilarsiz,
+JSON tashqarisida matn bo'lmagan holda —
 quyidagi kalitlardan foydalanib:
 
 {
@@ -86,6 +88,7 @@ SYSTEM_PROMPTS = {'en': _PROMPT_EN, 'ru': _PROMPT_RU, 'uz': _PROMPT_UZ}
 
 # ---- Language detection --------------------------------------------------
 
+
 def detect_language(text: str) -> str:
     """Heuristic language detection from character frequencies."""
     sample = text[:8000]
@@ -108,6 +111,7 @@ def detect_language(text: str) -> str:
 
 # ---- Groq client ---------------------------------------------------------
 
+
 def _get_client() -> Groq:
     if not settings.GROQ_API_KEY:
         raise ValueError(
@@ -118,6 +122,7 @@ def _get_client() -> Groq:
 
 
 # ---- Main summarization --------------------------------------------------
+
 
 def summarize_paper_text(text: str, title: str = '', language: str | None = None) -> dict:
     """
@@ -146,7 +151,7 @@ def summarize_paper_text(text: str, title: str = '', language: str | None = None
             model='llama-3.3-70b-versatile',
             messages=[
                 {'role': 'system', 'content': system_prompt},
-                {'role': 'user',   'content': user_message},
+                {'role': 'user', 'content': user_message},
             ],
             temperature=0.3,
             max_tokens=2500,
@@ -158,7 +163,9 @@ def summarize_paper_text(text: str, title: str = '', language: str | None = None
     except APIStatusError as exc:
         logger.error('Groq API status error %s: %s', exc.status_code, exc.message)
         if exc.status_code == 429:
-            raise ValueError('Groq rate limit reached. Please wait a moment and try again.') from exc
+            raise ValueError(
+                'Groq rate limit reached. Please wait a moment and try again.'
+            ) from exc
         raise ValueError(f'Groq API error ({exc.status_code}): {exc.message}') from exc
     except APIConnectionError as exc:
         logger.error('Groq connection error: %s', exc)
@@ -193,16 +200,17 @@ def _parse_response(response_text: str) -> dict:
         citations = [c.strip() for c in citations.split('\n') if c.strip()]
 
     return {
-        'abstract':    data.get('abstract', '').strip(),
-        'key_points':  key_points,
+        'abstract': data.get('abstract', '').strip(),
+        'key_points': key_points,
         'methodology': data.get('methodology', '').strip(),
-        'results':     data.get('results', '').strip(),
-        'conclusion':  data.get('conclusion', '').strip(),
-        'citations':   citations,
+        'results': data.get('results', '').strip(),
+        'conclusion': data.get('conclusion', '').strip(),
+        'citations': citations,
     }
 
 
 # ---- Tag extraction ------------------------------------------------------
+
 
 def extract_tags_from_text(text: str, max_tags: int = 5) -> list:
     """
@@ -231,8 +239,12 @@ def extract_tags_from_text(text: str, max_tags: int = 5) -> list:
         response = client.chat.completions.create(
             model='llama-3.3-70b-versatile',
             messages=[
-                {'role': 'system',
-                 'content': 'You extract academic tags. Return only a valid JSON array of strings.'},
+                {
+                    'role': 'system',
+                    'content': (
+                        'You extract academic tags. Return only a valid JSON array of strings.'
+                    ),
+                },
                 {'role': 'user', 'content': prompt},
             ],
             temperature=0.2,
@@ -265,6 +277,7 @@ def extract_tags_from_text(text: str, max_tags: int = 5) -> list:
 
 # ---- Orchestration -------------------------------------------------------
 
+
 def summarize_paper_task(paper, text: str) -> None:
     """Summarize a Paper and persist the result."""
     from .models import Summary
@@ -272,11 +285,11 @@ def summarize_paper_task(paper, text: str) -> None:
     result = summarize_paper_text(text, title=paper.title)
 
     summary, _ = Summary.objects.get_or_create(paper=paper)
-    summary.abstract    = result['abstract']
+    summary.abstract = result['abstract']
     summary.methodology = result['methodology']
-    summary.results     = result['results']
-    summary.conclusion  = result['conclusion']
-    summary.language    = result.get('language', 'en')
+    summary.results = result['results']
+    summary.conclusion = result['conclusion']
+    summary.language = result.get('language', 'en')
     summary.set_key_points_list(result['key_points'])
     summary.set_citations_list(result.get('citations', []))
     summary.save()
@@ -284,4 +297,6 @@ def summarize_paper_task(paper, text: str) -> None:
     paper.processed = True
     paper.save(update_fields=['processed'])
 
-    logger.info('Summary saved for paper pk=%s "%s" [lang=%s]', paper.pk, paper.title, summary.language)
+    logger.info(
+        'Summary saved for paper pk=%s "%s" [lang=%s]', paper.pk, paper.title, summary.language
+    )

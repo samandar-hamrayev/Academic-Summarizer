@@ -15,16 +15,16 @@ class Summary(models.Model):
         ('uz', 'Uzbek'),
     ]
 
-    paper       = models.OneToOneField(Paper, on_delete=models.CASCADE, related_name='summary')
-    abstract    = models.TextField(blank=True)
-    key_points  = models.TextField(blank=True, help_text='Stored as JSON list of strings')
+    paper = models.OneToOneField(Paper, on_delete=models.CASCADE, related_name='summary')
+    abstract = models.TextField(blank=True)
+    key_points = models.TextField(blank=True, help_text='Stored as JSON list of strings')
     methodology = models.TextField(blank=True)
-    results     = models.TextField(blank=True)
-    conclusion  = models.TextField(blank=True)
-    citations   = models.TextField(blank=True, help_text='Stored as JSON list of citation strings')
-    language    = models.CharField(max_length=10, choices=LANGUAGE_CHOICES, default='en')
-    created_at  = models.DateTimeField(auto_now_add=True)
-    updated_at  = models.DateTimeField(auto_now=True)
+    results = models.TextField(blank=True)
+    conclusion = models.TextField(blank=True)
+    citations = models.TextField(blank=True, help_text='Stored as JSON list of citation strings')
+    language = models.CharField(max_length=10, choices=LANGUAGE_CHOICES, default='en')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         verbose_name = 'Summary'
@@ -60,16 +60,16 @@ class Summary(models.Model):
     def get_language_display_short(self) -> str:
         flags = {'en': '🇬🇧', 'ru': '🇷🇺', 'uz': '🇺🇿'}
         names = {'en': 'English', 'ru': 'Russian', 'uz': 'Uzbek'}
-        return f"{flags.get(self.language, '')} {names.get(self.language, self.language)}"
+        return f'{flags.get(self.language, "")} {names.get(self.language, self.language)}'
 
 
 class ShareLink(models.Model):
-    summary      = models.ForeignKey(Summary, on_delete=models.CASCADE, related_name='share_links')
-    token        = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
-    created_at   = models.DateTimeField(auto_now_add=True)
-    expires_at   = models.DateTimeField(null=True, blank=True)
+    summary = models.ForeignKey(Summary, on_delete=models.CASCADE, related_name='share_links')
+    token = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField(null=True, blank=True)
     access_count = models.PositiveIntegerField(default=0)
-    is_active    = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True)
 
     class Meta:
         ordering = ['-created_at']
@@ -77,12 +77,10 @@ class ShareLink(models.Model):
     def __str__(self):
         return f'Share link for "{self.summary.paper.title}"'
 
+    def get_absolute_url(self) -> str:
+        return reverse('summarizer:shared', kwargs={'token': str(self.token)})
+
     def is_valid(self) -> bool:
         if not self.is_active:
             return False
-        if self.expires_at and timezone.now() > self.expires_at:
-            return False
-        return True
-
-    def get_absolute_url(self) -> str:
-        return reverse('summarizer:shared', kwargs={'token': str(self.token)})
+        return not (self.expires_at and timezone.now() > self.expires_at)

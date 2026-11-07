@@ -1,6 +1,6 @@
 """PDF text extraction service using PyPDF2 and pdfplumber."""
+
 import logging
-import io
 
 logger = logging.getLogger(__name__)
 

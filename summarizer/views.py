@@ -7,7 +7,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
-from django.utils.dateparse import parse_datetime
 from django.views.decorators.http import require_POST
 from django.views.generic import DetailView, ListView
 
@@ -17,6 +16,7 @@ logger = logging.getLogger(__name__)
 
 
 # ── AI Tag Preview ────────────────────────────────────────────────────────────
+
 
 @login_required
 @require_POST
@@ -38,6 +38,7 @@ def preview_tags(request):
 
     try:
         from papers.services import extract_text_from_pdf
+
         text = extract_text_from_pdf(pdf_file)
     except Exception as exc:
         logger.error('Text extraction for tag preview failed: %s', exc)
@@ -47,11 +48,13 @@ def preview_tags(request):
         return JsonResponse({'suggested_tags': [], 'warning': 'Not enough readable text in PDF'})
 
     from .services import extract_tags_from_text
+
     suggested_tags = extract_tags_from_text(text, max_tags=5)
     return JsonResponse({'suggested_tags': suggested_tags})
 
 
 # ── Summary Views ─────────────────────────────────────────────────────────────
+
 
 class SummaryHistoryView(LoginRequiredMixin, ListView):
     model = Summary
@@ -61,8 +64,7 @@ class SummaryHistoryView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return (
-            Summary.objects
-            .filter(paper__uploaded_by=self.request.user)
+            Summary.objects.filter(paper__uploaded_by=self.request.user)
             .select_related('paper')
             .order_by('-created_at')
         )
@@ -79,12 +81,13 @@ class SummaryDetailView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx['key_points'] = self.object.get_key_points_list()
-        ctx['citations']  = self.object.get_citations_list()
+        ctx['citations'] = self.object.get_citations_list()
         ctx['share_links'] = self.object.share_links.filter(is_active=True).order_by('-created_at')
         return ctx
 
 
 # ---- Share Links ---------------------------------------------------------
+
 
 @login_required
 def create_share_link(request, pk):
@@ -97,7 +100,7 @@ def create_share_link(request, pk):
         if expiry_days > 0:
             expires_at = timezone.now() + timezone.timedelta(days=expiry_days)
 
-        link = ShareLink.objects.create(summary=summary, expires_at=expires_at)
+        ShareLink.objects.create(summary=summary, expires_at=expires_at)
         messages.success(request, 'Share link created successfully.')
         return redirect('summarizer:detail', pk=pk)
 
@@ -125,62 +128,91 @@ def shared_summary_view(request, token):
     link.save(update_fields=['access_count'])
 
     summary = link.summary
-    return render(request, 'summarizer/shared_summary.html', {
-        'summary':    summary,
-        'key_points': summary.get_key_points_list(),
-        'citations':  summary.get_citations_list(),
-        'link':       link,
-    })
+    return render(
+        request,
+        'summarizer/shared_summary.html',
+        {
+            'summary': summary,
+            'key_points': summary.get_key_points_list(),
+            'citations': summary.get_citations_list(),
+            'link': link,
+        },
+    )
 
 
 # ---- PDF / Word exports --------------------------------------------------
+
 
 @login_required
 def export_summary_pdf(request, pk):
     summary = get_object_or_404(Summary, pk=pk, paper__uploaded_by=request.user)
 
     try:
-        from reportlab.lib.pagesizes import A4
-        from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-        from reportlab.lib.units import cm
         from reportlab.lib import colors
-        from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, ListFlowable, ListItem
+        from reportlab.lib.pagesizes import A4
+        from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+        from reportlab.lib.units import cm
+        from reportlab.platypus import ListFlowable, ListItem, Paragraph, SimpleDocTemplate, Spacer
 
         buffer = io.BytesIO()
         doc = SimpleDocTemplate(
-            buffer, pagesize=A4,
-            leftMargin=2.5*cm, rightMargin=2.5*cm,
-            topMargin=2.5*cm, bottomMargin=2.5*cm,
+            buffer,
+            pagesize=A4,
+            leftMargin=2.5 * cm,
+            rightMargin=2.5 * cm,
+            topMargin=2.5 * cm,
+            bottomMargin=2.5 * cm,
         )
         styles = getSampleStyleSheet()
-        title_style   = ParagraphStyle('T', parent=styles['Title'], fontSize=18, spaceAfter=12,
-                                       textColor=colors.HexColor('#1a1a2e'))
-        heading_style = ParagraphStyle('H', parent=styles['Heading2'], fontSize=13, spaceAfter=6,
-                                       spaceBefore=14, textColor=colors.HexColor('#16213e'))
-        body_style    = ParagraphStyle('B', parent=styles['Normal'], fontSize=10, leading=15, spaceAfter=6)
+        title_style = ParagraphStyle(
+            'T',
+            parent=styles['Title'],
+            fontSize=18,
+            spaceAfter=12,
+            textColor=colors.HexColor('#1a1a2e'),
+        )
+        heading_style = ParagraphStyle(
+            'H',
+            parent=styles['Heading2'],
+            fontSize=13,
+            spaceAfter=6,
+            spaceBefore=14,
+            textColor=colors.HexColor('#16213e'),
+        )
+        body_style = ParagraphStyle(
+            'B', parent=styles['Normal'], fontSize=10, leading=15, spaceAfter=6
+        )
 
         story = [
             Paragraph(summary.paper.title, title_style),
             Paragraph(f'Author(s): {summary.paper.author or "N/A"}', body_style),
-            Spacer(1, 0.3*cm),
+            Spacer(1, 0.3 * cm),
         ]
 
         for heading, content in [
-            ('Abstract',    summary.abstract),
+            ('Abstract', summary.abstract),
             ('Methodology', summary.methodology),
-            ('Results',     summary.results),
-            ('Conclusion',  summary.conclusion),
+            ('Results', summary.results),
+            ('Conclusion', summary.conclusion),
         ]:
             if content:
-                story += [Paragraph(heading, heading_style), Paragraph(content.replace('\n', '<br/>'), body_style)]
+                story += [
+                    Paragraph(heading, heading_style),
+                    Paragraph(content.replace('\n', '<br/>'), body_style),
+                ]
 
         kps = summary.get_key_points_list()
         if kps:
             story.append(Paragraph('Key Points', heading_style))
-            story.append(ListFlowable(
-                [ListItem(Paragraph(pt, body_style), bulletColor=colors.HexColor('#4361ee')) for pt in kps],
-                bulletType='bullet',
-            ))
+            story.append(
+                ListFlowable(
+                    [
+                        ListItem(Paragraph(pt, body_style), bulletColor=colors.HexColor('#4361ee'))
+                        for pt in kps
+                    ],
+                    bulletType='bullet',
+                )
+            )
 
         citations = summary.get_citations_list()
         if citations:
@@ -221,10 +253,10 @@ def export_summary_word(request, pk):
         doc.add_paragraph()
 
         for heading, content in [
-            ('Abstract',    summary.abstract),
+            ('Abstract', summary.abstract),
             ('Methodology', summary.methodology),
-            ('Results',     summary.results),
-            ('Conclusion',  summary.conclusion),
+            ('Results', summary.results),
+            ('Conclusion', summary.conclusion),
         ]:
             if content:
                 doc.add_heading(heading, level=1)
@@ -251,7 +283,9 @@ def export_summary_word(request, pk):
             buffer.read(),
             content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document',
         )
-        response['Content-Disposition'] = f'attachment; filename="summary_{safe or summary.pk}.docx"'
+        response['Content-Disposition'] = (
+            f'attachment; filename="summary_{safe or summary.pk}.docx"'
+        )
         return response
 
     except Exception as exc:

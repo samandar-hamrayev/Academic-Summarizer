@@ -3,14 +3,12 @@ import logging
 
 from django.contrib import messages
 from django.contrib.auth import login
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
-from django.views.generic import (
-    CreateView, DeleteView, DetailView, FormView, ListView
-)
+from django.views.generic import CreateView, DeleteView, DetailView, FormView, ListView
 
 from .forms import PaperSearchForm, PaperUploadForm, UserRegistrationForm
 from .models import Paper, Tag
@@ -27,16 +25,13 @@ class PaperListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         queryset = (
-            Paper.objects
-            .filter(uploaded_by=self.request.user)
+            Paper.objects.filter(uploaded_by=self.request.user)
             .select_related('uploaded_by')
             .prefetch_related('tags')
         )
         query = self.request.GET.get('query', '').strip()
         if query:
-            queryset = queryset.filter(
-                Q(title__icontains=query) | Q(author__icontains=query)
-            )
+            queryset = queryset.filter(Q(title__icontains=query) | Q(author__icontains=query))
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -51,27 +46,29 @@ def papers_by_tag(request, tag_slug):
     """Filter the paper list by a specific tag."""
     tag = get_object_or_404(Tag, slug=tag_slug)
     queryset = (
-        Paper.objects
-        .filter(tags=tag, uploaded_by=request.user)
+        Paper.objects.filter(tags=tag, uploaded_by=request.user)
         .select_related('uploaded_by')
         .prefetch_related('tags')
     )
     query = request.GET.get('query', '').strip()
     if query:
-        queryset = queryset.filter(
-            Q(title__icontains=query) | Q(author__icontains=query)
-        )
+        queryset = queryset.filter(Q(title__icontains=query) | Q(author__icontains=query))
     from django.core.paginator import Paginator
+
     paginator = Paginator(queryset, 12)
     page_obj = paginator.get_page(request.GET.get('page'))
-    return render(request, 'papers/list.html', {
-        'papers': page_obj.object_list,
-        'page_obj': page_obj,
-        'is_paginated': page_obj.has_other_pages(),
-        'search_form': PaperSearchForm(request.GET),
-        'query': query,
-        'filter_tag': tag,
-    })
+    return render(
+        request,
+        'papers/list.html',
+        {
+            'papers': page_obj.object_list,
+            'page_obj': page_obj,
+            'is_paginated': page_obj.has_other_pages(),
+            'search_form': PaperSearchForm(request.GET),
+            'query': query,
+            'filter_tag': tag,
+        },
+    )
 
 
 class PaperUploadView(LoginRequiredMixin, CreateView):
@@ -103,21 +100,20 @@ class PaperUploadView(LoginRequiredMixin, CreateView):
             text = extract_text_from_pdf(paper.file)
             if text.strip():
                 from summarizer.services import summarize_paper_task
+
                 summarize_paper_task(paper, text)
                 messages.success(
-                    self.request,
-                    f'"{paper.title}" uploaded and summarized successfully!'
+                    self.request, f'"{paper.title}" uploaded and summarized successfully!'
                 )
             else:
                 messages.warning(
                     self.request,
-                    f'"{paper.title}" uploaded, but no text could be extracted from the PDF.'
+                    f'"{paper.title}" uploaded, but no text could be extracted from the PDF.',
                 )
         except Exception as exc:
             logger.error('Error processing paper %s: %s', paper.pk, exc)
             messages.error(
-                self.request,
-                f'"{paper.title}" uploaded, but summarization failed: {exc}'
+                self.request, f'"{paper.title}" uploaded, but summarization failed: {exc}'
             )
 
         return redirect('papers:detail', pk=paper.pk)
@@ -156,6 +152,7 @@ def trigger_summarize(request, pk):
             return redirect('papers:detail', pk=pk)
 
         from summarizer.services import summarize_paper_task
+
         summarize_paper_task(paper, text)
         messages.success(request, 'Paper summarized successfully!')
     except Exception as exc:

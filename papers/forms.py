@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+
 from .models import Paper
 
 
@@ -9,19 +10,25 @@ class PaperUploadForm(forms.ModelForm):
         model = Paper
         fields = ['title', 'author', 'file']
         widgets = {
-            'title': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Enter paper title',
-            }),
-            'author': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Author(s) name(s)',
-            }),
-            'file': forms.FileInput(attrs={
-                'class': 'form-control',
-                'accept': '.pdf',
-                'id': 'pdf-file-input',
-            }),
+            'title': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                    'placeholder': 'Enter paper title',
+                }
+            ),
+            'author': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                    'placeholder': 'Author(s) name(s)',
+                }
+            ),
+            'file': forms.FileInput(
+                attrs={
+                    'class': 'form-control',
+                    'accept': '.pdf',
+                    'id': 'pdf-file-input',
+                }
+            ),
         }
 
     def clean_file(self):
@@ -37,10 +44,12 @@ class PaperUploadForm(forms.ModelForm):
 class PaperSearchForm(forms.Form):
     query = forms.CharField(
         required=False,
-        widget=forms.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'Search papers by title or author...',
-        }),
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control',
+                'placeholder': 'Search papers by title or author...',
+            }
+        ),
     )
 
 
