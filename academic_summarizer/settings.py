@@ -95,9 +95,10 @@ WSGI_APPLICATION = 'academic_summarizer.wsgi.application'
 
 # ── Database ─────────────────────────────────────────────────────────────────
 # PostgreSQL in Docker (DATABASE_URL), SQLite locally as a fallback.
+# `or` (not a .get default) so an empty DATABASE_URL= line also falls back.
 DATABASES = {
-    'default': dj_database_url.config(
-        default=f'sqlite:///{BASE_DIR / "db.sqlite3"}',
+    'default': dj_database_url.parse(
+        os.environ.get('DATABASE_URL') or f'sqlite:///{BASE_DIR / "db.sqlite3"}',
         conn_max_age=env_int('DB_CONN_MAX_AGE', 600),
         conn_health_checks=True,
     )
@@ -147,7 +148,7 @@ X_FRAME_OPTIONS = 'DENY'
 # ── Groq LLM ─────────────────────────────────────────────────────────────────
 GROQ_API_KEY = os.environ.get('GROQ_API_KEY', '')
 GROQ_MODEL = os.environ.get('GROQ_MODEL', 'llama-3.3-70b-versatile')
-GROQ_TIMEOUT = env_int('GROQ_TIMEOUT', 60)  # seconds per request
+GROQ_TIMEOUT = env_int('GROQ_TIMEOUT', 45)  # seconds per request
 GROQ_MAX_RETRIES = env_int('GROQ_MAX_RETRIES', 2)
 
 # ── Uploads ──────────────────────────────────────────────────────────────────
