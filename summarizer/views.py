@@ -1,16 +1,24 @@
-import io
 import logging
+from datetime import timedelta
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import F
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+from django.utils.http import content_disposition_header
 from django.views.decorators.http import require_POST
 from django.views.generic import DetailView, ListView
 
+from papers.services import extract_text_from_pdf, validate_pdf_upload
+
+from .exports import DOCX_CONTENT_TYPE, build_summary_docx, build_summary_pdf, export_filename
 from .models import ShareLink, Summary
+from .services import extract_tags_from_text
+
+MAX_SHARE_EXPIRY_DAYS = 365
 
 logger = logging.getLogger(__name__)
 
@@ -29,25 +37,13 @@ def preview_tags(request):
         return JsonResponse({'error': 'No file provided'}, status=400)
 
     pdf_file = request.FILES['file']
+    error = validate_pdf_upload(pdf_file)
+    if error:
+        return JsonResponse({'error': error}, status=400)
 
-    if not pdf_file.name.lower().endswith('.pdf'):
-        return JsonResponse({'error': 'Only PDF files are accepted'}, status=400)
-
-    if pdf_file.size > 50 * 1024 * 1024:
-        return JsonResponse({'error': 'File too large (max 50 MB)'}, status=400)
-
-    try:
-        from papers.services import extract_text_from_pdf
-
-        text = extract_text_from_pdf(pdf_file)
-    except Exception as exc:
-        logger.error('Text extraction for tag preview failed: %s', exc)
-        return JsonResponse({'suggested_tags': [], 'warning': 'Could not extract text from PDF'})
-
-    if not text or len(text.strip()) < 100:
+    text = extract_text_from_pdf(pdf_file)
+    if len(text.strip()) < 100:
         return JsonResponse({'suggested_tags': [], 'warning': 'Not enough readable text in PDF'})
-
-    from .services import extract_tags_from_text
 
     suggested_tags = extract_tags_from_text(text, max_tags=5)
     return JsonResponse({'suggested_tags': suggested_tags})
@@ -89,25 +85,31 @@ class SummaryDetailView(LoginRequiredMixin, DetailView):
 # ---- Share Links ---------------------------------------------------------
 
 
+def _parse_expiry_days(raw) -> int:
+    """Parse the share-link lifetime; 0 means never expires. Invalid -> 7 days."""
+    try:
+        days = int(raw)
+    except (TypeError, ValueError):
+        return 7
+    return max(0, min(days, MAX_SHARE_EXPIRY_DAYS))
+
+
 @login_required
+@require_POST
 def create_share_link(request, pk):
     """Create a new share link for a summary."""
     summary = get_object_or_404(Summary, pk=pk, paper__uploaded_by=request.user)
 
-    if request.method == 'POST':
-        expiry_days = int(request.POST.get('expiry_days', 7))
-        expires_at = None
-        if expiry_days > 0:
-            expires_at = timezone.now() + timezone.timedelta(days=expiry_days)
+    expiry_days = _parse_expiry_days(request.POST.get('expiry_days', 7))
+    expires_at = timezone.now() + timedelta(days=expiry_days) if expiry_days else None
 
-        ShareLink.objects.create(summary=summary, expires_at=expires_at)
-        messages.success(request, 'Share link created successfully.')
-        return redirect('summarizer:detail', pk=pk)
-
+    ShareLink.objects.create(summary=summary, expires_at=expires_at)
+    messages.success(request, 'Share link created successfully.')
     return redirect('summarizer:detail', pk=pk)
 
 
 @login_required
+@require_POST
 def revoke_share_link(request, link_pk):
     """Deactivate a share link."""
     link = get_object_or_404(ShareLink, pk=link_pk, summary__paper__uploaded_by=request.user)
@@ -119,13 +121,14 @@ def revoke_share_link(request, link_pk):
 
 def shared_summary_view(request, token):
     """Public view of a shared summary — no login required."""
-    link = get_object_or_404(ShareLink, token=token)
+    link = get_object_or_404(ShareLink.objects.select_related('summary__paper'), token=token)
 
     if not link.is_valid():
         return render(request, 'summarizer/share_expired.html', status=410)
 
-    link.access_count += 1
-    link.save(update_fields=['access_count'])
+    # Atomic increment so concurrent views don't lose counts.
+    ShareLink.objects.filter(pk=link.pk).update(access_count=F('access_count') + 1)
+    link.refresh_from_db(fields=['access_count'])
 
     summary = link.summary
     return render(
@@ -143,151 +146,28 @@ def shared_summary_view(request, token):
 # ---- PDF / Word exports --------------------------------------------------
 
 
+def _export(request, pk, builder, extension: str, content_type: str) -> HttpResponse:
+    summary = get_object_or_404(
+        Summary.objects.select_related('paper'), pk=pk, paper__uploaded_by=request.user
+    )
+    try:
+        payload = builder(summary)
+    except Exception:
+        logger.exception('%s export failed for summary %s', extension.upper(), pk)
+        return HttpResponse('Export failed. Please try again later.', status=500)
+
+    response = HttpResponse(payload, content_type=content_type)
+    response['Content-Disposition'] = content_disposition_header(
+        as_attachment=True, filename=export_filename(summary, extension)
+    )
+    return response
+
+
 @login_required
 def export_summary_pdf(request, pk):
-    summary = get_object_or_404(Summary, pk=pk, paper__uploaded_by=request.user)
-
-    try:
-        from reportlab.lib import colors
-        from reportlab.lib.pagesizes import A4
-        from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
-        from reportlab.lib.units import cm
-        from reportlab.platypus import ListFlowable, ListItem, Paragraph, SimpleDocTemplate, Spacer
-
-        buffer = io.BytesIO()
-        doc = SimpleDocTemplate(
-            buffer,
-            pagesize=A4,
-            leftMargin=2.5 * cm,
-            rightMargin=2.5 * cm,
-            topMargin=2.5 * cm,
-            bottomMargin=2.5 * cm,
-        )
-        styles = getSampleStyleSheet()
-        title_style = ParagraphStyle(
-            'T',
-            parent=styles['Title'],
-            fontSize=18,
-            spaceAfter=12,
-            textColor=colors.HexColor('#1a1a2e'),
-        )
-        heading_style = ParagraphStyle(
-            'H',
-            parent=styles['Heading2'],
-            fontSize=13,
-            spaceAfter=6,
-            spaceBefore=14,
-            textColor=colors.HexColor('#16213e'),
-        )
-        body_style = ParagraphStyle(
-            'B', parent=styles['Normal'], fontSize=10, leading=15, spaceAfter=6
-        )
-
-        story = [
-            Paragraph(summary.paper.title, title_style),
-            Paragraph(f'Author(s): {summary.paper.author or "N/A"}', body_style),
-            Spacer(1, 0.3 * cm),
-        ]
-
-        for heading, content in [
-            ('Abstract', summary.abstract),
-            ('Methodology', summary.methodology),
-            ('Results', summary.results),
-            ('Conclusion', summary.conclusion),
-        ]:
-            if content:
-                story += [
-                    Paragraph(heading, heading_style),
-                    Paragraph(content.replace('\n', '<br/>'), body_style),
-                ]
-
-        kps = summary.get_key_points_list()
-        if kps:
-            story.append(Paragraph('Key Points', heading_style))
-            story.append(
-                ListFlowable(
-                    [
-                        ListItem(Paragraph(pt, body_style), bulletColor=colors.HexColor('#4361ee'))
-                        for pt in kps
-                    ],
-                    bulletType='bullet',
-                )
-            )
-
-        citations = summary.get_citations_list()
-        if citations:
-            story.append(Paragraph('References', heading_style))
-            for i, c in enumerate(citations, 1):
-                story.append(Paragraph(f'[{i}] {c}', body_style))
-
-        doc.build(story)
-        buffer.seek(0)
-
-        safe = ''.join(c for c in summary.paper.title[:50] if c.isalnum() or c in ' -_').strip()
-        response = HttpResponse(buffer.read(), content_type='application/pdf')
-        response['Content-Disposition'] = f'attachment; filename="summary_{safe or summary.pk}.pdf"'
-        return response
-
-    except Exception as exc:
-        logger.error('PDF export failed for summary %s: %s', pk, exc)
-        return HttpResponse(f'Export failed: {exc}', status=500)
+    return _export(request, pk, build_summary_pdf, 'pdf', 'application/pdf')
 
 
 @login_required
 def export_summary_word(request, pk):
-    summary = get_object_or_404(Summary, pk=pk, paper__uploaded_by=request.user)
-
-    try:
-        from docx import Document
-        from docx.enum.text import WD_ALIGN_PARAGRAPH
-
-        doc = Document()
-
-        t = doc.add_heading(summary.paper.title, level=0)
-        t.alignment = WD_ALIGN_PARAGRAPH.CENTER
-
-        if summary.paper.author:
-            a = doc.add_paragraph(f'Author(s): {summary.paper.author}')
-            a.alignment = WD_ALIGN_PARAGRAPH.CENTER
-
-        doc.add_paragraph()
-
-        for heading, content in [
-            ('Abstract', summary.abstract),
-            ('Methodology', summary.methodology),
-            ('Results', summary.results),
-            ('Conclusion', summary.conclusion),
-        ]:
-            if content:
-                doc.add_heading(heading, level=1)
-                doc.add_paragraph(content)
-
-        kps = summary.get_key_points_list()
-        if kps:
-            doc.add_heading('Key Points', level=1)
-            for pt in kps:
-                doc.add_paragraph(pt, style='List Bullet')
-
-        citations = summary.get_citations_list()
-        if citations:
-            doc.add_heading('References', level=1)
-            for i, c in enumerate(citations, 1):
-                doc.add_paragraph(f'[{i}] {c}')
-
-        buffer = io.BytesIO()
-        doc.save(buffer)
-        buffer.seek(0)
-
-        safe = ''.join(c for c in summary.paper.title[:50] if c.isalnum() or c in ' -_').strip()
-        response = HttpResponse(
-            buffer.read(),
-            content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        )
-        response['Content-Disposition'] = (
-            f'attachment; filename="summary_{safe or summary.pk}.docx"'
-        )
-        return response
-
-    except Exception as exc:
-        logger.error('Word export failed for summary %s: %s', pk, exc)
-        return HttpResponse(f'Export failed: {exc}', status=500)
+    return _export(request, pk, build_summary_docx, 'docx', DOCX_CONTENT_TYPE)
